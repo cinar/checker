@@ -116,35 +116,3 @@ func initCheckers(config string) []CheckFunc {
 
 	return checkers
 }
-
-// ResultValid result indicates that the user input is valid.
-const ResultValid Result = "VALID"
-
-// makers provdes mapping to maker function for the checkers.
-var makers = map[string]MakeFunc{
-	"required": makeRequired,
-}
-
-// Register registers the given checker name and the maker function.
-func Register(name string, maker MakeFunc) {
-	makers[name] = maker
-}
-
-// initCheckers initializes the checkers provided in the config.
-func initCheckers(config string) []CheckFunc {
-	fields := strings.Fields(config)
-	checkers := make([]CheckFunc, len(fields))
-
-	for i, field := range fields {
-		name, params, _ := strings.Cut(field, ":")
-
-		maker, ok := makers[name]
-		if !ok {
-			panic(fmt.Sprintf("checker %s is unkown", name))
-		}
-
-		checkers[i] = maker(params)
-	}
-
-	return checkers
-}
