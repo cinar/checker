@@ -21,6 +21,10 @@ type Mistake struct {
 // ResultValid result indicates that the user input is valid.
 const ResultValid Result = "VALID"
 
+var makers = map[string]MakerFunc{
+	"required": makeRequired,
+}
+
 // Register registers the given checker name and the maker function.
 func Register(name string, maker MakerFunc) {
 
