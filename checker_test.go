@@ -50,3 +50,84 @@ func TestRegister(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestCheckInvalid(t *testing.T) {
+	type Person struct {
+		Name string `checkers:"required"`
+	}
+
+	person := &Person{}
+
+	mistakes, valid := Check(person)
+	if valid {
+		t.Fail()
+	}
+
+	if len(mistakes) != 1 {
+		t.Fail()
+	}
+
+	if mistakes["Name"] != ResultRequired {
+		t.Fail()
+	}
+}
+
+func TestCheckValid(t *testing.T) {
+	type Person struct {
+		Name string `checkers:"required"`
+	}
+
+	person := &Person{
+		Name: "Onur",
+	}
+
+	mistakes, valid := Check(person)
+	if !valid {
+		t.Fail()
+	}
+
+	if len(mistakes) != 0 {
+		t.Fail()
+	}
+}
+
+func TestCheckNoStruct(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fail()
+		}
+	}()
+
+	s := "unknown"
+	Check(s)
+}
+
+func TestCheckNestedStruct(t *testing.T) {
+	type Address struct {
+		Street string `checkers:"required"`
+	}
+
+	type Person struct {
+		Name string `checkers:"required"`
+		Home Address
+	}
+
+	person := &Person{}
+
+	mistakes, valid := Check(person)
+	if valid {
+		t.Fail()
+	}
+
+	if len(mistakes) != 2 {
+		t.Fail()
+	}
+
+	if mistakes["Name"] != ResultRequired {
+		t.Fail()
+	}
+
+	if mistakes["Home.Street"] != ResultRequired {
+		t.Fail()
+	}
+}
