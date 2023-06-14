@@ -6,12 +6,12 @@ import "reflect"
 const ResultRequired Result = "REQUIRED"
 
 // makeRequired makes a checker function for required.
-func makeRequired(_ string) CheckerFunc {
+func makeRequired(_ string) CheckFunc {
 	return checkRequired
 }
 
 // checkRequired checks if the required value is provided.
-func checkRequired(value, parent reflect.Value) Result {
+func checkRequired(value, _ reflect.Value) Result {
 	if value.IsZero() {
 		return ResultRequired
 	}

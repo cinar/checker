@@ -102,3 +102,13 @@ func TestCheckRequiredEmptyMap(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestMakeRequired(t *testing.T) {
+	check := makeRequired("")
+
+	s := "valid"
+
+	if check(reflect.ValueOf(s), reflect.ValueOf(nil)) != ResultValid {
+		t.Fail()
+	}
+}
