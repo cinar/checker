@@ -16,10 +16,14 @@ type CheckFunc func(value, parent reflect.Value) Result
 // MakeFunc defines the maker function.
 type MakeFunc func(params string) CheckFunc
 
-// Mistake provides the field where the mistake was made and a result for the mistake.
-type Mistake struct {
-	Field  string
-	Result Result
+// Mistakes provides mapping to checker result for the invalid fields.
+type Mistakes map[string]Result
+
+type checkerJob struct {
+	Parent reflect.Value
+	Name   string
+	Value  reflect.Value
+	Config string
 }
 
 // ResultValid result indicates that the user input is valid.
@@ -33,6 +37,65 @@ var makers = map[string]MakeFunc{
 // Register registers the given checker name and the maker function.
 func Register(name string, maker MakeFunc) {
 	makers[name] = maker
+}
+
+// Check checks the given struct based on the checkers listed in each field's strcut tag named checkers.
+func Check(s interface{}) (Mistakes, bool) {
+	root := reflect.Indirect(reflect.ValueOf(s))
+	if root.Kind() != reflect.Struct {
+		panic("expecting struct")
+	}
+
+	mistakes := Mistakes{}
+
+	jobs := []checkerJob{
+		{
+			Parent: reflect.ValueOf(nil),
+			Name:   "",
+			Value:  root,
+			Config: "",
+		},
+	}
+
+	for len(jobs) > 0 {
+		job := jobs[0]
+		jobs = jobs[1:]
+
+		if job.Value.Kind() == reflect.Struct {
+			for _, field := range reflect.VisibleFields(job.Value.Type()) {
+				addJob := field.Type.Kind() == reflect.Struct
+				config := ""
+
+				if !addJob {
+					config = field.Tag.Get("checkers")
+					addJob = config != ""
+				}
+
+				if addJob {
+					name := field.Name
+					if job.Name != "" {
+						name = job.Name + "." + name
+					}
+
+					jobs = append(jobs, checkerJob{
+						Parent: job.Value,
+						Name:   name,
+						Value:  reflect.Indirect(job.Value.FieldByIndex(field.Index)),
+						Config: config,
+					})
+				}
+			}
+		} else {
+			for _, checker := range initCheckers(job.Config) {
+				if result := checker(job.Value, job.Parent); result != ResultValid {
+					mistakes[job.Name] = result
+					break
+				}
+			}
+		}
+	}
+
+	return mistakes, len(mistakes) == 0
 }
 
 // initCheckers initializes the checkers provided in the config.
