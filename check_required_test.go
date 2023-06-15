@@ -5,6 +5,14 @@ import (
 	"testing"
 )
 
+func TestIsRequired(t *testing.T) {
+	s := "valid"
+
+	if IsRequired(s) != ResultValid {
+		t.Fail()
+	}
+}
+
 func TestCheckRequiredValidString(t *testing.T) {
 	s := "valid"
 

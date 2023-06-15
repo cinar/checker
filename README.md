@@ -8,7 +8,7 @@ There are many validation libraries available, but I prefer to build my own tool
 
 To get started, install the Checker library with the following command:
 
-```golang
+```bash
 go get github.com/cinar/checker
 ```
 
@@ -37,7 +37,7 @@ if !valid {
 }
 ```
 
-### Validating Individual User Data
+### Validating Individual User Input
 
 If you do not want to validate user input stored in a struct, you can individually call the checker functions to validate the user input. Here is an example:
 
@@ -66,4 +66,4 @@ type Person struct {
 
 This package currently provides the following checkers:
 
-- [required]() checks if the required value is provided.
+- [required](docs/checkers/required.md) checks if the required value is provided.
