@@ -32,6 +32,7 @@ const ResultValid Result = "VALID"
 // makers provides mapping to maker function for the checkers.
 var makers = map[string]MakeFunc{
 	"required": makeRequired,
+	"same":     makeSame,
 }
 
 // Register registers the given checker name and the maker function.

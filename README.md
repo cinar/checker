@@ -67,3 +67,4 @@ type Person struct {
 This package currently provides the following checkers:
 
 - [required](docs/checkers/required.md) checks if the required value is provided.
+- [same](docs/checkers/same.md) checks if the given value is equal to the value of the field with the given name.
