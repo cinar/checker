@@ -131,3 +131,20 @@ func TestCheckNestedStruct(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func BenchmarkCheck(b *testing.B) {
+	type Address struct {
+		Street string `checkers:"required"`
+	}
+
+	type Person struct {
+		Name string `checkers:"required"`
+		Home Address
+	}
+
+	person := &Person{}
+
+	for n := 0; n < b.N; n++ {
+		Check(person)
+	}
+}
