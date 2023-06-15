@@ -29,10 +29,13 @@ type checkerJob struct {
 // ResultValid result indicates that the user input is valid.
 const ResultValid Result = "VALID"
 
-// makers provdes mapping to maker function for the checkers.
+// makers provides mapping to maker function for the checkers.
 var makers = map[string]MakeFunc{
 	"required": makeRequired,
 }
+
+// checkerCache provides mapping to checker functions for the config.
+var checkerCache = map[string]CheckFunc{}
 
 // Register registers the given checker name and the maker function.
 func Register(name string, maker MakeFunc) {
@@ -62,7 +65,8 @@ func Check(s interface{}) (Mistakes, bool) {
 		jobs = jobs[1:]
 
 		if job.Value.Kind() == reflect.Struct {
-			for _, field := range reflect.VisibleFields(job.Value.Type()) {
+			for i := 0; i < job.Value.NumField(); i++ {
+				field := job.Value.Type().Field(i)
 				addJob := field.Type.Kind() == reflect.Struct
 				config := ""
 
@@ -104,14 +108,20 @@ func initCheckers(config string) []CheckFunc {
 	checkers := make([]CheckFunc, len(fields))
 
 	for i, field := range fields {
-		name, params, _ := strings.Cut(field, ":")
-
-		maker, ok := makers[name]
+		checker, ok := checkerCache[field]
 		if !ok {
-			panic(fmt.Sprintf("checker %s is unkown", name))
+			name, params, _ := strings.Cut(field, ":")
+
+			maker, ok := makers[name]
+			if !ok {
+				panic(fmt.Sprintf("checker %s is unkown", name))
+			}
+
+			checker = maker(params)
+			checkerCache[field] = checker
 		}
 
-		checkers[i] = maker(params)
+		checkers[i] = checker
 	}
 
 	return checkers
