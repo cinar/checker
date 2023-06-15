@@ -34,9 +34,6 @@ var makers = map[string]MakeFunc{
 	"required": makeRequired,
 }
 
-// checkerCache provides mapping to checker functions for the config.
-var checkerCache = map[string]CheckFunc{}
-
 // Register registers the given checker name and the maker function.
 func Register(name string, maker MakeFunc) {
 	makers[name] = maker
@@ -108,20 +105,14 @@ func initCheckers(config string) []CheckFunc {
 	checkers := make([]CheckFunc, len(fields))
 
 	for i, field := range fields {
-		checker, ok := checkerCache[field]
+		name, params, _ := strings.Cut(field, ":")
+
+		maker, ok := makers[name]
 		if !ok {
-			name, params, _ := strings.Cut(field, ":")
-
-			maker, ok := makers[name]
-			if !ok {
-				panic(fmt.Sprintf("checker %s is unkown", name))
-			}
-
-			checker = maker(params)
-			checkerCache[field] = checker
+			panic(fmt.Sprintf("checker %s is unkown", name))
 		}
 
-		checkers[i] = checker
+		checkers[i] = maker(params)
 	}
 
 	return checkers
