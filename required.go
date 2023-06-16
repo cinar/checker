@@ -2,6 +2,9 @@ package checker
 
 import "reflect"
 
+// CheckerRequired is the name of the checker.
+const CheckerRequired = "required"
+
 // ResultRequired indicates that the required value is missing.
 const ResultRequired Result = "REQUIRED"
 
