@@ -11,11 +11,7 @@ func TestIsMinValid(t *testing.T) {
 }
 
 func TestCheckMinInvalidConfig(t *testing.T) {
-	defer func() {
-		if r := recover(); r == nil {
-			t.Fail()
-		}
-	}()
+	defer FailIfNoPanic(t)
 
 	type User struct {
 		Age int `checkers:"min:AB"`

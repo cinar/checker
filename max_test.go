@@ -11,11 +11,7 @@ func TestIsMaxValid(t *testing.T) {
 }
 
 func TestCheckMaxInvalidConfig(t *testing.T) {
-	defer func() {
-		if r := recover(); r == nil {
-			t.Fail()
-		}
-	}()
+	defer FailIfNoPanic(t)
 
 	type Order struct {
 		Quantity int `checkers:"max:AB"`
