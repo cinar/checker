@@ -35,8 +35,8 @@ func TestCheckMinLengthValid(t *testing.T) {
 		Password: "1234",
 	}
 
-	_, ok := Check(user)
-	if !ok {
+	_, valid := Check(user)
+	if !valid {
 		t.Fail()
 	}
 }
@@ -50,8 +50,8 @@ func TestCheckMinLengthInvalid(t *testing.T) {
 		Password: "12",
 	}
 
-	_, ok := Check(user)
-	if ok {
+	_, valid := Check(user)
+	if valid {
 		t.Fail()
 	}
 }
