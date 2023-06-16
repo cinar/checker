@@ -1,6 +1,6 @@
-# Min Length Checker
+# Max Length Checker
 
-The ```max-length``` checker checks if the length of the given value is less than the given maximum length. If the length of the value is above the minimum length, the checker will return the ```NOT_MAX_LENGTH``` result. Here is an example:
+The ```max-length``` checker checks if the length of the given value is less than the given maximum length. If the length of the value is above the maximum length, the checker will return the ```NOT_MAX_LENGTH``` result. Here is an example:
 
 ```golang
 type User struct {
