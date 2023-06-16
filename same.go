@@ -4,6 +4,9 @@ import (
 	"reflect"
 )
 
+// CheckerSame is the name of the checker.
+const CheckerSame = "same"
+
 // ResultNotSame indicates that the given two values are not equal to each other.
 const ResultNotSame = "NOT_SAME"
 
