@@ -40,11 +40,7 @@ func TestSameInvalid(t *testing.T) {
 }
 
 func TestSameWithoutParent(t *testing.T) {
-	defer func() {
-		if r := recover(); r == nil {
-			t.Fail()
-		}
-	}()
+	defer FailIfNoPanic(t)
 
 	type User struct {
 		Password string
@@ -60,11 +56,7 @@ func TestSameWithoutParent(t *testing.T) {
 }
 
 func TestSameInvalidName(t *testing.T) {
-	defer func() {
-		if r := recover(); r == nil {
-			t.Fail()
-		}
-	}()
+	defer FailIfNoPanic(t)
 
 	type User struct {
 		Password string

@@ -11,11 +11,7 @@ func TestIsMaxLengthValid(t *testing.T) {
 }
 
 func TestCheckMaxLengthInvalidConfig(t *testing.T) {
-	defer func() {
-		if r := recover(); r == nil {
-			t.Fail()
-		}
-	}()
+	defer FailIfNoPanic(t)
 
 	type User struct {
 		Password string `checkers:"max-length:AB"`

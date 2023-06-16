@@ -6,11 +6,7 @@ import (
 )
 
 func TestInitCheckersUnknown(t *testing.T) {
-	defer func() {
-		if r := recover(); r == nil {
-			t.Fail()
-		}
-	}()
+	defer FailIfNoPanic(t)
 
 	initCheckers("unknown")
 }
@@ -92,11 +88,7 @@ func TestCheckValid(t *testing.T) {
 }
 
 func TestCheckNoStruct(t *testing.T) {
-	defer func() {
-		if r := recover(); r == nil {
-			t.Fail()
-		}
-	}()
+	defer FailIfNoPanic(t)
 
 	s := "unknown"
 	Check(s)
@@ -133,11 +125,7 @@ func TestCheckNestedStruct(t *testing.T) {
 }
 
 func TestNumberOfInvalid(t *testing.T) {
-	defer func() {
-		if r := recover(); r == nil {
-			t.Fail()
-		}
-	}()
+	defer FailIfNoPanic(t)
 
 	s := "invalid"
 
