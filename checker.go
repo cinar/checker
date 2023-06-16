@@ -31,7 +31,9 @@ const ResultValid Result = "VALID"
 
 // makers provides mapping to maker function for the checkers.
 var makers = map[string]MakeFunc{
+	CheckerMax:       makeMax,
 	CheckerMaxLength: makeMaxLength,
+	CheckerMin:       makeMin,
 	CheckerMinLength: makeMinLength,
 	CheckerRequired:  makeRequired,
 	CheckerSame:      makeSame,
@@ -119,4 +121,18 @@ func initCheckers(config string) []CheckFunc {
 	}
 
 	return checkers
+}
+
+// numberOf gives value's numerical value given that it is either an int or a float.
+func numberOf(value reflect.Value) float64 {
+	switch value.Kind() {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return float64(value.Int())
+
+	case reflect.Float32, reflect.Float64:
+		return value.Float()
+
+	default:
+		panic("expecting int or float")
+	}
 }

@@ -132,6 +132,34 @@ func TestCheckNestedStruct(t *testing.T) {
 	}
 }
 
+func TestNumberOfInvalid(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fail()
+		}
+	}()
+
+	s := "invalid"
+
+	numberOf(reflect.ValueOf(s))
+}
+
+func TestNumberOfInt(t *testing.T) {
+	n := 10
+
+	if numberOf(reflect.ValueOf(n)) != float64(n) {
+		t.Fail()
+	}
+}
+
+func TestNumberOfFloat(t *testing.T) {
+	n := float64(10.10)
+
+	if numberOf(reflect.ValueOf(n)) != n {
+		t.Fail()
+	}
+}
+
 func BenchmarkCheck(b *testing.B) {
 	type Address struct {
 		Street string `checkers:"required"`
