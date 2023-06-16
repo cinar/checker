@@ -66,6 +66,7 @@ type Person struct {
 
 This package currently provides the following checkers:
 
+- [max-length](doc/checkers/maxlength.md) checks if the length of the given value is less than the given maximum length.
 - [min-length](doc/checkers/minlength.md) checks if the length of the given value is greather than the given minimum length.
 - [required](doc/checkers/required.md) checks if the required value is provided.
 - [same](doc/checkers/same.md) checks if the given value is equal to the value of the field with the given name.
