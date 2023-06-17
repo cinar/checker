@@ -17,7 +17,7 @@ if !valid {
 }
 ```
 
-In your custom checkers, you can call the ```ipV4``` checker function ```IsIpV4``` to validate the user input. Here is an example:
+In your custom checkers, you can call the ```ipv4``` checker function ```IsIpV4``` to validate the user input. Here is an example:
 
 ```golang
 result := IsIpV4("192.168.1.1")
