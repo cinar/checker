@@ -66,6 +66,7 @@ type Person struct {
 
 This package currently provides the following checkers:
 
+- [alphanumeric](doc/checkers/alphanumeric.md) checks if the given string consists of only alphanumeric characters.
 - [ascii](doc/checkers/ascii.md) checks if the given string consists of only ASCII characters.
 - [digits](doc/checkers/digits.md) checks if the given string consists of only digit characters.
 - [max](doc/checkers/max.md) checks if the given value is less than the given maximum.

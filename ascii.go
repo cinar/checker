@@ -13,8 +13,8 @@ const ResultNotAscii = "NOT_ASCII"
 
 // IsAscii checks if the given string consists of only ASCII characters.
 func IsAscii(value string) Result {
-	for i := 0; i < len(value); i++ {
-		if value[i] > unicode.MaxASCII {
+	for _, c := range value {
+		if c > unicode.MaxASCII {
 			return ResultNotAscii
 		}
 	}
