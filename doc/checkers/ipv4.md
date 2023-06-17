@@ -1,4 +1,4 @@
-# IpV4 Checker
+# IPv4 Checker
 
 The ```ipv4``` checker checks if the value is an IPv4 address. If the value is not an IPv4 address, the checker will return the ```NOT_IP_V4``` result. Here is an example:
 

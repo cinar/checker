@@ -1,4 +1,4 @@
-# IpV4 Checker
+# IPv6 Checker
 
 The ```ipv6``` checker checks if the value is an IPv6 address. If the value is not an IPv6 address, the checker will return the ```NOT_IP_V6``` result. Here is an example:
 
