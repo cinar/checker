@@ -8,7 +8,7 @@ import (
 // NormalizerTrim is the name of the normalizer.
 const NormalizerTrim = "trim"
 
-// makeTrime makes a normalizer function for the trim normalizer.
+// makeTrim makes a normalizer function for the trim normalizer.
 func makeTrim(_ string) CheckFunc {
 	return normalizeTrim
 }
