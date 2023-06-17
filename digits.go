@@ -2,6 +2,7 @@ package checker
 
 import (
 	"reflect"
+	"unicode"
 )
 
 // CheckerDigits is the name of the checker.
@@ -12,8 +13,8 @@ const ResultNotDigits = "NOT_DIGITS"
 
 // IsDigits checks if the given string consists of only digit characters.
 func IsDigits(value string) Result {
-	for i := 0; i < len(value); i++ {
-		if value[i] < '0' || value[i] > '9' {
+	for _, c := range value {
+		if !unicode.IsDigit(c) {
 			return ResultNotDigits
 		}
 	}
