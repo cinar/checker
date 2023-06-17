@@ -33,10 +33,12 @@ const ResultValid Result = "VALID"
 var makers = map[string]MakeFunc{
 	CheckerAlphanumeric: makeAlphanumeric,
 	CheckerAscii:        makeAscii,
+	CheckerCidr:         makeCidr,
 	CheckerDigits:       makeDigits,
 	CheckerIp:           makeIp,
 	CheckerIpV4:         makeIpV4,
 	CheckerIpV6:         makeIpV6,
+	CheckerMac:          makeMac,
 	CheckerMax:          makeMax,
 	CheckerMaxLength:    makeMaxLength,
 	CheckerMin:          makeMin,
