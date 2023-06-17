@@ -36,4 +36,4 @@ jobs:
     - name: Go coverage
       env:
         CODE_COVERAGE_THRESHOLD: 100
-      run: bash ./scripts/coverage.sh
+      run: ./scripts/coverage.sh
