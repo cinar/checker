@@ -18,7 +18,7 @@ func IsIpV6(value string) Result {
 		return ResultNotIpV6
 	}
 
-	if ip.To16() == nil {
+	if ip.To4() != nil {
 		return ResultNotIpV6
 	}
 

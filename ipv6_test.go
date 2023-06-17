@@ -8,6 +8,12 @@ func TestIsIpV6Invalid(t *testing.T) {
 	}
 }
 
+func TestIsIpV6InvalidV4(t *testing.T) {
+	if IsIpV6("192.168.1.1") == ResultValid {
+		t.Fail()
+	}
+}
+
 func TestIsIpV6Valid(t *testing.T) {
 	if IsIpV6("2001:db8::68") != ResultValid {
 		t.Fail()
