@@ -34,6 +34,7 @@ var makers = map[string]MakeFunc{
 	CheckerAlphanumeric: makeAlphanumeric,
 	CheckerAscii:        makeAscii,
 	CheckerDigits:       makeDigits,
+	CheckerIpV4:         makeIpV4,
 	CheckerMax:          makeMax,
 	CheckerMaxLength:    makeMaxLength,
 	CheckerMin:          makeMin,
