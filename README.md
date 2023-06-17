@@ -1,3 +1,7 @@
+[![GoDoc](https://godoc.org/github.com/cinar/checker?status.svg)](https://godoc.org/github.com/cinar/checker)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+![Go CI](https://github.com/cinar/checker/actions/workflows/build.yml/badge.svg)
+
 # Checker
 
 Checker is a Go library that helps you validate user input. It can be used to validate user input stored in a struct, or to validate individual pieces of input.
@@ -78,3 +82,43 @@ This package currently provides the following checkers:
 - [min-length](doc/checkers/minlength.md) checks if the length of the given value is greather than the given minimum length.
 - [required](doc/checkers/required.md) checks if the required value is provided.
 - [same](doc/checkers/same.md) checks if the given value is equal to the value of the field with the given name.
+
+# Custom Checkers
+
+To define a custom checker, you need to create a new function with the following parameters:
+
+```golang
+func CustomChecker(value, parent reflect.Value) Result {
+    return ResultValid
+}
+```
+type MakeFunc 
+You also need to create a make function that takes the checker configuration and returns a reference to the checker function.
+
+```golang
+func CustomMaker(params string) CheckFunc {
+    return CustomChecker
+}
+```
+
+Finally, you need to call the ```Register``` function to register your custom checker.
+
+```golang
+checker.Register("custom-checker", CustomMaker)
+```
+
+Once you have registered your custom checker, you can use it by simply specifying its name.
+
+```golang
+type User struct {
+    Username string `checkers:"custom-checker"`
+}
+```
+
+# License
+
+This library is free to use, modify, and distribute under the terms of the MIT license. The full license text can be found in the [LICENSE](./LICENSE) file.
+
+The MIT license is a permissive license that allows you to do almost anything with the library, as long as you retain the copyright notice and the license text. This means that you can use the library in commercial products, modify it, and redistribute it without having to ask for permission from the authors.
+
+The [LICENSE](./LICENSE) file is located in the root directory of the library. You can open it in a text editor to read the full license text.
