@@ -1,6 +1,6 @@
 # ASCII Checker
 
-The ```ascii``` checkr checks if the given string consists of only ASCII characters. If the string contains non-ASCII characters, the checker will return the ```NOT_ASCII``` result. Here is an example:
+The ```ascii``` checker checks if the given string consists of only ASCII characters. If the string contains non-ASCII characters, the checker will return the ```NOT_ASCII``` result. Here is an example:
 
 ```golang
 type User struct {

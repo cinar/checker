@@ -32,6 +32,7 @@ const ResultValid Result = "VALID"
 // makers provides mapping to maker function for the checkers.
 var makers = map[string]MakeFunc{
 	CheckerAscii:     makeAscii,
+	CheckerDigits:    makeDigits,
 	CheckerMax:       makeMax,
 	CheckerMaxLength: makeMaxLength,
 	CheckerMin:       makeMin,
