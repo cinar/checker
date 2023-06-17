@@ -69,6 +69,9 @@ This package currently provides the following checkers:
 - [alphanumeric](doc/checkers/alphanumeric.md) checks if the given string consists of only alphanumeric characters.
 - [ascii](doc/checkers/ascii.md) checks if the given string consists of only ASCII characters.
 - [digits](doc/checkers/digits.md) checks if the given string consists of only digit characters.
+- [ip](doc/checkers/ip.md) checks if the given value is an IP address.
+- [ipv4](doc/checkers/ipv4.md) checks if the given value is an IPv4 address.
+- [ipv6](doc/checkers/ipv6.md) checks if the given value is an IPv6 address.
 - [max](doc/checkers/max.md) checks if the given value is less than the given maximum.
 - [max-length](doc/checkers/maxlength.md) checks if the length of the given value is less than the given maximum length.
 - [min](doc/checkers/min.md) checks if the given value is greather than the given minimum.
