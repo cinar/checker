@@ -1,4 +1,4 @@
-# Trim Normalizer
+# Trim Right Normalizer
 
 The ```trim``` normalizer removes the whitespaces at the beginning and at the end of the given value. It can be mixed with checkers and other normalizers when defining the validation steps for user data.
 
@@ -8,7 +8,7 @@ type User struct {
 }
 
 user := &User{
-  Username: "      normalizer      ",
+  Username: "normalizer      ",
 }
 
 Check(user)
