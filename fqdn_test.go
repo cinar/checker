@@ -20,6 +20,12 @@ func TestCheckFdqnNumericTld(t *testing.T) {
 	}
 }
 
+func TestCheckFdqnLong(t *testing.T) {
+	if IsFqdn("abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd.com") != ResultNotFqdn {
+		t.Fail()
+	}
+}
+
 func TestCheckFdqnInvalidCharacters(t *testing.T) {
 	if IsFqdn("ab_cd.com") != ResultNotFqdn {
 		t.Fail()
