@@ -20,7 +20,7 @@ func TestNormalizeTitleResultValid(t *testing.T) {
 	}
 
 	book := &Book{
-		Chapter: "THE Checker",
+		Chapter: "THE checker",
 	}
 
 	_, valid := Check(book)
@@ -35,7 +35,7 @@ func TestNormalizeTitle(t *testing.T) {
 	}
 
 	book := &Book{
-		Chapter: "THE Checker",
+		Chapter: "THE checker",
 	}
 
 	Check(book)

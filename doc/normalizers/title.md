@@ -8,7 +8,7 @@ type Book struct {
 }
 
 book := &Book{
-  Chapter: "THE Checker",
+  Chapter: "THE checker",
 }
 
 Check(book)
