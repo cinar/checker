@@ -45,6 +45,8 @@ var makers = map[string]MakeFunc{
 	CheckerMinLength:    makeMinLength,
 	CheckerRequired:     makeRequired,
 	CheckerSame:         makeSame,
+	NormalizerLower:     makeLower,
+	NormalizerUpper:     makeUpper,
 	NormalizerTrim:      makeTrim,
 	NormalizerTrimLeft:  makeTrimLeft,
 	NormalizerTrimRight: makeTrimRight,
