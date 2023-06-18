@@ -12,4 +12,6 @@ user := &User{
 }
 
 Check(user)
+
+fmt.Println(user.Username) // checker
 ```

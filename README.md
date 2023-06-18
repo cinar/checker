@@ -91,6 +91,7 @@ This package currently provides the following normalizers. They can be mixed wit
 
 - [lower](doc/normalizers/lower.md) maps all Unicode letters in the given value to their lower case.
 - [upper](doc/normalizers/upper.md) maps all Unicode letters in the given value to their upper case.
+- [title](doc/normalizers/title.md) maps the first letter of each word to their upper case.
 - [trim](doc/normalizers/trim.md) removes the whitespaces at the beginning and at the end of the given value.
 - [trim-left](doc/normalizers/trim_left.md) removes the whitespaces at the beginning of the given value.
 - [trim-right](doc/normalizers/trim_right.md) removes the whitespaces at the end of the given value.

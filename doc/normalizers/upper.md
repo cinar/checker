@@ -11,5 +11,5 @@ user := &User{
   Username: "chECker",
 }
 
-Check(user)
+fmt.Println(user.Username) // CHECKER
 ```
