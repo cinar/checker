@@ -9,7 +9,7 @@ import (
 // CheckerFqdn is the name of the checker.
 const CheckerFqdn = "fqdn"
 
-// ResultNotFqdn indicates that the given string contains non-ASCII characters.
+// ResultNotFqdn indicates that the given string is not a valid FQDN.
 const ResultNotFqdn = "NOT_FQDN"
 
 // Valid characters excluding full-width characters.
@@ -56,7 +56,7 @@ func IsFqdn(domain string) Result {
 	return ResultValid
 }
 
-// makeFqdn makes a checker function for the ascii checker.
+// makeFqdn makes a checker function for the fqdn checker.
 func makeFqdn(_ string) CheckFunc {
 	return checkFqdn
 }

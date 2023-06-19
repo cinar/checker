@@ -74,6 +74,7 @@ This package currently provides the following checkers:
 - [ascii](doc/checkers/ascii.md) checks if the given string consists of only ASCII characters.
 - [cidr](doc/checkers/cidr.md) checker checks if the value is a valid CIDR notation IP address and prefix length.
 - [digits](doc/checkers/digits.md) checks if the given string consists of only digit characters.
+- [email](doc/checkers/email.md) checks if the given string is an email address.
 - [fqdn](doc/checkers/fqdn.md) checks if the given string is a fully qualified domain name.
 - [ip](doc/checkers/ip.md) checks if the given value is an IP address.
 - [ipv4](doc/checkers/ipv4.md) checks if the given value is an IPv4 address.
