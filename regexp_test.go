@@ -60,7 +60,7 @@ func TestMakeRegexpMaker(t *testing.T) {
 	Register("hex", MakeRegexpMaker("^[A-Fa-f0-9]+$", "NOT_HEX"))
 
 	type Theme struct {
-		Color string `checkers:hex`
+		Color string `checkers:"hex"`
 	}
 
 	theme := &Theme{
