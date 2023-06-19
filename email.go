@@ -9,7 +9,7 @@ import (
 // CheckerEmail is the name of the checker.
 const CheckerEmail = "email"
 
-// ResultNotFqdn indicates that the given string is not a valid email.
+// ResultNotEmail indicates that the given string is not a valid email.
 const ResultNotEmail = "NOT_EMAIL"
 
 // ipV6Prefix is the IPv6 prefix for the domain.
