@@ -130,6 +130,16 @@ type User struct {
 }
 ```
 
+# Code Quality
+
+User input validation is a critical task that must be performed correctly in order to ensure that user data is handled correctly. This is why it is important to have extensive unit testing in place for any user input validation library. 
+
+The Checker library has a code coverage threshold of 100%, which means that all of the code in the library has been tested. This ensures that the library is extremely reliable and that it will not fail to validate user input correctly.
+
+The test cases for the library can be found in the _test.go files. These files contain a comprehensive set of tests that cover all of the possible scenarios for user input validation.
+
+If you are planning to make a pull request to this project, please make sure to add enough test cases to ensure that the code coverage remains at 100%. This will help to ensure that the library remains reliable and that user data is handled correctly.
+
 # License
 
 This library is free to use, modify, and distribute under the terms of the MIT license. The full license text can be found in the [LICENSE](./LICENSE) file.
