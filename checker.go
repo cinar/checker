@@ -45,6 +45,7 @@ var makers = map[string]MakeFunc{
 	CheckerMaxLength:    makeMaxLength,
 	CheckerMin:          makeMin,
 	CheckerMinLength:    makeMinLength,
+	CheckerRegexp:       makeRegexp,
 	CheckerRequired:     makeRequired,
 	CheckerSame:         makeSame,
 	NormalizerLower:     makeLower,
