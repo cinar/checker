@@ -79,6 +79,7 @@ This package currently provides the following checkers:
 - [ip](doc/checkers/ip.md) checks if the given value is an IP address.
 - [ipv4](doc/checkers/ipv4.md) checks if the given value is an IPv4 address.
 - [ipv6](doc/checkers/ipv6.md) checks if the given value is an IPv6 address.
+- [luhn](doc/checkers/luhn.md) checks if the given number is valid based on the Luhn algorithm.
 - [mac](doc/checkers/mac.md) checks if the given value is a valid an IEEE 802 MAC-48, EUI-48, EUI-64, or a 20-octet IP over InfiniBand link-layer address.
 - [max](doc/checkers/max.md) checks if the given value is less than the given maximum.
 - [max-length](doc/checkers/maxlength.md) checks if the length of the given value is less than the given maximum length.
