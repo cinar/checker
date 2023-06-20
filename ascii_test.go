@@ -18,7 +18,7 @@ func TestCheckASCIINonString(t *testing.T) {
 	defer FailIfNoPanic(t)
 
 	type User struct {
-		Age int `checkers:"ASCII"`
+		Age int `checkers:"ascii"`
 	}
 
 	user := &User{}
@@ -28,7 +28,7 @@ func TestCheckASCIINonString(t *testing.T) {
 
 func TestCheckASCIIInvalid(t *testing.T) {
 	type User struct {
-		Username string `checkers:"ASCII"`
+		Username string `checkers:"ascii"`
 	}
 
 	user := &User{
@@ -43,7 +43,7 @@ func TestCheckASCIIInvalid(t *testing.T) {
 
 func TestCheckASCIIValid(t *testing.T) {
 	type User struct {
-		Username string `checkers:"ASCII"`
+		Username string `checkers:"ascii"`
 	}
 
 	user := &User{
