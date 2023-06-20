@@ -20,7 +20,10 @@
 			"settings": {
 				"go.lintTool": "revive",
 				"go.lintOnSave": "package"
-			}
+			},
+			"extensions": [
+				"github.vscode-pull-request-github"
+			]
 		}
 	}
 
