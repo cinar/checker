@@ -18,7 +18,7 @@ func TestCheckDigitsNonString(t *testing.T) {
 	defer FailIfNoPanic(t)
 
 	type User struct {
-		Id int `checkers:"digits"`
+		ID int `checkers:"digits"`
 	}
 
 	user := &User{}
@@ -28,11 +28,11 @@ func TestCheckDigitsNonString(t *testing.T) {
 
 func TestCheckDigitsInvalid(t *testing.T) {
 	type User struct {
-		Id string `checkers:"digits"`
+		ID string `checkers:"digits"`
 	}
 
 	user := &User{
-		Id: "checker",
+		ID: "checker",
 	}
 
 	_, valid := Check(user)
@@ -43,11 +43,11 @@ func TestCheckDigitsInvalid(t *testing.T) {
 
 func TestCheckDigitsValid(t *testing.T) {
 	type User struct {
-		Id string `checkers:"digits"`
+		ID string `checkers:"digits"`
 	}
 
 	user := &User{
-		Id: "1234",
+		ID: "1234",
 	}
 
 	_, valid := Check(user)

@@ -2,29 +2,29 @@ package checker
 
 import "testing"
 
-func TestIsIpV6Invalid(t *testing.T) {
-	if IsIpV6("900.800.200.100") == ResultValid {
+func TestIsIPV6Invalid(t *testing.T) {
+	if IsIPV6("900.800.200.100") == ResultValid {
 		t.Fail()
 	}
 }
 
-func TestIsIpV6InvalidV4(t *testing.T) {
-	if IsIpV6("192.168.1.1") == ResultValid {
+func TestIsIPV6InvalidV4(t *testing.T) {
+	if IsIPV6("192.168.1.1") == ResultValid {
 		t.Fail()
 	}
 }
 
-func TestIsIpV6Valid(t *testing.T) {
-	if IsIpV6("2001:db8::68") != ResultValid {
+func TestIsIPV6Valid(t *testing.T) {
+	if IsIPV6("2001:db8::68") != ResultValid {
 		t.Fail()
 	}
 }
 
-func TestCheckIpV6NonString(t *testing.T) {
+func TestCheckIPV6NonString(t *testing.T) {
 	defer FailIfNoPanic(t)
 
 	type Request struct {
-		RemoteIp int `checkers:"ipv6"`
+		RemoteIP int `checkers:"ipv6"`
 	}
 
 	request := &Request{}
@@ -32,13 +32,13 @@ func TestCheckIpV6NonString(t *testing.T) {
 	Check(request)
 }
 
-func TestCheckIpV6Invalid(t *testing.T) {
+func TestCheckIPV6Invalid(t *testing.T) {
 	type Request struct {
-		RemoteIp string `checkers:"ipv6"`
+		RemoteIP string `checkers:"ipv6"`
 	}
 
 	request := &Request{
-		RemoteIp: "900.800.200.100",
+		RemoteIP: "900.800.200.100",
 	}
 
 	_, valid := Check(request)
@@ -47,13 +47,13 @@ func TestCheckIpV6Invalid(t *testing.T) {
 	}
 }
 
-func TestCheckIpV6Valid(t *testing.T) {
+func TestCheckIPV6Valid(t *testing.T) {
 	type Request struct {
-		RemoteIp string `checkers:"ipv6"`
+		RemoteIP string `checkers:"ipv6"`
 	}
 
 	request := &Request{
-		RemoteIp: "2001:db8::68",
+		RemoteIP: "2001:db8::68",
 	}
 
 	_, valid := Check(request)

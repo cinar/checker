@@ -4,11 +4,11 @@ The ```ipv6``` checker checks if the value is an IPv6 address. If the value is n
 
 ```golang
 type Request struct {
-  RemoteIp string `checkers:"ipv6"`
+  RemoteIP string `checkers:"ipv6"`
 }
 
 request := &Request{
-  RemoteIp: "2001:db8::68",
+  RemoteIP: "2001:db8::68",
 }
 
 _, valid := Check(request)
@@ -17,10 +17,10 @@ if !valid {
 }
 ```
 
-In your custom checkers, you can call the ```ipv6``` checker function ```IsIpV6``` to validate the user input. Here is an example:
+In your custom checkers, you can call the ```ipv6``` checker function ```IsIPV6``` to validate the user input. Here is an example:
 
 ```golang
-result := IsIpV6("2001:db8::68")
+result := IsIPV6("2001:db8::68")
 
 if result != ResultValid {
   // Send the mistakes back to the user

@@ -2,14 +2,14 @@ package checker
 
 import "testing"
 
-func TestIsIpInvalid(t *testing.T) {
-	if IsIp("900.800.200.100") == ResultValid {
+func TestIsIPInvalid(t *testing.T) {
+	if IsIP("900.800.200.100") == ResultValid {
 		t.Fail()
 	}
 }
 
-func TestIsIpValid(t *testing.T) {
-	if IsIp("2001:db8::68") != ResultValid {
+func TestIsIPValid(t *testing.T) {
+	if IsIP("2001:db8::68") != ResultValid {
 		t.Fail()
 	}
 }
@@ -18,7 +18,7 @@ func TestCheckIpNonString(t *testing.T) {
 	defer FailIfNoPanic(t)
 
 	type Request struct {
-		RemoteIp int `checkers:"ip"`
+		RemoteIP int `checkers:"ip"`
 	}
 
 	request := &Request{}
@@ -28,11 +28,11 @@ func TestCheckIpNonString(t *testing.T) {
 
 func TestCheckIpInvalid(t *testing.T) {
 	type Request struct {
-		RemoteIp string `checkers:"ip"`
+		RemoteIP string `checkers:"ip"`
 	}
 
 	request := &Request{
-		RemoteIp: "900.800.200.100",
+		RemoteIP: "900.800.200.100",
 	}
 
 	_, valid := Check(request)
@@ -41,13 +41,13 @@ func TestCheckIpInvalid(t *testing.T) {
 	}
 }
 
-func TestCheckIpValid(t *testing.T) {
+func TestCheckIPValid(t *testing.T) {
 	type Request struct {
-		RemoteIp string `checkers:"ip"`
+		RemoteIP string `checkers:"ip"`
 	}
 
 	request := &Request{
-		RemoteIp: "192.168.1.1",
+		RemoteIP: "192.168.1.1",
 	}
 
 	_, valid := Check(request)

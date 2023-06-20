@@ -26,7 +26,7 @@ func IsLuhn(number string) Result {
 }
 
 // makeLuhn makes a checker function for the Luhn algorithm.
-func makeLuhn(config string) CheckFunc {
+func makeLuhn(_ string) CheckFunc {
 	return checkLuhn
 }
 

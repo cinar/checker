@@ -2,23 +2,23 @@ package checker
 
 import "testing"
 
-func TestIsAsciiInvalid(t *testing.T) {
-	if IsAscii("𝄞 Music!") == ResultValid {
+func TestIsASCIIInvalid(t *testing.T) {
+	if IsASCII("𝄞 Music!") == ResultValid {
 		t.Fail()
 	}
 }
 
-func TestIsAsciiValid(t *testing.T) {
-	if IsAscii("Checker") != ResultValid {
+func TestIsASCIIValid(t *testing.T) {
+	if IsASCII("Checker") != ResultValid {
 		t.Fail()
 	}
 }
 
-func TestCheckAsciiNonString(t *testing.T) {
+func TestCheckASCIINonString(t *testing.T) {
 	defer FailIfNoPanic(t)
 
 	type User struct {
-		Age int `checkers:"ascii"`
+		Age int `checkers:"ASCII"`
 	}
 
 	user := &User{}
@@ -26,9 +26,9 @@ func TestCheckAsciiNonString(t *testing.T) {
 	Check(user)
 }
 
-func TestCheckAsciiInvalid(t *testing.T) {
+func TestCheckASCIIInvalid(t *testing.T) {
 	type User struct {
-		Username string `checkers:"ascii"`
+		Username string `checkers:"ASCII"`
 	}
 
 	user := &User{
@@ -41,9 +41,9 @@ func TestCheckAsciiInvalid(t *testing.T) {
 	}
 }
 
-func TestCheckAsciiValid(t *testing.T) {
+func TestCheckASCIIValid(t *testing.T) {
 	type User struct {
-		Username string `checkers:"ascii"`
+		Username string `checkers:"ASCII"`
 	}
 
 	user := &User{
