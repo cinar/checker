@@ -103,11 +103,11 @@ func isValidEmailDomain(domain string) Result {
 	if domain[0] == '[' {
 		if strings.HasPrefix(domain, ipV6Prefix) {
 			// postmaster@[IPv6:2001:0db8:85a3:0000:0000:8a2e:0370:7334]
-			return IsIpV6(domain[len(ipV6Prefix) : len(domain)-1])
+			return IsIPV6(domain[len(ipV6Prefix) : len(domain)-1])
 		}
 
 		// postmaster@[123.123.123.123]
-		return IsIpV4(domain[1 : len(domain)-1])
+		return IsIPV4(domain[1 : len(domain)-1])
 	}
 
 	return IsFqdn(domain)

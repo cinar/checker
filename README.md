@@ -71,7 +71,7 @@ type Person struct {
 This package currently provides the following checkers:
 
 - [alphanumeric](doc/checkers/alphanumeric.md) checks if the given string consists of only alphanumeric characters.
-- [ascii](doc/checkers/ascii.md) checks if the given string consists of only ASCII characters.
+- [ASCII](doc/checkers/ASCII.md) checks if the given string consists of only ASCII characters.
 - [cidr](doc/checkers/cidr.md) checker checks if the value is a valid CIDR notation IP address and prefix length.
 - [digits](doc/checkers/digits.md) checks if the given string consists of only digit characters.
 - [email](doc/checkers/email.md) checks if the given string is an email address.

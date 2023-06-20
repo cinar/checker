@@ -17,7 +17,7 @@ if !valid {
 }
 ```
 
-In your custom checkers, you can call the ```ascii``` checker function ```IsAscii``` to validate the user input. Here is an example:
+In your custom checkers, you can call the ```email``` checker function ```IsEmail``` to validate the user input. Here is an example:
 
 ```golang
 result := IsEmail("user@zdo.com")

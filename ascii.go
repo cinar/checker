@@ -5,33 +5,33 @@ import (
 	"unicode"
 )
 
-// CheckerAscii is the name of the checker.
-const CheckerAscii = "ascii"
+// CheckerASCII is the name of the checker.
+const CheckerASCII = "ASCII"
 
-// ResultNotAscii indicates that the given string contains non-ASCII characters.
-const ResultNotAscii = "NOT_ASCII"
+// ResultNotASCII indicates that the given string contains non-ASCII characters.
+const ResultNotASCII = "NOT_ASCII"
 
-// IsAscii checks if the given string consists of only ASCII characters.
-func IsAscii(value string) Result {
+// IsASCII checks if the given string consists of only ASCII characters.
+func IsASCII(value string) Result {
 	for _, c := range value {
 		if c > unicode.MaxASCII {
-			return ResultNotAscii
+			return ResultNotASCII
 		}
 	}
 
 	return ResultValid
 }
 
-// makeAscii makes a checker function for the ascii checker.
-func makeAscii(_ string) CheckFunc {
-	return checkAscii
+// makeASCII makes a checker function for the ASCII checker.
+func makeASCII(_ string) CheckFunc {
+	return checkASCII
 }
 
-// checkAscii checks if the given string consists of only ASCII characters.
-func checkAscii(value, _ reflect.Value) Result {
+// checkASCII checks if the given string consists of only ASCII characters.
+func checkASCII(value, _ reflect.Value) Result {
 	if value.Kind() != reflect.String {
 		panic("string expected")
 	}
 
-	return IsAscii(value.String())
+	return IsASCII(value.String())
 }

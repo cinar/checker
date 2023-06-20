@@ -32,14 +32,14 @@ const ResultValid Result = "VALID"
 // makers provides mapping to maker function for the checkers.
 var makers = map[string]MakeFunc{
 	CheckerAlphanumeric: makeAlphanumeric,
-	CheckerAscii:        makeAscii,
+	CheckerASCII:        makeASCII,
 	CheckerCidr:         makeCidr,
 	CheckerDigits:       makeDigits,
 	CheckerEmail:        makeEmail,
 	CheckerFqdn:         makeFqdn,
-	CheckerIp:           makeIp,
-	CheckerIpV4:         makeIpV4,
-	CheckerIpV6:         makeIpV6,
+	CheckerIP:           makeIP,
+	CheckerIPV4:         makeIPV4,
+	CheckerIPV6:         makeIPV6,
 	CheckerLuhn:         makeLuhn,
 	CheckerMac:          makeMac,
 	CheckerMax:          makeMax,
