@@ -150,7 +150,7 @@ func TestNumberOfFloat(t *testing.T) {
 }
 
 func TestCheckerNamesAreLowerCase(t *testing.T) {
-	for checker, _ := range makers {
+	for checker := range makers {
 		if strings.ToLower(checker) != checker {
 			t.Fail()
 		}
