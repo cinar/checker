@@ -6,7 +6,7 @@ import (
 )
 
 // CheckerASCII is the name of the checker.
-const CheckerASCII = "ASCII"
+const CheckerASCII = "ascii"
 
 // ResultNotASCII indicates that the given string contains non-ASCII characters.
 const ResultNotASCII = "NOT_ASCII"

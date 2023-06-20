@@ -2,6 +2,7 @@ package checker
 
 import (
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -145,6 +146,14 @@ func TestNumberOfFloat(t *testing.T) {
 
 	if numberOf(reflect.ValueOf(n)) != n {
 		t.Fail()
+	}
+}
+
+func TestCheckerNamesAreLowerCase(t *testing.T) {
+	for checker, _ := range makers {
+		if strings.ToLower(checker) != checker {
+			t.Fail()
+		}
 	}
 }
 

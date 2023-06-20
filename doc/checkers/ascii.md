@@ -1,10 +1,10 @@
 # ASCII Checker
 
-The ```ASCII``` checker checks if the given string consists of only ASCII characters. If the string contains non-ASCII characters, the checker will return the ```NOT_ASCII``` result. Here is an example:
+The ```ascii``` checker checks if the given string consists of only ASCII characters. If the string contains non-ASCII characters, the checker will return the ```NOT_ASCII``` result. Here is an example:
 
 ```golang
 type User struct {
-  Username string `checkers:"ASCII"`
+  Username string `checkers:"ascii"`
 }
 
 user := &User{
@@ -17,7 +17,7 @@ if !valid {
 }
 ```
 
-In your custom checkers, you can call the ```ASCII``` checker function ```IsASCII``` to validate the user input. Here is an example:
+In your custom checkers, you can call the ```ascii``` checker function ```IsASCII``` to validate the user input. Here is an example:
 
 ```golang
 result := IsASCII("Checker")
