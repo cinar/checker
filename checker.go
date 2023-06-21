@@ -33,6 +33,7 @@ const ResultValid Result = "VALID"
 var makers = map[string]MakeFunc{
 	CheckerAlphanumeric: makeAlphanumeric,
 	CheckerASCII:        makeASCII,
+	CheckerCreditCard:   makeCreditCard,
 	CheckerCidr:         makeCidr,
 	CheckerDigits:       makeDigits,
 	CheckerEmail:        makeEmail,
