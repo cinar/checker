@@ -6,13 +6,6 @@ import (
 	"strings"
 )
 
-// Used information from the following resources:
-//
-// - https://dnschecker.org/credit-card-validator.php
-// - https://www.validcreditcardnumber.com/
-// - http://regex.fyicenter.com/12_Diners_Club_credit_card_number_validation.html
-// - http://regex.fyicenter.com/14_JCB_credit_card_number_validation.html
-
 // CheckerCreditCard is the name of the checker.
 const CheckerCreditCard = "credit-card"
 
@@ -31,10 +24,6 @@ var dinersPattern = regexp.MustCompile(dinersExpression)
 var discoverExpression = "(?:^6011[0-9]{12}$)"
 var discoverPattern = regexp.MustCompile(discoverExpression)
 
-// enrouteExpression is the regexp for the Enroute cards. They start with 2014 or 2149, and has 16 digits.
-var enrouteExpression = "(?:^2(?:(?:014)|(?:149))[0-9]{12}$)"
-var enroutePattern = regexp.MustCompile(enrouteExpression)
-
 // jcbExpression is the regexp for the JCB 15 cards. They start with 2131, 1800, and has 15 digits, or start with 35 and has 16 digits.
 var jcbExpression = "(?:^(?:(?:2131)|(?:1800)|(?:35[0-9]{3}))[0-9]{11}$)"
 var jcbPattern = regexp.MustCompile(jcbExpression)
@@ -43,24 +32,23 @@ var jcbPattern = regexp.MustCompile(jcbExpression)
 var masterCardExpression = "(?:^5[12345][0-9]{14}$)"
 var masterCardPattern = regexp.MustCompile(masterCardExpression)
 
+// unionPayExpression is the regexp for the UnionPay cards. They start either with 62 or 67, and has 16 digits, or they start with 81 and has 16 to 19 digits.
+var unionPayExpression = "(?:(?:6[27][0-9]{14})|(?:81[0-9]{14,17})^$)"
+var unionPayPattern = regexp.MustCompile(unionPayExpression)
+
 // visaExpression is the regexp for the Visa cards. They start with 4 and has 13 or 16 digits.
 var visaExpression = "(?:^4[0-9]{12}(?:[0-9]{3})?$)"
 var visaPattern = regexp.MustCompile(visaExpression)
-
-// voyagerExpression is the regexp for the Voyager cards. They start with 8699 and has 13 or 16 digits.
-var voyagerExpression = "(?:^8699[0-9]{12}(?:[0-9]{3})?$)"
-var voyagerPattern = regexp.MustCompile(voyagerExpression)
 
 // anyCreditCardPattern is the regexp for any credit card.
 var anyCreditCardPattern = regexp.MustCompile(strings.Join([]string{
 	amexExpression,
 	dinersExpression,
 	discoverExpression,
-	enrouteExpression,
 	jcbExpression,
 	masterCardExpression,
+	unionPayExpression,
 	visaExpression,
-	voyagerExpression,
 }, "|"))
 
 // creditCardPatterns is the mapping for credit card names to patterns.
@@ -68,11 +56,10 @@ var creditCardPatterns = map[string]*regexp.Regexp{
 	"amex":       amexPattern,
 	"diners":     dinersPattern,
 	"discover":   discoverPattern,
-	"enroute":    enroutePattern,
 	"jcb":        jcbPattern,
 	"mastercard": masterCardPattern,
+	"unionpay":   unionPayPattern,
 	"visa":       visaPattern,
-	"voyager":    voyagerPattern,
 }
 
 // IsAnyCreditCard checks if the given value is a valid credit card number.
@@ -95,11 +82,6 @@ func IsDiscoveryCreditCard(number string) Result {
 	return isCreditCard(number, discoverPattern)
 }
 
-// IsEnrouteCreditCard checks if the given valie is a valid Enroute credit card.
-func IsEnrouteCreditCard(number string) Result {
-	return isCreditCard(number, enroutePattern)
-}
-
 // IsJcbCreditCard checks if the given valie is a valid JCB 15 credit card.
 func IsJcbCreditCard(number string) Result {
 	return isCreditCard(number, jcbPattern)
@@ -110,14 +92,14 @@ func IsMasterCardCreditCard(number string) Result {
 	return isCreditCard(number, masterCardPattern)
 }
 
+// IsUnionPayCreditCard checks if the given valie is a valid UnionPay credit card.
+func IsUnionPayCreditCard(number string) Result {
+	return isCreditCard(number, unionPayPattern)
+}
+
 // IsVisaCreditCard checks if the given valie is a valid Visa credit card.
 func IsVisaCreditCard(number string) Result {
 	return isCreditCard(number, visaPattern)
-}
-
-// IsVoyagerCreditCard checks if the given valie is a valid Voyager credit card.
-func IsVoyagerCreditCard(number string) Result {
-	return isCreditCard(number, voyagerPattern)
 }
 
 // makeCreditCard makes a checker function for the credit card checker.
