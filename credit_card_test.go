@@ -116,3 +116,74 @@ func TestIsVisaCreditCardInvalidLuhn(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestCheckCreditCardNonString(t *testing.T) {
+	defer FailIfNoPanic(t)
+
+	type Order struct {
+		CreditCard int `checkers:"credit-card"`
+	}
+
+	order := &Order{}
+
+	Check(order)
+}
+
+func TestCheckCreditCardValid(t *testing.T) {
+	type Order struct {
+		CreditCard string `checkers:"credit-card"`
+	}
+
+	order := &Order{
+		CreditCard: "371449635398431",
+	}
+
+	_, valid := Check(order)
+	if !valid {
+		t.Fail()
+	}
+}
+
+func TestCheckCreditCardInvalid(t *testing.T) {
+	type Order struct {
+		CreditCard string `checkers:"credit-card"`
+	}
+
+	order := &Order{
+		CreditCard: "371449635398432",
+	}
+
+	_, valid := Check(order)
+	if valid {
+		t.Fail()
+	}
+}
+
+func TestCheckCreditCardMultipleUnknown(t *testing.T) {
+	defer FailIfNoPanic(t)
+
+	type Order struct {
+		CreditCard string `checkers:"credit-card:amex,unknown"`
+	}
+
+	order := &Order{
+		CreditCard: "371449635398431",
+	}
+
+	Check(order)
+}
+
+func TestCheckCreditCardMultipleInvalid(t *testing.T) {
+	type Order struct {
+		CreditCard string `checkers:"credit-card:amex,visa"`
+	}
+
+	order := &Order{
+		CreditCard: "6011111111111117",
+	}
+
+	_, valid := Check(order)
+	if valid {
+		t.Fail()
+	}
+}

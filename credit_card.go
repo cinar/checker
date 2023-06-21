@@ -1,6 +1,7 @@
 package checker
 
 import (
+	"reflect"
 	"regexp"
 	"strings"
 )
@@ -9,6 +10,8 @@ import (
 //
 // - https://dnschecker.org/credit-card-validator.php
 // - https://www.validcreditcardnumber.com/
+// - http://regex.fyicenter.com/12_Diners_Club_credit_card_number_validation.html
+// - http://regex.fyicenter.com/14_JCB_credit_card_number_validation.html
 
 // CheckerCreditCard is the name of the checker.
 const CheckerCreditCard = "credit-card"
@@ -60,6 +63,18 @@ var anyCreditCardPattern = regexp.MustCompile(strings.Join([]string{
 	voyagerExpression,
 }, "|"))
 
+// creditCardPatterns is the mapping for credit card names to patterns.
+var creditCardPatterns = map[string]*regexp.Regexp{
+	"amex":       amexPattern,
+	"diners":     dinersPattern,
+	"discover":   discoverPattern,
+	"enroute":    enroutePattern,
+	"jcb":        jcbPattern,
+	"mastercard": masterCardPattern,
+	"visa":       visaPattern,
+	"voyager":    voyagerPattern,
+}
+
 // IsAnyCreditCard checks if the given value is a valid credit card number.
 func IsAnyCreditCard(number string) Result {
 	return isCreditCard(number, anyCreditCardPattern)
@@ -103,6 +118,40 @@ func IsVisaCreditCard(number string) Result {
 // IsVoyagerCreditCard checks if the given valie is a valid Voyager credit card.
 func IsVoyagerCreditCard(number string) Result {
 	return isCreditCard(number, voyagerPattern)
+}
+
+// makeCreditCard makes a checker function for the credit card checker.
+func makeCreditCard(config string) CheckFunc {
+	patterns := []*regexp.Regexp{}
+
+	if config != "" {
+		for _, card := range strings.Split(config, ",") {
+			pattern, ok := creditCardPatterns[card]
+			if !ok {
+				panic("unknown credit card name")
+			}
+
+			patterns = append(patterns, pattern)
+		}
+	} else {
+		patterns = append(patterns, anyCreditCardPattern)
+	}
+
+	return func(value, _ reflect.Value) Result {
+		if value.Kind() != reflect.String {
+			panic("string expected")
+		}
+
+		number := value.String()
+
+		for _, pattern := range patterns {
+			if isCreditCard(number, pattern) == ResultValid {
+				return ResultValid
+			}
+		}
+
+		return ResultNotCreditCard
+	}
 }
 
 // isCreditCard checks if the given number based on the given credit card pattern and the Luhn algorithm check digit.
