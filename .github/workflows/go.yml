@@ -29,6 +29,9 @@ jobs:
       with:
         args: ./...
 
+    - name: Run Revive
+      uses: docker://morphy/revive-action:v2
+  
     - name: Go fix
       run: go fix ./...
       
