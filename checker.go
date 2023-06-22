@@ -133,7 +133,7 @@ func initCheckers(config string) []CheckFunc {
 
 		maker, ok := makers[name]
 		if !ok {
-			panic(fmt.Sprintf("checker %s is unkown", name))
+			panic(fmt.Sprintf("checker %s is unknown", name))
 		}
 
 		checkers[i] = maker(params)
