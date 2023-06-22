@@ -16,7 +16,7 @@ const ResultNotEmail = "NOT_EMAIL"
 const ipV6Prefix = "[IPv6:"
 
 // notQuotedChars is the valid not quoted characters.
-var notQuotedChars = regexp.MustCompile("[a-zA-Z0-9!#$%&'*+-/=?^_`{|}~]")
+var notQuotedChars = regexp.MustCompile("[a-zA-Z0-9!#$%&'*\\+\\-/=?^_`{|}~]")
 
 // IsEmail checks if the given string is an email address.
 func IsEmail(email string) Result {
@@ -33,7 +33,7 @@ func IsEmail(email string) Result {
 	user := email[:atIndex]
 
 	// Cannot be empty user
-	if len(user) == 0 || len(user) > 64 {
+	if user == "" || len(user) > 64 {
 		return ResultNotEmail
 	}
 

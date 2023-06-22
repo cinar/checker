@@ -13,7 +13,7 @@ const CheckerFqdn = "fqdn"
 const ResultNotFqdn = "NOT_FQDN"
 
 // Valid characters excluding full-width characters.
-var fqdnValidChars = regexp.MustCompile("^[a-z0-9\u00a1-\uff00\uff06-\uffff-]+$")
+var fqdnValidChars = regexp.MustCompile("^[a-z0-9\u00a1-\uff00\uff06-\uffff\\-]+$")
 
 // IsFqdn checks if the given string is a fully qualified domain name.
 func IsFqdn(domain string) Result {
