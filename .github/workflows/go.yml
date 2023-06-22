@@ -23,7 +23,12 @@ jobs:
 
     - name: Go vet
       run: go vet ./...
-      
+
+    - name: Run Gosec
+      uses: securego/gosec@master
+      with:
+        args: ./...
+
     - name: Go fix
       run: go fix ./...
       
