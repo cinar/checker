@@ -24,7 +24,7 @@ func TestCheckURLNonString(t *testing.T) {
 	defer checker.FailIfNoPanic(t)
 
 	type Bookmark struct {
-		URL string `checkers:"url"`
+		URL int `checkers:"url"`
 	}
 
 	bookmark := &Bookmark{}
