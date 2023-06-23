@@ -91,6 +91,7 @@ This package currently provides the following checkers:
 - [regexp](doc/checkers/regexp.md) checks if the given string matches the regexp pattern.
 - [required](doc/checkers/required.md) checks if the required value is provided.
 - [same](doc/checkers/same.md) checks if the given value is equal to the value of the field with the given name.
+- [url](doc/checkers/url.md) checks if the given value is a valid URL.
 
 # Normalizers Provided
 
