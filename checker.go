@@ -50,6 +50,7 @@ var makers = map[string]MakeFunc{
 	CheckerRegexp:       makeRegexp,
 	CheckerRequired:     makeRequired,
 	CheckerSame:         makeSame,
+	CheckerURL:          makeURL,
 	NormalizerLower:     makeLower,
 	NormalizerUpper:     makeUpper,
 	NormalizerTitle:     makeTitle,
