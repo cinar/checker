@@ -1,21 +1,25 @@
-package checker
+package checker_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/cinar/checker"
+)
 
 func TestIsDigitsInvalid(t *testing.T) {
-	if IsDigits("checker") == ResultValid {
+	if checker.IsDigits("checker") == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsDigitsValid(t *testing.T) {
-	if IsDigits("1234") != ResultValid {
+	if checker.IsDigits("1234") != checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestCheckDigitsNonString(t *testing.T) {
-	defer FailIfNoPanic(t)
+	defer checker.FailIfNoPanic(t)
 
 	type User struct {
 		ID int `checkers:"digits"`
@@ -23,7 +27,7 @@ func TestCheckDigitsNonString(t *testing.T) {
 
 	user := &User{}
 
-	Check(user)
+	checker.Check(user)
 }
 
 func TestCheckDigitsInvalid(t *testing.T) {
@@ -35,7 +39,7 @@ func TestCheckDigitsInvalid(t *testing.T) {
 		ID: "checker",
 	}
 
-	_, valid := Check(user)
+	_, valid := checker.Check(user)
 	if valid {
 		t.Fail()
 	}
@@ -50,7 +54,7 @@ func TestCheckDigitsValid(t *testing.T) {
 		ID: "1234",
 	}
 
-	_, valid := Check(user)
+	_, valid := checker.Check(user)
 	if !valid {
 		t.Fail()
 	}

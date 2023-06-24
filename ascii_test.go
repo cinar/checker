@@ -1,21 +1,25 @@
-package checker
+package checker_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/cinar/checker"
+)
 
 func TestIsASCIIInvalid(t *testing.T) {
-	if IsASCII("𝄞 Music!") == ResultValid {
+	if checker.IsASCII("𝄞 Music!") == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsASCIIValid(t *testing.T) {
-	if IsASCII("Checker") != ResultValid {
+	if checker.IsASCII("Checker") != checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestCheckASCIINonString(t *testing.T) {
-	defer FailIfNoPanic(t)
+	defer checker.FailIfNoPanic(t)
 
 	type User struct {
 		Age int `checkers:"ascii"`
@@ -23,7 +27,7 @@ func TestCheckASCIINonString(t *testing.T) {
 
 	user := &User{}
 
-	Check(user)
+	checker.Check(user)
 }
 
 func TestCheckASCIIInvalid(t *testing.T) {
@@ -35,7 +39,7 @@ func TestCheckASCIIInvalid(t *testing.T) {
 		Username: "𝄞 Music!",
 	}
 
-	_, valid := Check(user)
+	_, valid := checker.Check(user)
 	if valid {
 		t.Fail()
 	}
@@ -50,7 +54,7 @@ func TestCheckASCIIValid(t *testing.T) {
 		Username: "checker",
 	}
 
-	_, valid := Check(user)
+	_, valid := checker.Check(user)
 	if !valid {
 		t.Fail()
 	}

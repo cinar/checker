@@ -1,21 +1,25 @@
-package checker
+package checker_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/cinar/checker"
+)
 
 func TestIsCidrInvalid(t *testing.T) {
-	if IsCidr("900.800.200.100//24") == ResultValid {
+	if checker.IsCidr("900.800.200.100//24") == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsCidrValid(t *testing.T) {
-	if IsCidr("2001:db8::/32") != ResultValid {
+	if checker.IsCidr("2001:db8::/32") != checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestCheckCidrNonString(t *testing.T) {
-	defer FailIfNoPanic(t)
+	defer checker.FailIfNoPanic(t)
 
 	type Network struct {
 		Subnet int `checkers:"cidr"`
@@ -23,7 +27,7 @@ func TestCheckCidrNonString(t *testing.T) {
 
 	network := &Network{}
 
-	Check(network)
+	checker.Check(network)
 }
 
 func TestCheckCidrInvalid(t *testing.T) {
@@ -35,7 +39,7 @@ func TestCheckCidrInvalid(t *testing.T) {
 		Subnet: "900.800.200.100//24",
 	}
 
-	_, valid := Check(network)
+	_, valid := checker.Check(network)
 	if valid {
 		t.Fail()
 	}
@@ -50,7 +54,7 @@ func TestCheckCidrValid(t *testing.T) {
 		Subnet: "192.0.2.0/24",
 	}
 
-	_, valid := Check(network)
+	_, valid := checker.Check(network)
 	if !valid {
 		t.Fail()
 	}

@@ -1,6 +1,10 @@
-package checker
+package checker_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/cinar/checker"
+)
 
 func TestIsLuhnValid(t *testing.T) {
 	numbers := []string{
@@ -11,14 +15,14 @@ func TestIsLuhnValid(t *testing.T) {
 	}
 
 	for _, number := range numbers {
-		if IsLuhn(number) != ResultValid {
+		if checker.IsLuhn(number) != checker.ResultValid {
 			t.Fail()
 		}
 	}
 }
 
 func TestCheckLuhnNonString(t *testing.T) {
-	defer FailIfNoPanic(t)
+	defer checker.FailIfNoPanic(t)
 
 	type Order struct {
 		CreditCard int `checkers:"luhn"`
@@ -26,7 +30,7 @@ func TestCheckLuhnNonString(t *testing.T) {
 
 	order := &Order{}
 
-	Check(order)
+	checker.Check(order)
 }
 
 func TestCheckLuhnInvalid(t *testing.T) {
@@ -38,7 +42,7 @@ func TestCheckLuhnInvalid(t *testing.T) {
 		CreditCard: "4012888888881884",
 	}
 
-	_, valid := Check(order)
+	_, valid := checker.Check(order)
 	if valid {
 		t.Fail()
 	}
@@ -53,7 +57,7 @@ func TestCheckLuhnValid(t *testing.T) {
 		CreditCard: "4012888888881881",
 	}
 
-	_, valid := Check(order)
+	_, valid := checker.Check(order)
 	if !valid {
 		t.Fail()
 	}

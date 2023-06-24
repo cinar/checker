@@ -1,17 +1,21 @@
-package checker
+package checker_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/cinar/checker"
+)
 
 func TestIsMinValid(t *testing.T) {
 	n := 45
 
-	if IsMin(n, 21) != ResultValid {
+	if checker.IsMin(n, 21) != checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestCheckMinInvalidConfig(t *testing.T) {
-	defer FailIfNoPanic(t)
+	defer checker.FailIfNoPanic(t)
 
 	type User struct {
 		Age int `checkers:"min:AB"`
@@ -19,7 +23,7 @@ func TestCheckMinInvalidConfig(t *testing.T) {
 
 	user := &User{}
 
-	Check(user)
+	checker.Check(user)
 }
 
 func TestCheckMinValid(t *testing.T) {
@@ -31,7 +35,7 @@ func TestCheckMinValid(t *testing.T) {
 		Age: 45,
 	}
 
-	_, valid := Check(user)
+	_, valid := checker.Check(user)
 	if !valid {
 		t.Fail()
 	}
@@ -46,7 +50,7 @@ func TestCheckMinInvalid(t *testing.T) {
 		Age: 18,
 	}
 
-	_, valid := Check(user)
+	_, valid := checker.Check(user)
 	if valid {
 		t.Fail()
 	}

@@ -1,9 +1,13 @@
-package checker
+package checker_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/cinar/checker"
+)
 
 func TestCheckEmailNonString(t *testing.T) {
-	defer FailIfNoPanic(t)
+	defer checker.FailIfNoPanic(t)
 
 	type User struct {
 		Email int `checkers:"email"`
@@ -11,7 +15,7 @@ func TestCheckEmailNonString(t *testing.T) {
 
 	user := &User{}
 
-	Check(user)
+	checker.Check(user)
 }
 
 func TestCheckEmailValid(t *testing.T) {
@@ -23,7 +27,7 @@ func TestCheckEmailValid(t *testing.T) {
 		Email: "user@zdo.com",
 	}
 
-	_, valid := Check(user)
+	_, valid := checker.Check(user)
 	if !valid {
 		t.Fail()
 	}
@@ -52,7 +56,7 @@ func TestIsEmailValid(t *testing.T) {
 	}
 
 	for _, email := range validEmails {
-		if IsEmail(email) != ResultValid {
+		if checker.IsEmail(email) != checker.ResultValid {
 			t.Fatal(email)
 		}
 	}
@@ -76,7 +80,7 @@ func TestIsEmailInvalid(t *testing.T) {
 	}
 
 	for _, email := range validEmails {
-		if IsEmail(email) == ResultValid {
+		if checker.IsEmail(email) == checker.ResultValid {
 			t.Fatal(email)
 		}
 	}

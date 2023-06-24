@@ -1,21 +1,25 @@
-package checker
+package checker_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/cinar/checker"
+)
 
 func TestIsIPInvalid(t *testing.T) {
-	if IsIP("900.800.200.100") == ResultValid {
+	if checker.IsIP("900.800.200.100") == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsIPValid(t *testing.T) {
-	if IsIP("2001:db8::68") != ResultValid {
+	if checker.IsIP("2001:db8::68") != checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestCheckIpNonString(t *testing.T) {
-	defer FailIfNoPanic(t)
+	defer checker.FailIfNoPanic(t)
 
 	type Request struct {
 		RemoteIP int `checkers:"ip"`
@@ -23,7 +27,7 @@ func TestCheckIpNonString(t *testing.T) {
 
 	request := &Request{}
 
-	Check(request)
+	checker.Check(request)
 }
 
 func TestCheckIpInvalid(t *testing.T) {
@@ -35,7 +39,7 @@ func TestCheckIpInvalid(t *testing.T) {
 		RemoteIP: "900.800.200.100",
 	}
 
-	_, valid := Check(request)
+	_, valid := checker.Check(request)
 	if valid {
 		t.Fail()
 	}
@@ -50,7 +54,7 @@ func TestCheckIPValid(t *testing.T) {
 		RemoteIP: "192.168.1.1",
 	}
 
-	_, valid := Check(request)
+	_, valid := checker.Check(request)
 	if !valid {
 		t.Fail()
 	}

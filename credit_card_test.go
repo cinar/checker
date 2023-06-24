@@ -1,8 +1,10 @@
-package checker
+package checker_test
 
 import (
 	"strconv"
 	"testing"
+
+	"github.com/cinar/checker"
 )
 
 // Test numbers from https://stripe.com/docs/testing
@@ -28,151 +30,151 @@ func changeToInvalidLuhn(number string) string {
 }
 
 func TestIsAnyCreditCardValid(t *testing.T) {
-	if IsAnyCreditCard(amexCard) != ResultValid {
+	if checker.IsAnyCreditCard(amexCard) != checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsAnyCreditCardInvalidPattern(t *testing.T) {
-	if IsAnyCreditCard(invalidCard) == ResultValid {
+	if checker.IsAnyCreditCard(invalidCard) == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsAnyCreditCardInvalidLuhn(t *testing.T) {
-	if IsAnyCreditCard(changeToInvalidLuhn(amexCard)) == ResultValid {
+	if checker.IsAnyCreditCard(changeToInvalidLuhn(amexCard)) == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsAmexCreditCardValid(t *testing.T) {
-	if IsAmexCreditCard(amexCard) != ResultValid {
+	if checker.IsAmexCreditCard(amexCard) != checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsAmexCreditCardInvalidPattern(t *testing.T) {
-	if IsAmexCreditCard(invalidCard) == ResultValid {
+	if checker.IsAmexCreditCard(invalidCard) == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsAmexCreditCardInvalidLuhn(t *testing.T) {
-	if IsAmexCreditCard(changeToInvalidLuhn(amexCard)) == ResultValid {
+	if checker.IsAmexCreditCard(changeToInvalidLuhn(amexCard)) == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsDinersCreditCardValid(t *testing.T) {
-	if IsDinersCreditCard(dinersCard) != ResultValid {
+	if checker.IsDinersCreditCard(dinersCard) != checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsDinersCreditCardInvalidPattern(t *testing.T) {
-	if IsDinersCreditCard(invalidCard) == ResultValid {
+	if checker.IsDinersCreditCard(invalidCard) == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsDinersCreditCardInvalidLuhn(t *testing.T) {
-	if IsDinersCreditCard(changeToInvalidLuhn(dinersCard)) == ResultValid {
+	if checker.IsDinersCreditCard(changeToInvalidLuhn(dinersCard)) == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsDiscoverCreditCardValid(t *testing.T) {
-	if IsDiscoveryCreditCard(discoverCard) != ResultValid {
+	if checker.IsDiscoveryCreditCard(discoverCard) != checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsDiscoverCreditCardInvalidPattern(t *testing.T) {
-	if IsDiscoveryCreditCard(invalidCard) == ResultValid {
+	if checker.IsDiscoveryCreditCard(invalidCard) == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsDiscoverCreditCardInvalidLuhn(t *testing.T) {
-	if IsDiscoveryCreditCard(changeToInvalidLuhn(discoverCard)) == ResultValid {
+	if checker.IsDiscoveryCreditCard(changeToInvalidLuhn(discoverCard)) == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsJcbCreditCardValid(t *testing.T) {
-	if IsJcbCreditCard(jcbCard) != ResultValid {
+	if checker.IsJcbCreditCard(jcbCard) != checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsJcbCreditCardInvalidPattern(t *testing.T) {
-	if IsJcbCreditCard(invalidCard) == ResultValid {
+	if checker.IsJcbCreditCard(invalidCard) == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsJcbCreditCardInvalidLuhn(t *testing.T) {
-	if IsJcbCreditCard(changeToInvalidLuhn(jcbCard)) == ResultValid {
+	if checker.IsJcbCreditCard(changeToInvalidLuhn(jcbCard)) == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsMasterCardCreditCardValid(t *testing.T) {
-	if IsMasterCardCreditCard(masterCard) != ResultValid {
+	if checker.IsMasterCardCreditCard(masterCard) != checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsMasterCardCreditCardInvalidPattern(t *testing.T) {
-	if IsMasterCardCreditCard(invalidCard) == ResultValid {
+	if checker.IsMasterCardCreditCard(invalidCard) == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsMasterCardCreditCardInvalidLuhn(t *testing.T) {
-	if IsMasterCardCreditCard(changeToInvalidLuhn(masterCard)) == ResultValid {
+	if checker.IsMasterCardCreditCard(changeToInvalidLuhn(masterCard)) == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsUnionPayCreditCardValid(t *testing.T) {
-	if IsUnionPayCreditCard(unionPayCard) != ResultValid {
+	if checker.IsUnionPayCreditCard(unionPayCard) != checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsUnionPayCreditCardInvalidPattern(t *testing.T) {
-	if IsUnionPayCreditCard(invalidCard) == ResultValid {
+	if checker.IsUnionPayCreditCard(invalidCard) == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsUnionPayCreditCardInvalidLuhn(t *testing.T) {
-	if IsUnionPayCreditCard(changeToInvalidLuhn(unionPayCard)) == ResultValid {
+	if checker.IsUnionPayCreditCard(changeToInvalidLuhn(unionPayCard)) == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsVisaCreditCardValid(t *testing.T) {
-	if IsVisaCreditCard(visaCard) != ResultValid {
+	if checker.IsVisaCreditCard(visaCard) != checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsVisaCreditCardInvalidPattern(t *testing.T) {
-	if IsVisaCreditCard(invalidCard) == ResultValid {
+	if checker.IsVisaCreditCard(invalidCard) == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsVisaCreditCardInvalidLuhn(t *testing.T) {
-	if IsVisaCreditCard(changeToInvalidLuhn(visaCard)) == ResultValid {
+	if checker.IsVisaCreditCard(changeToInvalidLuhn(visaCard)) == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestCheckCreditCardNonString(t *testing.T) {
-	defer FailIfNoPanic(t)
+	defer checker.FailIfNoPanic(t)
 
 	type Order struct {
 		CreditCard int `checkers:"credit-card"`
@@ -180,7 +182,7 @@ func TestCheckCreditCardNonString(t *testing.T) {
 
 	order := &Order{}
 
-	Check(order)
+	checker.Check(order)
 }
 
 func TestCheckCreditCardValid(t *testing.T) {
@@ -192,7 +194,7 @@ func TestCheckCreditCardValid(t *testing.T) {
 		CreditCard: amexCard,
 	}
 
-	_, valid := Check(order)
+	_, valid := checker.Check(order)
 	if !valid {
 		t.Fail()
 	}
@@ -207,14 +209,14 @@ func TestCheckCreditCardInvalid(t *testing.T) {
 		CreditCard: invalidCard,
 	}
 
-	_, valid := Check(order)
+	_, valid := checker.Check(order)
 	if valid {
 		t.Fail()
 	}
 }
 
 func TestCheckCreditCardMultipleUnknown(t *testing.T) {
-	defer FailIfNoPanic(t)
+	defer checker.FailIfNoPanic(t)
 
 	type Order struct {
 		CreditCard string `checkers:"credit-card:amex,unknown"`
@@ -224,7 +226,7 @@ func TestCheckCreditCardMultipleUnknown(t *testing.T) {
 		CreditCard: amexCard,
 	}
 
-	Check(order)
+	checker.Check(order)
 }
 
 func TestCheckCreditCardMultipleInvalid(t *testing.T) {
@@ -236,7 +238,7 @@ func TestCheckCreditCardMultipleInvalid(t *testing.T) {
 		CreditCard: discoverCard,
 	}
 
-	_, valid := Check(order)
+	_, valid := checker.Check(order)
 	if valid {
 		t.Fail()
 	}

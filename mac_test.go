@@ -1,21 +1,25 @@
-package checker
+package checker_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/cinar/checker"
+)
 
 func TestIsMacInvalid(t *testing.T) {
-	if IsMac("1234") == ResultValid {
+	if checker.IsMac("1234") == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsMacValid(t *testing.T) {
-	if IsMac("00:00:5e:00:53:01") != ResultValid {
+	if checker.IsMac("00:00:5e:00:53:01") != checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestCheckMacNonString(t *testing.T) {
-	defer FailIfNoPanic(t)
+	defer checker.FailIfNoPanic(t)
 
 	type Network struct {
 		HardwareAddress int `checkers:"mac"`
@@ -23,7 +27,7 @@ func TestCheckMacNonString(t *testing.T) {
 
 	network := &Network{}
 
-	Check(network)
+	checker.Check(network)
 }
 
 func TestCheckMacInvalid(t *testing.T) {
@@ -35,7 +39,7 @@ func TestCheckMacInvalid(t *testing.T) {
 		HardwareAddress: "1234",
 	}
 
-	_, valid := Check(network)
+	_, valid := checker.Check(network)
 	if valid {
 		t.Fail()
 	}
@@ -50,7 +54,7 @@ func TestCheckMacValid(t *testing.T) {
 		HardwareAddress: "00:00:5e:00:53:01",
 	}
 
-	_, valid := Check(network)
+	_, valid := checker.Check(network)
 	if !valid {
 		t.Fail()
 	}

@@ -1,27 +1,31 @@
-package checker
+package checker_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/cinar/checker"
+)
 
 func TestIsIPV4Invalid(t *testing.T) {
-	if IsIPV4("900.800.200.100") == ResultValid {
+	if checker.IsIPV4("900.800.200.100") == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsIPV4InvalidV6(t *testing.T) {
-	if IsIPV4("2001:db8::68") == ResultValid {
+	if checker.IsIPV4("2001:db8::68") == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsIPV4Valid(t *testing.T) {
-	if IsIPV4("192.168.1.1") != ResultValid {
+	if checker.IsIPV4("192.168.1.1") != checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestCheckIPV4NonString(t *testing.T) {
-	defer FailIfNoPanic(t)
+	defer checker.FailIfNoPanic(t)
 
 	type Request struct {
 		RemoteIP int `checkers:"ipv4"`
@@ -29,7 +33,7 @@ func TestCheckIPV4NonString(t *testing.T) {
 
 	request := &Request{}
 
-	Check(request)
+	checker.Check(request)
 }
 
 func TestCheckIPV4Invalid(t *testing.T) {
@@ -41,7 +45,7 @@ func TestCheckIPV4Invalid(t *testing.T) {
 		RemoteIP: "900.800.200.100",
 	}
 
-	_, valid := Check(request)
+	_, valid := checker.Check(request)
 	if valid {
 		t.Fail()
 	}
@@ -56,7 +60,7 @@ func TestCheckIPV4Valid(t *testing.T) {
 		RemoteIP: "192.168.1.1",
 	}
 
-	_, valid := Check(request)
+	_, valid := checker.Check(request)
 	if !valid {
 		t.Fail()
 	}

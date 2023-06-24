@@ -1,104 +1,97 @@
-package checker
+package checker_test
 
 import (
-	"reflect"
 	"testing"
+
+	"github.com/cinar/checker"
 )
 
 func TestIsRequired(t *testing.T) {
 	s := "valid"
 
-	if IsRequired(s) != ResultValid {
+	if checker.IsRequired(s) != checker.ResultValid {
 		t.Fail()
 	}
 }
 
-func TestCheckRequiredValidString(t *testing.T) {
-	s := "valid"
-
-	if checkRequired(reflect.ValueOf(s), reflect.ValueOf(nil)) != ResultValid {
-		t.Fail()
-	}
-}
-
-func TestCheckRequiredUninitializedString(t *testing.T) {
+func TestIsRequiredUninitializedString(t *testing.T) {
 	var s string
 
-	if checkRequired(reflect.ValueOf(s), reflect.ValueOf(nil)) != ResultRequired {
+	if checker.IsRequired(s) != checker.ResultRequired {
 		t.Fail()
 	}
 }
 
-func TestCheckRequiredEmptyString(t *testing.T) {
+func TestIsRequiredEmptyString(t *testing.T) {
 	s := ""
 
-	if checkRequired(reflect.ValueOf(s), reflect.ValueOf(nil)) != ResultRequired {
+	if checker.IsRequired(s) == checker.ResultValid {
 		t.Fail()
 	}
 }
 
-func TestCheckRequiredUninitializedNumber(t *testing.T) {
+func TestIsRequiredUninitializedNumber(t *testing.T) {
 	var n int
 
-	if checkRequired(reflect.ValueOf(n), reflect.ValueOf(nil)) != ResultRequired {
+	if checker.IsRequired(n) != checker.ResultRequired {
 		t.Fail()
 	}
 }
 
-func TestCheckRequiredValidSlice(t *testing.T) {
+func TestIsRequiredValidSlice(t *testing.T) {
 	s := []int{1}
 
-	if checkRequired(reflect.ValueOf(s), reflect.ValueOf(nil)) != ResultValid {
+	if checker.IsRequired(s) != checker.ResultValid {
 		t.Fail()
 	}
 }
 
-func TestCheckRequiredUninitializedSlice(t *testing.T) {
+func TestIsRequiredUninitializedSlice(t *testing.T) {
 	var s []int
 
-	if checkRequired(reflect.ValueOf(s), reflect.ValueOf(nil)) != ResultRequired {
+	if checker.IsRequired(s) != checker.ResultRequired {
 		t.Fail()
 	}
 }
 
-func TestCheckRequiredEmptySlice(t *testing.T) {
+func TestIsRequiredEmptySlice(t *testing.T) {
 	s := make([]int, 0)
 
-	if checkRequired(reflect.ValueOf(s), reflect.ValueOf(nil)) != ResultRequired {
+	if checker.IsRequired(s) != checker.ResultRequired {
 		t.Fail()
 	}
 }
 
-func TestCheckRequiredValidArray(t *testing.T) {
+func TestIsRequiredValidArray(t *testing.T) {
 	s := [1]int{1}
 
-	if checkRequired(reflect.ValueOf(s), reflect.ValueOf(nil)) != ResultValid {
+	if checker.IsRequired(s) != checker.ResultValid {
 		t.Fail()
 	}
 }
 
-func TestCheckRequiredEmptyArray(t *testing.T) {
+func TestIsRequiredEmptyArray(t *testing.T) {
 	s := [1]int{}
 
-	if checkRequired(reflect.ValueOf(s), reflect.ValueOf(nil)) != ResultRequired {
+	if checker.IsRequired(s) != checker.ResultRequired {
 		t.Fail()
 	}
 }
 
-func TestCheckRequiredValidMap(t *testing.T) {
+func TestIsRequiredValidMap(t *testing.T) {
 	m := map[string]string{
 		"a": "b",
 	}
 
-	if checkRequired(reflect.ValueOf(m), reflect.ValueOf(nil)) != ResultValid {
+	if checker.IsRequired(m) != checker.ResultValid {
 		t.Fail()
 	}
 }
 
-func TestCheckRequiredUninitializedMap(t *testing.T) {
+func TestIsRequiredUninitializedMap(t *testing.T) {
 	var m map[string]string
 
-	if checkRequired(reflect.ValueOf(m), reflect.ValueOf(nil)) != ResultRequired {
+	if checker.IsRequired(m) != checker.ResultRequired {
 		t.Fail()
 	}
 }
@@ -106,17 +99,35 @@ func TestCheckRequiredUninitializedMap(t *testing.T) {
 func TestCheckRequiredEmptyMap(t *testing.T) {
 	m := map[string]string{}
 
-	if checkRequired(reflect.ValueOf(m), reflect.ValueOf(nil)) != ResultRequired {
+	if checker.IsRequired(m) != checker.ResultRequired {
 		t.Fail()
 	}
 }
 
-func TestMakeRequired(t *testing.T) {
-	check := makeRequired("")
+func TestCheckRequiredValid(t *testing.T) {
+	type User struct {
+		Username string `checkers:"required"`
+	}
 
-	s := "valid"
+	user := &User{
+		Username: "checker",
+	}
 
-	if check(reflect.ValueOf(s), reflect.ValueOf(nil)) != ResultValid {
+	_, valid := checker.Check(user)
+	if !valid {
+		t.Fail()
+	}
+}
+
+func TestCheckRequiredInvalid(t *testing.T) {
+	type User struct {
+		Username string `checkers:"required"`
+	}
+
+	user := &User{}
+
+	_, valid := checker.Check(user)
+	if valid {
 		t.Fail()
 	}
 }

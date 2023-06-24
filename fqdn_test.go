@@ -1,63 +1,67 @@
-package checker
+package checker_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/cinar/checker"
+)
 
 func TestCheckFdqnWithoutTld(t *testing.T) {
-	if IsFqdn("abcd") != ResultNotFqdn {
+	if checker.IsFqdn("abcd") != checker.ResultNotFqdn {
 		t.Fail()
 	}
 }
 
 func TestCheckFdqnShortTld(t *testing.T) {
-	if IsFqdn("abcd.c") != ResultNotFqdn {
+	if checker.IsFqdn("abcd.c") != checker.ResultNotFqdn {
 		t.Fail()
 	}
 }
 
 func TestCheckFdqnNumericTld(t *testing.T) {
-	if IsFqdn("abcd.1234") != ResultNotFqdn {
+	if checker.IsFqdn("abcd.1234") != checker.ResultNotFqdn {
 		t.Fail()
 	}
 }
 
 func TestCheckFdqnLong(t *testing.T) {
-	if IsFqdn("abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd.com") != ResultNotFqdn {
+	if checker.IsFqdn("abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd.com") != checker.ResultNotFqdn {
 		t.Fail()
 	}
 }
 
 func TestCheckFdqnInvalidCharacters(t *testing.T) {
-	if IsFqdn("ab_cd.com") != ResultNotFqdn {
+	if checker.IsFqdn("ab_cd.com") != checker.ResultNotFqdn {
 		t.Fail()
 	}
 }
 
 func TestCheckFdqnStaringWithHyphen(t *testing.T) {
-	if IsFqdn("-abcd.com") != ResultNotFqdn {
+	if checker.IsFqdn("-abcd.com") != checker.ResultNotFqdn {
 		t.Fail()
 	}
 }
 
 func TestCheckFdqnStaringEndingWithHyphen(t *testing.T) {
-	if IsFqdn("abcd-.com") != ResultNotFqdn {
+	if checker.IsFqdn("abcd-.com") != checker.ResultNotFqdn {
 		t.Fail()
 	}
 }
 
 func TestCheckFdqnStartingWithDot(t *testing.T) {
-	if IsFqdn(".abcd.com") != ResultNotFqdn {
+	if checker.IsFqdn(".abcd.com") != checker.ResultNotFqdn {
 		t.Fail()
 	}
 }
 
 func TestCheckFdqnEndingWithDot(t *testing.T) {
-	if IsFqdn("abcd.com.") != ResultNotFqdn {
+	if checker.IsFqdn("abcd.com.") != checker.ResultNotFqdn {
 		t.Fail()
 	}
 }
 
 func TestCheckFqdnNonString(t *testing.T) {
-	defer FailIfNoPanic(t)
+	defer checker.FailIfNoPanic(t)
 
 	type Request struct {
 		Domain int `checkers:"fqdn"`
@@ -65,7 +69,7 @@ func TestCheckFqdnNonString(t *testing.T) {
 
 	request := &Request{}
 
-	Check(request)
+	checker.Check(request)
 }
 
 func TestCheckFqdnValid(t *testing.T) {
@@ -77,7 +81,7 @@ func TestCheckFqdnValid(t *testing.T) {
 		Domain: "zdo.com",
 	}
 
-	_, valid := Check(request)
+	_, valid := checker.Check(request)
 	if !valid {
 		t.Fail()
 	}

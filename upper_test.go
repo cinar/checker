@@ -1,9 +1,13 @@
-package checker
+package checker_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/cinar/checker"
+)
 
 func TestNormalizeUpperNonString(t *testing.T) {
-	defer FailIfNoPanic(t)
+	defer checker.FailIfNoPanic(t)
 
 	type User struct {
 		Username int `checkers:"upper"`
@@ -11,7 +15,7 @@ func TestNormalizeUpperNonString(t *testing.T) {
 
 	user := &User{}
 
-	Check(user)
+	checker.Check(user)
 }
 
 func TestNormalizeUpperResultValid(t *testing.T) {
@@ -23,7 +27,7 @@ func TestNormalizeUpperResultValid(t *testing.T) {
 		Username: "chECker",
 	}
 
-	_, valid := Check(user)
+	_, valid := checker.Check(user)
 	if !valid {
 		t.Fail()
 	}
@@ -38,7 +42,7 @@ func TestNormalizeUpper(t *testing.T) {
 		Username: "chECker",
 	}
 
-	Check(user)
+	checker.Check(user)
 
 	if user.Username != "CHECKER" {
 		t.Fail()

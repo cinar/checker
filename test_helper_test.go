@@ -1,13 +1,17 @@
-package checker
+package checker_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/cinar/checker"
+)
 
 func TestFailIfNoPanicValid(t *testing.T) {
-	defer FailIfNoPanic(t)
+	defer checker.FailIfNoPanic(t)
 	panic("")
 }
 
 func TestFailIfNoPanicInvalid(t *testing.T) {
-	defer FailIfNoPanic(t)
-	defer FailIfNoPanic(nil)
+	defer checker.FailIfNoPanic(t)
+	defer checker.FailIfNoPanic(nil)
 }

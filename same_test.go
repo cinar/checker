@@ -1,8 +1,9 @@
-package checker
+package checker_test
 
 import (
-	"reflect"
 	"testing"
+
+	"github.com/cinar/checker"
 )
 
 func TestSameValid(t *testing.T) {
@@ -16,7 +17,7 @@ func TestSameValid(t *testing.T) {
 		Confirm:  "1234",
 	}
 
-	_, valid := Check(user)
+	_, valid := checker.Check(user)
 	if !valid {
 		t.Fail()
 	}
@@ -33,30 +34,14 @@ func TestSameInvalid(t *testing.T) {
 		Confirm:  "12",
 	}
 
-	_, valid := Check(user)
+	_, valid := checker.Check(user)
 	if valid {
 		t.Fail()
 	}
 }
 
-func TestSameWithoutParent(t *testing.T) {
-	defer FailIfNoPanic(t)
-
-	type User struct {
-		Password string
-		Confirm  string `checkers:"same:Password"`
-	}
-
-	user := &User{
-		Password: "1234",
-		Confirm:  "12",
-	}
-
-	checkSame(reflect.ValueOf(user.Confirm), reflect.ValueOf(nil), "Password")
-}
-
 func TestSameInvalidName(t *testing.T) {
-	defer FailIfNoPanic(t)
+	defer checker.FailIfNoPanic(t)
 
 	type User struct {
 		Password string
@@ -68,5 +53,5 @@ func TestSameInvalidName(t *testing.T) {
 		Confirm:  "1234",
 	}
 
-	Check(user)
+	checker.Check(user)
 }

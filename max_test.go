@@ -1,17 +1,21 @@
-package checker
+package checker_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/cinar/checker"
+)
 
 func TestIsMaxValid(t *testing.T) {
 	n := 5
 
-	if IsMax(n, 10) != ResultValid {
+	if checker.IsMax(n, 10) != checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestCheckMaxInvalidConfig(t *testing.T) {
-	defer FailIfNoPanic(t)
+	defer checker.FailIfNoPanic(t)
 
 	type Order struct {
 		Quantity int `checkers:"max:AB"`
@@ -19,7 +23,7 @@ func TestCheckMaxInvalidConfig(t *testing.T) {
 
 	order := &Order{}
 
-	Check(order)
+	checker.Check(order)
 }
 
 func TestCheckMaxValid(t *testing.T) {
@@ -31,7 +35,7 @@ func TestCheckMaxValid(t *testing.T) {
 		Quantity: 5,
 	}
 
-	_, valid := Check(order)
+	_, valid := checker.Check(order)
 	if !valid {
 		t.Fail()
 	}
@@ -46,7 +50,7 @@ func TestCheckMaxInvalid(t *testing.T) {
 		Quantity: 20,
 	}
 
-	_, valid := Check(order)
+	_, valid := checker.Check(order)
 	if valid {
 		t.Fail()
 	}
