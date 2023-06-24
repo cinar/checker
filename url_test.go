@@ -53,6 +53,36 @@ func TestCheckURLInvalid(t *testing.T) {
 	}
 
 	bookmark := &Bookmark{
+		URL: "zdo.com/index.html",
+	}
+
+	_, valid := checker.Check(bookmark)
+	if valid {
+		t.Fail()
+	}
+}
+
+func TestCheckURLWithoutSchema(t *testing.T) {
+	type Bookmark struct {
+		URL string `checkers:"url"`
+	}
+
+	bookmark := &Bookmark{
+		URL: "//zdo.com/index.html",
+	}
+
+	_, valid := checker.Check(bookmark)
+	if valid {
+		t.Fail()
+	}
+}
+
+func TestCheckURLWithoutHost(t *testing.T) {
+	type Bookmark struct {
+		URL string `checkers:"url"`
+	}
+
+	bookmark := &Bookmark{
 		URL: "https:://index.html",
 	}
 
