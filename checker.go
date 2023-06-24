@@ -41,6 +41,7 @@ var makers = map[string]MakeFunc{
 	CheckerIP:           makeIP,
 	CheckerIPV4:         makeIPV4,
 	CheckerIPV6:         makeIPV6,
+	CheckerISBN:         makeISBN,
 	CheckerLuhn:         makeLuhn,
 	CheckerMac:          makeMac,
 	CheckerMax:          makeMax,
