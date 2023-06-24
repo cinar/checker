@@ -1,6 +1,6 @@
 # Credit Card Checker
 
-The ```credit-card``` checker checks if the given value is a valid credit card number. If the given value is not a valid credit card number, the checker will return the ```NOT_CREDIT_CARD``` result. 
+The `credit-card` checker checks if the given value is a valid credit card number. If the given value is not a valid credit card number, the checker will return the `NOT_CREDIT_CARD` result. 
 
 Here is an example:
 
@@ -13,7 +13,7 @@ order := &Order{
     CreditCard: invalidCard,
 }
 
-_, valid := Check(order)
+_, valid := checker.Check(order)
 if valid {
   // Send the mistakes back to the user
 }
@@ -32,7 +32,7 @@ order := &Order{
     CreditCard: "6011111111111117",
 }
 
-_, valid := Check(order)
+_, valid := checker.Check(order)
 if valid {
   // Send the mistakes back to the user
 }
@@ -40,23 +40,23 @@ if valid {
 
 If you would like to verify a credit card that is not listed here, please use the [luhn](luhn.md) checker to use the Luhn Algorithm to verify the check digit.
 
-In your custom checkers, you can call the ```credit-card``` checker functions below to validate the user input. 
+In your custom checkers, you can call the `credit-card` checker functions below to validate the user input. 
 
-- IsAnyCreditCard: checks if the given value is a valid credit card number.
-- IsAmexCreditCard: checks if the given value is a valid AMEX credit card number.
-- IsDinersCreditCard: checks if the given value is a valid Diners credit card number.
-- IsDiscoverCreditCard: checks if the given value is a valid Discover credit card number.
-- IsJcbCreditCard: checks if the given value is a valid JCB credit card number.
-- IsMasterCardCreditCard: checks if the given value is a valid MasterCard credit card number.
-- IsUnionPayCreditCard: checks if the given value is a valid UnionPay credit card number.
-- IsVisaCreditCard: checks if the given value is a valid VISA credit card number.
+- [`IsAnyCreditCard`](https://pkg.go.dev/github.com/cinar/checker#IsAnyCreditCard): checks if the given value is a valid credit card number.
+- [`IsAmexCreditCard`](https://pkg.go.dev/github.com/cinar/checker#IsAmexCreditCard): checks if the given value is a valid AMEX credit card number.
+- [`IsDinersCreditCard`](https://pkg.go.dev/github.com/cinar/checker#IsDinersCreditCard): checks if the given value is a valid Diners credit card number.
+- [`IsDiscoverCreditCard`](https://pkg.go.dev/github.com/cinar/checker#IsDiscoverCreditCard): checks if the given value is a valid Discover credit card number.
+- [`IsJcbCreditCard`](https://pkg.go.dev/github.com/cinar/checker#IsJcbCreditCard): checks if the given value is a valid JCB credit card number.
+- [`IsMasterCardCreditCard`](https://pkg.go.dev/github.com/cinar/checker#IsMasterCardCreditCard): checks if the given value is a valid MasterCard credit card number.
+- [`IsUnionPayCreditCard`](https://pkg.go.dev/github.com/cinar/checker#IsUnionPayCreditCard): checks if the given value is a valid UnionPay credit card number.
+- [`IsVisaCreditCard`](https://pkg.go.dev/github.com/cinar/checker#IsVisaCreditCard): checks if the given value is a valid VISA credit card number.
 
 Here is an example:
 
 ```golang
-result := IsAnyCreditCard("6011111111111117")
+result := checker.IsAnyCreditCard("6011111111111117")
 
-if result != ResultValid {
+if result != checker.ResultValid {
   // Send the mistakes back to the user
 }
 ```

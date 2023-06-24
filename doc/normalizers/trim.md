@@ -1,6 +1,6 @@
 # Trim Normalizer
 
-The ```trim``` normalizer removes the whitespaces at the beginning and at the end of the given value. It can be mixed with checkers and other normalizers when defining the validation steps for user data.
+The `trim` normalizer removes the whitespaces at the beginning and at the end of the given value. It can be mixed with checkers and other normalizers when defining the validation steps for user data.
 
 ```golang
 type User struct {
@@ -11,7 +11,7 @@ user := &User{
   Username: "      normalizer      ",
 }
 
-Check(user)
+checker.Check(user)
 
 fmt.Println(user.Username) // CHECKER
 ```

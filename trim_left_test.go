@@ -1,9 +1,13 @@
-package checker
+package checker_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/cinar/checker"
+)
 
 func TestNormalizeTrimLeftNonString(t *testing.T) {
-	defer FailIfNoPanic(t)
+	defer checker.FailIfNoPanic(t)
 
 	type User struct {
 		Username int `checkers:"trim-left"`
@@ -11,7 +15,7 @@ func TestNormalizeTrimLeftNonString(t *testing.T) {
 
 	user := &User{}
 
-	Check(user)
+	checker.Check(user)
 }
 
 func TestNormalizeTrimLeftResultValid(t *testing.T) {
@@ -23,7 +27,7 @@ func TestNormalizeTrimLeftResultValid(t *testing.T) {
 		Username: "      normalizer      ",
 	}
 
-	_, valid := Check(user)
+	_, valid := checker.Check(user)
 	if !valid {
 		t.Fail()
 	}
@@ -38,7 +42,7 @@ func TestNormalizeTrimLeft(t *testing.T) {
 		Username: "      normalizer      ",
 	}
 
-	Check(user)
+	checker.Check(user)
 
 	if user.Username != "normalizer      " {
 		t.Fail()
