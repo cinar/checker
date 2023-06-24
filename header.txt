@@ -4,13 +4,3 @@
 // The source code is provided under MIT License.
 //
 // https://github.com/cinar/checker
-package checker
-
-import "testing"
-
-// FailIfNoPanic fails if test didn't panic. Use this function with the defer.
-func FailIfNoPanic(t *testing.T) {
-	if r := recover(); r == nil {
-		t.Fail()
-	}
-}
