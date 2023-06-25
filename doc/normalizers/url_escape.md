@@ -1,19 +1,22 @@
-# HTML Escape Normalizer
+# URL Escape Normalizer
 
 The `url-escape` normalizer uses [net.url.QueryEscape](https://pkg.go.dev/net/url#QueryEscape) to escape the string so it can be safely placed inside a URL query.
 
 ```golang
-type Comment struct {
-  Body string `checkers:"url-escape"`
+type Request struct {
+  Query string `checkers:"url-escape"`
 }
 
-comment := &Comment{
-  Body: "<tag> \"Checker\" & 'Library' </tag>",
+request := &Request{
+  Query: "param1/param2 = 1 + 2 & 3 + 4",
 }
 
-checker.Check(comment)
+_, valid := checker.Check(request)
+if !valid {
+  t.Fail()
+}
 
 // Outputs: 
-// &lt;tag&gt; &#34;Checker&#34; &amp; &#39;Library&#39; &lt;/tag&gt;
-fmt.Println(comment.Body)
+// param1%2Fparam2+%3D+1+%2B+2+%26+3+%2B+4
+fmt.Println(request.Query)
 ```
