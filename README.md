@@ -98,6 +98,8 @@ This package currently provides the following checkers:
 
 This package currently provides the following normalizers. They can be mixed with the checkers when defining the validation steps for user data.
 
+- [html_escape](doc/normalizers/html_escape.md) applies HTML escaping to special characters.
+- [html_unescape](doc//normalizers/html_unescape.md) applies HTML unescaping to special characters.
 - [lower](doc/normalizers/lower.md) maps all Unicode letters in the given value to their lower case.
 - [upper](doc/normalizers/upper.md) maps all Unicode letters in the given value to their upper case.
 - [title](doc/normalizers/title.md) maps the first letter of each word to their upper case.
