@@ -66,6 +66,8 @@ var makers = map[string]MakeFunc{
 	NormalizerTrim:         makeTrim,
 	NormalizerTrimLeft:     makeTrimLeft,
 	NormalizerTrimRight:    makeTrimRight,
+	NormalizerURLEscape:    makeURLEscape,
+	NormalizerURLUnescape:  makeURLUnescape,
 }
 
 // Register registers the given checker name and the maker function.
