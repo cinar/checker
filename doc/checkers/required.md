@@ -18,7 +18,7 @@ if !valid {
 If you do not want to validate user input stored in a struct, you can individually call the `required` checker function [`IsRequired`](https://pkg.go.dev/github.com/cinar/checker#IsRequired) to validate the user input. Here is an example:
 
 ```golang
-var name
+var name string
 
 result := checker.IsRequired(name)
 if result != checker.ResultValid {
