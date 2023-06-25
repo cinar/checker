@@ -1,4 +1,3 @@
-//
 package checker_test
 
 import (
