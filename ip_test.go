@@ -2,10 +2,9 @@
 //
 // https://github.com/cinar/checker
 //
-// Copyright 2023 Onur Cinar. All rights reserved. 
-// Use of this source code is governed by a MIT-style 
-// license that can be found in the LICENSE file. 
-//
+// Copyright 2023 Onur Cinar. All rights reserved.
+// Use of this source code is governed by a MIT-style
+// license that can be found in the LICENSE file.
 package checker_test
 
 import (
@@ -13,6 +12,14 @@ import (
 
 	"github.com/cinar/checker"
 )
+
+func ExampleIsIP() {
+	result := checker.IsIP("2001:db8::68")
+
+	if result != checker.ResultValid {
+		// Send the mistakes back to the user
+	}
+}
 
 func TestIsIPInvalid(t *testing.T) {
 	if checker.IsIP("900.800.200.100") == checker.ResultValid {

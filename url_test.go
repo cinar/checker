@@ -2,10 +2,9 @@
 //
 // https://github.com/cinar/checker
 //
-// Copyright 2023 Onur Cinar. All rights reserved. 
-// Use of this source code is governed by a MIT-style 
-// license that can be found in the LICENSE file. 
-//
+// Copyright 2023 Onur Cinar. All rights reserved.
+// Use of this source code is governed by a MIT-style
+// license that can be found in the LICENSE file.
 package checker_test
 
 import (
@@ -13,6 +12,13 @@ import (
 
 	"github.com/cinar/checker"
 )
+
+func ExampleIsURL() {
+	result := checker.IsURL("https://zdo.com")
+	if result != checker.ResultValid {
+		// Send the mistakes back to the user
+	}
+}
 
 func TestIsURLValid(t *testing.T) {
 	result := checker.IsURL("https://zdo.com")

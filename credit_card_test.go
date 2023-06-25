@@ -2,10 +2,9 @@
 //
 // https://github.com/cinar/checker
 //
-// Copyright 2023 Onur Cinar. All rights reserved. 
-// Use of this source code is governed by a MIT-style 
-// license that can be found in the LICENSE file. 
-//
+// Copyright 2023 Onur Cinar. All rights reserved.
+// Use of this source code is governed by a MIT-style
+// license that can be found in the LICENSE file.
 package checker_test
 
 import (
@@ -37,6 +36,14 @@ func changeToInvalidLuhn(number string) string {
 	return number[:len(number)-1] + strconv.Itoa(luhn)
 }
 
+func ExampleIsAnyCreditCard() {
+	result := checker.IsAnyCreditCard("6011111111111117")
+
+	if result != checker.ResultValid {
+		// Send the mistakes back to the user
+	}
+}
+
 func TestIsAnyCreditCardValid(t *testing.T) {
 	if checker.IsAnyCreditCard(amexCard) != checker.ResultValid {
 		t.Fail()
@@ -52,6 +59,14 @@ func TestIsAnyCreditCardInvalidPattern(t *testing.T) {
 func TestIsAnyCreditCardInvalidLuhn(t *testing.T) {
 	if checker.IsAnyCreditCard(changeToInvalidLuhn(amexCard)) == checker.ResultValid {
 		t.Fail()
+	}
+}
+
+func ExampleIsAmexCreditCard() {
+	result := checker.IsAmexCreditCard("378282246310005")
+
+	if result != checker.ResultValid {
+		// Send the mistakes back to the user
 	}
 }
 
@@ -73,6 +88,13 @@ func TestIsAmexCreditCardInvalidLuhn(t *testing.T) {
 	}
 }
 
+func ExampleIsDinersCreditCard() {
+	result := checker.IsDinersCreditCard("36227206271667")
+
+	if result != checker.ResultValid {
+		// Send the mistakes back to the user
+	}
+}
 func TestIsDinersCreditCardValid(t *testing.T) {
 	if checker.IsDinersCreditCard(dinersCard) != checker.ResultValid {
 		t.Fail()
@@ -91,21 +113,36 @@ func TestIsDinersCreditCardInvalidLuhn(t *testing.T) {
 	}
 }
 
+func ExampleIsDiscoverCreditCard() {
+	result := checker.IsDiscoverCreditCard("6011111111111117")
+
+	if result != checker.ResultValid {
+		// Send the mistakes back to the user
+	}
+}
 func TestIsDiscoverCreditCardValid(t *testing.T) {
-	if checker.IsDiscoveryCreditCard(discoverCard) != checker.ResultValid {
+	if checker.IsDiscoverCreditCard(discoverCard) != checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsDiscoverCreditCardInvalidPattern(t *testing.T) {
-	if checker.IsDiscoveryCreditCard(invalidCard) == checker.ResultValid {
+	if checker.IsDiscoverCreditCard(invalidCard) == checker.ResultValid {
 		t.Fail()
 	}
 }
 
 func TestIsDiscoverCreditCardInvalidLuhn(t *testing.T) {
-	if checker.IsDiscoveryCreditCard(changeToInvalidLuhn(discoverCard)) == checker.ResultValid {
+	if checker.IsDiscoverCreditCard(changeToInvalidLuhn(discoverCard)) == checker.ResultValid {
 		t.Fail()
+	}
+}
+
+func ExampleIsJcbCreditCard() {
+	result := checker.IsJcbCreditCard("3530111333300000")
+
+	if result != checker.ResultValid {
+		// Send the mistakes back to the user
 	}
 }
 
@@ -127,6 +164,14 @@ func TestIsJcbCreditCardInvalidLuhn(t *testing.T) {
 	}
 }
 
+func ExampleIsMasterCardCreditCard() {
+	result := checker.IsMasterCardCreditCard("5555555555554444")
+
+	if result != checker.ResultValid {
+		// Send the mistakes back to the user
+	}
+}
+
 func TestIsMasterCardCreditCardValid(t *testing.T) {
 	if checker.IsMasterCardCreditCard(masterCard) != checker.ResultValid {
 		t.Fail()
@@ -142,6 +187,14 @@ func TestIsMasterCardCreditCardInvalidPattern(t *testing.T) {
 func TestIsMasterCardCreditCardInvalidLuhn(t *testing.T) {
 	if checker.IsMasterCardCreditCard(changeToInvalidLuhn(masterCard)) == checker.ResultValid {
 		t.Fail()
+	}
+}
+
+func ExampleIsUnionPayCreditCard() {
+	result := checker.IsUnionPayCreditCard("6200000000000005")
+
+	if result != checker.ResultValid {
+		// Send the mistakes back to the user
 	}
 }
 
@@ -163,6 +216,13 @@ func TestIsUnionPayCreditCardInvalidLuhn(t *testing.T) {
 	}
 }
 
+func ExampleIsVisaCreditCard() {
+	result := checker.IsVisaCreditCard("4111111111111111")
+
+	if result != checker.ResultValid {
+		// Send the mistakes back to the user
+	}
+}
 func TestIsVisaCreditCardValid(t *testing.T) {
 	if checker.IsVisaCreditCard(visaCard) != checker.ResultValid {
 		t.Fail()

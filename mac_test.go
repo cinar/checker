@@ -2,10 +2,9 @@
 //
 // https://github.com/cinar/checker
 //
-// Copyright 2023 Onur Cinar. All rights reserved. 
-// Use of this source code is governed by a MIT-style 
-// license that can be found in the LICENSE file. 
-//
+// Copyright 2023 Onur Cinar. All rights reserved.
+// Use of this source code is governed by a MIT-style
+// license that can be found in the LICENSE file.
 package checker_test
 
 import (
@@ -13,6 +12,14 @@ import (
 
 	"github.com/cinar/checker"
 )
+
+func ExampleIsMac() {
+	result := checker.IsMac("00:00:5e:00:53:01")
+
+	if result != checker.ResultValid {
+		// Send the mistakes back to the user
+	}
+}
 
 func TestIsMacInvalid(t *testing.T) {
 	if checker.IsMac("1234") == checker.ResultValid {

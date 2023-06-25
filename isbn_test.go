@@ -2,10 +2,9 @@
 //
 // https://github.com/cinar/checker
 //
-// Copyright 2023 Onur Cinar. All rights reserved. 
-// Use of this source code is governed by a MIT-style 
-// license that can be found in the LICENSE file. 
-//
+// Copyright 2023 Onur Cinar. All rights reserved.
+// Use of this source code is governed by a MIT-style
+// license that can be found in the LICENSE file.
 package checker_test
 
 import (
@@ -13,6 +12,13 @@ import (
 
 	"github.com/cinar/checker"
 )
+
+func ExampleIsISBN10() {
+	result := checker.IsISBN10("1430248270")
+	if result != checker.ResultValid {
+		// Send the mistakes back to the user
+	}
+}
 
 func TestIsISBN10Valid(t *testing.T) {
 	result := checker.IsISBN10("1430248270")
@@ -49,6 +55,13 @@ func TestIsISBN10InvalidCheck(t *testing.T) {
 	}
 }
 
+func ExampleIsISBN13() {
+	result := checker.IsISBN13("9781430248279")
+	if result != checker.ResultValid {
+		// Send the mistakes back to the user
+	}
+}
+
 func TestIsISBN13Valid(t *testing.T) {
 	result := checker.IsISBN13("9781430248279")
 	if result != checker.ResultValid {
@@ -74,6 +87,13 @@ func TestIsISBN13InvalidCheck(t *testing.T) {
 	result := checker.IsISBN13("9781430248272")
 	if result != checker.ResultNotISBN {
 		t.Fail()
+	}
+}
+
+func ExampleIsISBN() {
+	result := checker.IsISBN("1430248270")
+	if result != checker.ResultValid {
+		// Send the mistakes back to the user
 	}
 }
 

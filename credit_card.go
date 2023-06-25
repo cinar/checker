@@ -2,10 +2,9 @@
 //
 // https://github.com/cinar/checker
 //
-// Copyright 2023 Onur Cinar. All rights reserved. 
-// Use of this source code is governed by a MIT-style 
-// license that can be found in the LICENSE file. 
-//
+// Copyright 2023 Onur Cinar. All rights reserved.
+// Use of this source code is governed by a MIT-style
+// license that can be found in the LICENSE file.
 package checker
 
 import (
@@ -85,8 +84,8 @@ func IsDinersCreditCard(number string) Result {
 	return isCreditCard(number, dinersPattern)
 }
 
-// IsDiscoveryCreditCard checks if the given valie is a valid Discovery credit card.
-func IsDiscoveryCreditCard(number string) Result {
+// IsDiscoverCreditCard checks if the given valie is a valid Discover credit card.
+func IsDiscoverCreditCard(number string) Result {
 	return isCreditCard(number, discoverPattern)
 }
 

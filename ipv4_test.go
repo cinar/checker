@@ -2,10 +2,9 @@
 //
 // https://github.com/cinar/checker
 //
-// Copyright 2023 Onur Cinar. All rights reserved. 
-// Use of this source code is governed by a MIT-style 
-// license that can be found in the LICENSE file. 
-//
+// Copyright 2023 Onur Cinar. All rights reserved.
+// Use of this source code is governed by a MIT-style
+// license that can be found in the LICENSE file.
 package checker_test
 
 import (
@@ -13,6 +12,14 @@ import (
 
 	"github.com/cinar/checker"
 )
+
+func ExampleIsIPV4() {
+	result := checker.IsIPV4("192.168.1.1")
+
+	if result != checker.ResultValid {
+		// Send the mistakes back to the user
+	}
+}
 
 func TestIsIPV4Invalid(t *testing.T) {
 	if checker.IsIPV4("900.800.200.100") == checker.ResultValid {
