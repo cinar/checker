@@ -78,6 +78,11 @@ func isValidEmailUser(user string) Result {
 		return ResultNotEmail
 	}
 
+	return isValidEmailUserCharacters(user)
+}
+
+// isValidEmailUserCharacters if the email user characters are valid.
+func isValidEmailUserCharacters(user string) Result {
 	quoted := false
 	start := true
 	prev := ' '
