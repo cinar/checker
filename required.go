@@ -5,16 +5,19 @@
 
 package checker
 
-import "reflect"
+import (
+	"errors"
+	"reflect"
+)
 
 // CheckerRequired is the name of the checker.
 const CheckerRequired = "required"
 
-// ResultRequired indicates that the required value is missing.
-const ResultRequired Result = "REQUIRED"
+// ErrRequired indicates that the required value is missing.
+var ErrRequired = errors.New("is required")
 
 // IsRequired checks if the given required value is present.
-func IsRequired(v interface{}) Result {
+func IsRequired(v interface{}) error {
 	return checkRequired(reflect.ValueOf(v), reflect.ValueOf(nil))
 }
 
@@ -24,16 +27,16 @@ func makeRequired(_ string) CheckFunc {
 }
 
 // checkRequired checks if the required value is present.
-func checkRequired(value, _ reflect.Value) Result {
+func checkRequired(value, _ reflect.Value) error {
 	if value.IsZero() {
-		return ResultRequired
+		return ErrRequired
 	}
 
 	k := value.Kind()
 
 	if (k == reflect.Array || k == reflect.Map || k == reflect.Slice) && value.Len() == 0 {
-		return ResultRequired
+		return ErrRequired
 	}
 
-	return ResultValid
+	return nil
 }

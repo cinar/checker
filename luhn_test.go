@@ -12,9 +12,8 @@ import (
 )
 
 func ExampleIsLuhn() {
-	result := checker.IsLuhn("4012888888881881")
-
-	if result != checker.ResultValid {
+	err := checker.IsLuhn("4012888888881881")
+	if err != nil {
 		// Send the mistakes back to the user
 	}
 }
@@ -28,7 +27,7 @@ func TestIsLuhnValid(t *testing.T) {
 	}
 
 	for _, number := range numbers {
-		if checker.IsLuhn(number) != checker.ResultValid {
+		if checker.IsLuhn(number) != nil {
 			t.Fail()
 		}
 	}

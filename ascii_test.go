@@ -12,21 +12,20 @@ import (
 )
 
 func ExampleIsASCII() {
-	result := checker.IsASCII("Checker")
-
-	if result != checker.ResultValid {
+	err := checker.IsASCII("Checker")
+	if err != nil {
 		// Send the mistakes back to the user
 	}
 }
 
 func TestIsASCIIInvalid(t *testing.T) {
-	if checker.IsASCII("𝄞 Music!") == checker.ResultValid {
+	if checker.IsASCII("𝄞 Music!") == nil {
 		t.Fail()
 	}
 }
 
 func TestIsASCIIValid(t *testing.T) {
-	if checker.IsASCII("Checker") != checker.ResultValid {
+	if checker.IsASCII("Checker") != nil {
 		t.Fail()
 	}
 }

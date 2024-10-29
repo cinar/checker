@@ -6,6 +6,7 @@
 package checker
 
 import (
+	"fmt"
 	"reflect"
 	"strconv"
 )
@@ -13,11 +14,8 @@ import (
 // CheckerMax is the name of the checker.
 const CheckerMax = "max"
 
-// ResultNotMax indicates that the given value is above the defined maximum.
-const ResultNotMax = "NOT_MIN"
-
 // IsMax checks if the given value is below than the given maximum.
-func IsMax(value interface{}, max float64) Result {
+func IsMax(value interface{}, max float64) error {
 	return checkMax(reflect.Indirect(reflect.ValueOf(value)), reflect.ValueOf(nil), max)
 }
 
@@ -28,18 +26,18 @@ func makeMax(config string) CheckFunc {
 		panic("unable to parse max")
 	}
 
-	return func(value, parent reflect.Value) Result {
+	return func(value, parent reflect.Value) error {
 		return checkMax(value, parent, max)
 	}
 }
 
 // checkMax checks if the given value is less than the given maximum.
-func checkMax(value, _ reflect.Value, max float64) Result {
+func checkMax(value, _ reflect.Value, max float64) error {
 	n := numberOf(value)
 
 	if n > max {
-		return ResultNotMax
+		return fmt.Errorf("please enter a number less than %g", max)
 	}
 
-	return ResultValid
+	return nil
 }

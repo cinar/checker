@@ -14,16 +14,16 @@ import (
 func ExampleIsRequired() {
 	var name string
 
-	result := checker.IsRequired(name)
-	if result != checker.ResultValid {
-		// Send the result back to the user
+	err := checker.IsRequired(name)
+	if err != nil {
+		// Send the err back to the user
 	}
 }
 
 func TestIsRequired(t *testing.T) {
 	s := "valid"
 
-	if checker.IsRequired(s) != checker.ResultValid {
+	if checker.IsRequired(s) != nil {
 		t.Fail()
 	}
 }
@@ -31,7 +31,7 @@ func TestIsRequired(t *testing.T) {
 func TestIsRequiredUninitializedString(t *testing.T) {
 	var s string
 
-	if checker.IsRequired(s) != checker.ResultRequired {
+	if checker.IsRequired(s) != checker.ErrRequired {
 		t.Fail()
 	}
 }
@@ -39,7 +39,7 @@ func TestIsRequiredUninitializedString(t *testing.T) {
 func TestIsRequiredEmptyString(t *testing.T) {
 	s := ""
 
-	if checker.IsRequired(s) == checker.ResultValid {
+	if checker.IsRequired(s) == nil {
 		t.Fail()
 	}
 }
@@ -47,7 +47,7 @@ func TestIsRequiredEmptyString(t *testing.T) {
 func TestIsRequiredUninitializedNumber(t *testing.T) {
 	var n int
 
-	if checker.IsRequired(n) != checker.ResultRequired {
+	if checker.IsRequired(n) != checker.ErrRequired {
 		t.Fail()
 	}
 }
@@ -55,7 +55,7 @@ func TestIsRequiredUninitializedNumber(t *testing.T) {
 func TestIsRequiredValidSlice(t *testing.T) {
 	s := []int{1}
 
-	if checker.IsRequired(s) != checker.ResultValid {
+	if checker.IsRequired(s) != nil {
 		t.Fail()
 	}
 }
@@ -63,7 +63,7 @@ func TestIsRequiredValidSlice(t *testing.T) {
 func TestIsRequiredUninitializedSlice(t *testing.T) {
 	var s []int
 
-	if checker.IsRequired(s) != checker.ResultRequired {
+	if checker.IsRequired(s) != checker.ErrRequired {
 		t.Fail()
 	}
 }
@@ -71,7 +71,7 @@ func TestIsRequiredUninitializedSlice(t *testing.T) {
 func TestIsRequiredEmptySlice(t *testing.T) {
 	s := make([]int, 0)
 
-	if checker.IsRequired(s) != checker.ResultRequired {
+	if checker.IsRequired(s) != checker.ErrRequired {
 		t.Fail()
 	}
 }
@@ -79,7 +79,7 @@ func TestIsRequiredEmptySlice(t *testing.T) {
 func TestIsRequiredValidArray(t *testing.T) {
 	s := [1]int{1}
 
-	if checker.IsRequired(s) != checker.ResultValid {
+	if checker.IsRequired(s) != nil {
 		t.Fail()
 	}
 }
@@ -87,7 +87,7 @@ func TestIsRequiredValidArray(t *testing.T) {
 func TestIsRequiredEmptyArray(t *testing.T) {
 	s := [1]int{}
 
-	if checker.IsRequired(s) != checker.ResultRequired {
+	if checker.IsRequired(s) != checker.ErrRequired {
 		t.Fail()
 	}
 }
@@ -97,7 +97,7 @@ func TestIsRequiredValidMap(t *testing.T) {
 		"a": "b",
 	}
 
-	if checker.IsRequired(m) != checker.ResultValid {
+	if checker.IsRequired(m) != nil {
 		t.Fail()
 	}
 }
@@ -105,7 +105,7 @@ func TestIsRequiredValidMap(t *testing.T) {
 func TestIsRequiredUninitializedMap(t *testing.T) {
 	var m map[string]string
 
-	if checker.IsRequired(m) != checker.ResultRequired {
+	if checker.IsRequired(m) != checker.ErrRequired {
 		t.Fail()
 	}
 }
@@ -113,7 +113,7 @@ func TestIsRequiredUninitializedMap(t *testing.T) {
 func TestCheckRequiredEmptyMap(t *testing.T) {
 	m := map[string]string{}
 
-	if checker.IsRequired(m) != checker.ResultRequired {
+	if checker.IsRequired(m) != checker.ErrRequired {
 		t.Fail()
 	}
 }

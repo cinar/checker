@@ -12,21 +12,20 @@ import (
 )
 
 func ExampleIsMac() {
-	result := checker.IsMac("00:00:5e:00:53:01")
-
-	if result != checker.ResultValid {
+	err := checker.IsMac("00:00:5e:00:53:01")
+	if err != nil {
 		// Send the mistakes back to the user
 	}
 }
 
 func TestIsMacInvalid(t *testing.T) {
-	if checker.IsMac("1234") == checker.ResultValid {
+	if checker.IsMac("1234") == nil {
 		t.Fail()
 	}
 }
 
 func TestIsMacValid(t *testing.T) {
-	if checker.IsMac("00:00:5e:00:53:01") != checker.ResultValid {
+	if checker.IsMac("00:00:5e:00:53:01") != nil {
 		t.Fail()
 	}
 }

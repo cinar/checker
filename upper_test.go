@@ -23,7 +23,7 @@ func TestNormalizeUpperNonString(t *testing.T) {
 	checker.Check(user)
 }
 
-func TestNormalizeUpperResultValid(t *testing.T) {
+func TestNormalizeUpperErrValid(t *testing.T) {
 	type User struct {
 		Username string `checkers:"upper"`
 	}

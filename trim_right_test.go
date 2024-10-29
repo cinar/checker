@@ -23,7 +23,7 @@ func TestNormalizeTrimRightNonString(t *testing.T) {
 	checker.Check(user)
 }
 
-func TestNormalizeTrimRightResultValid(t *testing.T) {
+func TestNormalizeTrimRightErrValid(t *testing.T) {
 	type User struct {
 		Username string `checkers:"trim-right"`
 	}

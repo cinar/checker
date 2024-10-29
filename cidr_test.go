@@ -12,21 +12,20 @@ import (
 )
 
 func ExampleIsCidr() {
-	result := checker.IsCidr("2001:db8::/32")
-
-	if result != checker.ResultValid {
+	err := checker.IsCidr("2001:db8::/32")
+	if err != nil {
 		// Send the mistakes back to the user
 	}
 }
 
 func TestIsCidrInvalid(t *testing.T) {
-	if checker.IsCidr("900.800.200.100//24") == checker.ResultValid {
+	if checker.IsCidr("900.800.200.100//24") == nil {
 		t.Fail()
 	}
 }
 
 func TestIsCidrValid(t *testing.T) {
-	if checker.IsCidr("2001:db8::/32") != checker.ResultValid {
+	if checker.IsCidr("2001:db8::/32") != nil {
 		t.Fail()
 	}
 }

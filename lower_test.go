@@ -23,7 +23,7 @@ func TestNormalizeLowerNonString(t *testing.T) {
 	checker.Check(user)
 }
 
-func TestNormalizeLowerResultValid(t *testing.T) {
+func TestNormalizeLowerErrValid(t *testing.T) {
 	type User struct {
 		Username string `checkers:"lower"`
 	}

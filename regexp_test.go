@@ -6,6 +6,7 @@
 package checker_test
 
 import (
+	"errors"
 	"reflect"
 	"testing"
 
@@ -55,16 +56,16 @@ func TestCheckRegexpValid(t *testing.T) {
 }
 
 func TestMakeRegexpChecker(t *testing.T) {
-	checkHex := checker.MakeRegexpChecker("^[A-Fa-f0-9]+$", "NOT_HEX")
+	checkHex := checker.MakeRegexpChecker("^[A-Fa-f0-9]+$", errors.New("Not Hex"))
 
-	result := checkHex(reflect.ValueOf("f0f0f0"), reflect.ValueOf(nil))
-	if result != checker.ResultValid {
+	err := checkHex(reflect.ValueOf("f0f0f0"), reflect.ValueOf(nil))
+	if err != nil {
 		t.Fail()
 	}
 }
 
 func TestMakeRegexpMaker(t *testing.T) {
-	checker.Register("hex", checker.MakeRegexpMaker("^[A-Fa-f0-9]+$", "NOT_HEX"))
+	checker.Register("hex", checker.MakeRegexpMaker("^[A-Fa-f0-9]+$", errors.New("Not Hex")))
 
 	type Theme struct {
 		Color string `checkers:"hex"`

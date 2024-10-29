@@ -19,12 +19,12 @@ func makeUpper(_ string) CheckFunc {
 }
 
 // normalizeUpper maps all Unicode letters in the given value to their upper case.
-func normalizeUpper(value, _ reflect.Value) Result {
+func normalizeUpper(value, _ reflect.Value) error {
 	if value.Kind() != reflect.String {
 		panic("string expected")
 	}
 
 	value.SetString(strings.ToUpper(value.String()))
 
-	return ResultValid
+	return nil
 }

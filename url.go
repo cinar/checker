@@ -6,6 +6,7 @@
 package checker
 
 import (
+	"errors"
 	"net/url"
 	"reflect"
 )
@@ -13,25 +14,25 @@ import (
 // CheckerURL is the name of the checker.
 const CheckerURL = "url"
 
-// ResultNotURL indicates that the given value is not a valid URL.
-const ResultNotURL = "NOT_URL"
+// ErrNotURL indicates that the given value is not a valid URL.
+var ErrNotURL = errors.New("please enter a valid URL")
 
 // IsURL checks if the given value is a valid URL.
-func IsURL(value string) Result {
+func IsURL(value string) error {
 	url, err := url.ParseRequestURI(value)
 	if err != nil {
-		return ResultNotURL
+		return ErrNotURL
 	}
 
 	if url.Scheme == "" {
-		return ResultNotURL
+		return ErrNotURL
 	}
 
 	if url.Host == "" {
-		return ResultNotURL
+		return ErrNotURL
 	}
 
-	return ResultValid
+	return nil
 }
 
 // makeURL makes a checker function for the URL checker.
@@ -40,7 +41,7 @@ func makeURL(_ string) CheckFunc {
 }
 
 // checkURL checks if the given value is a valid URL.
-func checkURL(value, _ reflect.Value) Result {
+func checkURL(value, _ reflect.Value) error {
 	if value.Kind() != reflect.String {
 		panic("string expected")
 	}

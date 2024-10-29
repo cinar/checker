@@ -6,6 +6,7 @@
 package checker
 
 import (
+	"errors"
 	"net"
 	"reflect"
 )
@@ -13,17 +14,17 @@ import (
 // CheckerMac is the name of the checker.
 const CheckerMac = "mac"
 
-// ResultNotMac indicates that the given value is not an MAC address.
-const ResultNotMac = "NOT_MAC"
+// ErrNotMac indicates that the given value is not an MAC address.
+var ErrNotMac = errors.New("please enter a valid MAC address")
 
 // IsMac checks if the given value is a valid an IEEE 802 MAC-48, EUI-48, EUI-64, or a 20-octet IP over InfiniBand link-layer address.
-func IsMac(value string) Result {
+func IsMac(value string) error {
 	_, err := net.ParseMAC(value)
 	if err != nil {
-		return ResultNotMac
+		return ErrNotMac
 	}
 
-	return ResultValid
+	return nil
 }
 
 // makeMac makes a checker function for the ip checker.
@@ -32,7 +33,7 @@ func makeMac(_ string) CheckFunc {
 }
 
 // checkMac checks if the given value is a valid an IEEE 802 MAC-48, EUI-48, EUI-64, or a 20-octet IP over InfiniBand link-layer address.
-func checkMac(value, _ reflect.Value) Result {
+func checkMac(value, _ reflect.Value) error {
 	if value.Kind() != reflect.String {
 		panic("string expected")
 	}

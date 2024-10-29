@@ -20,12 +20,12 @@ func makeHTMLEscape(_ string) CheckFunc {
 
 // normalizeHTMLEscape applies HTML escaping to special characters.
 // Uses html.EscapeString for the actual escape operation.
-func normalizeHTMLEscape(value, _ reflect.Value) Result {
+func normalizeHTMLEscape(value, _ reflect.Value) error {
 	if value.Kind() != reflect.String {
 		panic("string expected")
 	}
 
 	value.SetString(html.EscapeString(value.String()))
 
-	return ResultValid
+	return nil
 }

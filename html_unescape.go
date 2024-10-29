@@ -20,12 +20,12 @@ func makeHTMLUnescape(_ string) CheckFunc {
 
 // normalizeHTMLUnescape applies HTML unescaping to special characters.
 // Uses html.UnescapeString for the actual unescape operation.
-func normalizeHTMLUnescape(value, _ reflect.Value) Result {
+func normalizeHTMLUnescape(value, _ reflect.Value) error {
 	if value.Kind() != reflect.String {
 		panic("string expected")
 	}
 
 	value.SetString(html.UnescapeString(value.String()))
 
-	return ResultValid
+	return nil
 }

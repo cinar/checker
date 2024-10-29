@@ -14,9 +14,8 @@ import (
 func ExampleIsMaxLength() {
 	s := "1234"
 
-	result := checker.IsMaxLength(s, 4)
-
-	if result != checker.ResultValid {
+	err := checker.IsMaxLength(s, 4)
+	if err != nil {
 		// Send the mistakes back to the user
 	}
 }
@@ -24,7 +23,7 @@ func ExampleIsMaxLength() {
 func TestIsMaxLengthValid(t *testing.T) {
 	s := "1234"
 
-	if checker.IsMaxLength(s, 4) != checker.ResultValid {
+	if checker.IsMaxLength(s, 4) != nil {
 		t.Fail()
 	}
 }

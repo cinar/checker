@@ -19,12 +19,12 @@ func makeTrim(_ string) CheckFunc {
 }
 
 // normalizeTrim removes the whitespaces at the beginning and at the end of the given value.
-func normalizeTrim(value, _ reflect.Value) Result {
+func normalizeTrim(value, _ reflect.Value) error {
 	if value.Kind() != reflect.String {
 		panic("string expected")
 	}
 
 	value.SetString(strings.Trim(value.String(), " \t"))
 
-	return ResultValid
+	return nil
 }

@@ -14,9 +14,8 @@ import (
 func ExampleIsMax() {
 	quantity := 5
 
-	result := checker.IsMax(quantity, 10)
-
-	if result != checker.ResultValid {
+	err := checker.IsMax(quantity, 10)
+	if err != nil {
 		// Send the mistakes back to the user
 	}
 }
@@ -24,7 +23,7 @@ func ExampleIsMax() {
 func TestIsMaxValid(t *testing.T) {
 	n := 5
 
-	if checker.IsMax(n, 10) != checker.ResultValid {
+	if checker.IsMax(n, 10) != nil {
 		t.Fail()
 	}
 }

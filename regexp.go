@@ -6,6 +6,7 @@
 package checker
 
 import (
+	"errors"
 	"reflect"
 	"regexp"
 )
@@ -13,39 +14,39 @@ import (
 // CheckerRegexp is the name of the checker.
 const CheckerRegexp = "regexp"
 
-// ResultNotMatch indicates that the given string does not match the regexp pattern.
-const ResultNotMatch = "NOT_MATCH"
+// ErrNotMatch indicates that the given string does not match the regexp pattern.
+var ErrNotMatch = errors.New("please enter a valid input")
 
 // MakeRegexpMaker makes a regexp checker maker for the given regexp expression with the given invalid result.
-func MakeRegexpMaker(expression string, invalidResult Result) MakeFunc {
+func MakeRegexpMaker(expression string, invalidError error) MakeFunc {
 	return func(_ string) CheckFunc {
-		return MakeRegexpChecker(expression, invalidResult)
+		return MakeRegexpChecker(expression, invalidError)
 	}
 }
 
 // MakeRegexpChecker makes a regexp checker for the given regexp expression with the given invalid result.
-func MakeRegexpChecker(expression string, invalidResult Result) CheckFunc {
+func MakeRegexpChecker(expression string, invalidError error) CheckFunc {
 	pattern := regexp.MustCompile(expression)
 
-	return func(value, parent reflect.Value) Result {
-		return checkRegexp(value, pattern, invalidResult)
+	return func(value, parent reflect.Value) error {
+		return checkRegexp(value, pattern, invalidError)
 	}
 }
 
 // makeRegexp makes a checker function for the regexp.
 func makeRegexp(config string) CheckFunc {
-	return MakeRegexpChecker(config, ResultNotMatch)
+	return MakeRegexpChecker(config, ErrNotMatch)
 }
 
 // checkRegexp checks if the given string matches the regexp pattern.
-func checkRegexp(value reflect.Value, pattern *regexp.Regexp, invalidResult Result) Result {
+func checkRegexp(value reflect.Value, pattern *regexp.Regexp, invalidError error) error {
 	if value.Kind() != reflect.String {
 		panic("string expected")
 	}
 
 	if !pattern.MatchString(value.String()) {
-		return invalidResult
+		return invalidError
 	}
 
-	return ResultValid
+	return nil
 }

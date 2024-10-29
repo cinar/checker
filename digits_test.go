@@ -12,21 +12,20 @@ import (
 )
 
 func ExampleIsDigits() {
-	result := checker.IsDigits("1234")
-
-	if result != checker.ResultValid {
+	err := checker.IsDigits("1234")
+	if err != nil {
 		// Send the mistakes back to the user
 	}
 }
 
 func TestIsDigitsInvalid(t *testing.T) {
-	if checker.IsDigits("checker") == checker.ResultValid {
+	if checker.IsDigits("checker") == nil {
 		t.Fail()
 	}
 }
 
 func TestIsDigitsValid(t *testing.T) {
-	if checker.IsDigits("1234") != checker.ResultValid {
+	if checker.IsDigits("1234") != nil {
 		t.Fail()
 	}
 }
