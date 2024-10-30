@@ -11,8 +11,8 @@ import (
 	"strconv"
 )
 
-// CheckerMax is the name of the checker.
-const CheckerMax = "max"
+// tagMax is the tag of the checker.
+const tagMax = "max"
 
 // IsMax checks if the given value is below than the given maximum.
 func IsMax(value interface{}, max float64) error {

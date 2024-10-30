@@ -11,8 +11,8 @@ import (
 	"unicode"
 )
 
-// CheckerDigits is the name of the checker.
-const CheckerDigits = "digits"
+// tagDigits is the tag of the checker.
+const tagDigits = "digits"
 
 // ErrNotDigits indicates that the given string contains non-digit characters.
 var ErrNotDigits = errors.New("please enter a valid number")

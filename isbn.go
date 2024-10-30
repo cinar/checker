@@ -17,8 +17,8 @@ import (
 // How to Verify an ISBN
 // https://www.instructables.com/How-to-verify-a-ISBN/
 
-// CheckerISBN is the name of the checker.
-const CheckerISBN = "isbn"
+// tagISBN is the tag of the checker.
+const tagISBN = "isbn"
 
 // ErrNotISBN indicates that the given value is not a valid ISBN.
 var ErrNotISBN = errors.New("please enter a valid ISBN number")

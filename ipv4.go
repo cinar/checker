@@ -11,8 +11,8 @@ import (
 	"reflect"
 )
 
-// CheckerIPV4 is the name of the checker.
-const CheckerIPV4 = "ipv4"
+// tagIPV4 is the tag of the checker.
+const tagIPV4 = "ipv4"
 
 // ErrNotIPV4 indicates that the given value is not an IPv4 address.
 var ErrNotIPV4 = errors.New("please enter a valid IPv4 address")

@@ -10,8 +10,8 @@ import (
 	"reflect"
 )
 
-// CheckerLuhn is the name of the checker.
-const CheckerLuhn = "luhn"
+// tagLuhn is the tag of the checker.
+const tagLuhn = "luhn"
 
 // ErrNotLuhn indicates that the given number is not valid based on the Luhn algorithm.
 var ErrNotLuhn = errors.New("please enter a valid LUHN")

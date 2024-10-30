@@ -11,8 +11,8 @@ import (
 	"unicode"
 )
 
-// NormalizerTitle is the name of the normalizer.
-const NormalizerTitle = "title"
+// tagTitle is the tag of the normalizer.
+const tagTitle = "title"
 
 // makeTitle makes a normalizer function for the title normalizer.
 func makeTitle(_ string) CheckFunc {

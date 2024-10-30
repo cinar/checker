@@ -11,8 +11,8 @@ import (
 	"reflect"
 )
 
-// CheckerCidr is the name of the checker.
-const CheckerCidr = "cidr"
+// tagCidr is the tag of the checker.
+const tagCidr = "cidr"
 
 // ErrNotCidr indicates that the given value is not a valid CIDR.
 var ErrNotCidr = errors.New("please enter a valid CIDR")

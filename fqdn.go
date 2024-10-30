@@ -12,8 +12,8 @@ import (
 	"strings"
 )
 
-// CheckerFqdn is the name of the checker.
-const CheckerFqdn = "fqdn"
+// tagFqdn is the tag of the checker.
+const tagFqdn = "fqdn"
 
 // ErrNotFqdn indicates that the given string is not a valid FQDN.
 var ErrNotFqdn = errors.New("please enter a valid domain name")

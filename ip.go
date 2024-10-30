@@ -11,8 +11,8 @@ import (
 	"reflect"
 )
 
-// CheckerIP is the name of the checker.
-const CheckerIP = "ip"
+// tagIP is the tag of the checker.
+const tagIP = "ip"
 
 // ErrNotIP indicates that the given value is not an IP address.
 var ErrNotIP = errors.New("please enter a valid IP address")

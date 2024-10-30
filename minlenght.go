@@ -11,8 +11,8 @@ import (
 	"strconv"
 )
 
-// CheckerMinLength is the name of the checker.
-const CheckerMinLength = "min-length"
+// tagMinLength is the tag of the checker.
+const tagMinLength = "min-length"
 
 // IsMinLength checks if the length of the given value is greather than the given minimum length.
 func IsMinLength(value interface{}, minLength int) error {

@@ -11,8 +11,8 @@ import (
 	"reflect"
 )
 
-// CheckerMac is the name of the checker.
-const CheckerMac = "mac"
+// tagMac is the tag of the checker.
+const tagMac = "mac"
 
 // ErrNotMac indicates that the given value is not an MAC address.
 var ErrNotMac = errors.New("please enter a valid MAC address")

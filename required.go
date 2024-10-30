@@ -10,8 +10,8 @@ import (
 	"reflect"
 )
 
-// CheckerRequired is the name of the checker.
-const CheckerRequired = "required"
+// tagRequired is the tag of the checker.
+const tagRequired = "required"
 
 // ErrRequired indicates that the required value is missing.
 var ErrRequired = errors.New("is required")

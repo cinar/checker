@@ -10,8 +10,8 @@ import (
 	"reflect"
 )
 
-// CheckerSame is the name of the checker.
-const CheckerSame = "same"
+// tagSame is the tag of the checker.
+const tagSame = "same"
 
 // ErrNotSame indicates that the given two values are not equal to each other.
 var ErrNotSame = errors.New("does not match the other")

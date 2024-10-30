@@ -12,8 +12,8 @@ import (
 	"strings"
 )
 
-// CheckerCreditCard is the name of the checker.
-const CheckerCreditCard = "credit-card"
+// tagCreditCard is the tag of the checker.
+const tagCreditCard = "credit-card"
 
 // ErrNotCreditCard indicates that the given value is not a valid credit card number.
 var ErrNotCreditCard = errors.New("please enter a valid credit card number")

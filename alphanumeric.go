@@ -11,8 +11,8 @@ import (
 	"unicode"
 )
 
-// CheckerAlphanumeric is the name of the checker.
-const CheckerAlphanumeric = "alphanumeric"
+// tagAlphanumeric is the tag of the checker.
+const tagAlphanumeric = "alphanumeric"
 
 // ErrNotAlphanumeric indicates that the given string contains non-alphanumeric characters.
 var ErrNotAlphanumeric = errors.New("please use only letters and numbers")

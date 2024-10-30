@@ -11,8 +11,8 @@ import (
 	"unicode"
 )
 
-// CheckerASCII is the name of the checker.
-const CheckerASCII = "ascii"
+// tagASCII is the tag of the checker.
+const tagASCII = "ascii"
 
 // ErrNotASCII indicates that the given string contains non-ASCII characters.
 var ErrNotASCII = errors.New("please use standard English characters only")

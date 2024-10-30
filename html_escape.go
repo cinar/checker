@@ -10,8 +10,8 @@ import (
 	"reflect"
 )
 
-// NormalizerHTMLEscape is the name of the normalizer.
-const NormalizerHTMLEscape = "html-escape"
+// tagHTMLEscape is the tag of the normalizer.
+const tagHTMLEscape = "html-escape"
 
 // makeHTMLEscape makes a normalizer function for the HTML escape normalizer.
 func makeHTMLEscape(_ string) CheckFunc {
