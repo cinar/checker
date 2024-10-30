@@ -141,6 +141,8 @@ type User struct {
 }
 ```
 
+<!-- gomarkdoc:embed -->
+
 # Contributing to the Project
 
 Anyone can contribute to Checkers library. Please make sure to read our [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md) guide first. Follow the [How to Contribute to Checker](./CONTRIBUTING.md) to contribute.

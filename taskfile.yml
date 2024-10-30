@@ -26,3 +26,7 @@ tasks:
     cmds:
       - go test -cover -coverprofile=coverage.out ./...
 
+  docs:
+    cmds:
+      - go run github.com/princjef/gomarkdoc/cmd/gomarkdoc@v1.1.0 -e ./...
+
