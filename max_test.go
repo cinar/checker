@@ -16,7 +16,7 @@ func ExampleIsMax() {
 
 	err := checker.IsMax(quantity, 10)
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 

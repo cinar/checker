@@ -14,7 +14,7 @@ import (
 func ExampleIsMac() {
 	err := checker.IsMac("00:00:5e:00:53:01")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 

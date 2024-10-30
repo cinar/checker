@@ -75,7 +75,7 @@ func Check(s interface{}) (Errors, bool) {
 		panic("expecting struct")
 	}
 
-	errors := Errors{}
+	errs := Errors{}
 
 	jobs := []checkerJob{
 		{
@@ -118,14 +118,14 @@ func Check(s interface{}) (Errors, bool) {
 		} else {
 			for _, checker := range initCheckers(job.Config) {
 				if err := checker(job.Value, job.Parent); err != nil {
-					errors[job.Name] = err
+					errs[job.Name] = err
 					break
 				}
 			}
 		}
 	}
 
-	return errors, len(errors) == 0
+	return errs, len(errs) == 0
 }
 
 // initCheckers initializes the checkers provided in the config.

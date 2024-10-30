@@ -60,16 +60,16 @@ func TestCheckInvalid(t *testing.T) {
 
 	person := &Person{}
 
-	mistakes, valid := Check(person)
+	errors, valid := Check(person)
 	if valid {
 		t.Fail()
 	}
 
-	if len(mistakes) != 1 {
+	if len(errors) != 1 {
 		t.Fail()
 	}
 
-	if mistakes["Name"] != ErrRequired {
+	if errors["Name"] != ErrRequired {
 		t.Fail()
 	}
 }
@@ -83,12 +83,12 @@ func TestCheckValid(t *testing.T) {
 		Name: "Onur",
 	}
 
-	mistakes, valid := Check(person)
+	errors, valid := Check(person)
 	if !valid {
 		t.Fail()
 	}
 
-	if len(mistakes) != 0 {
+	if len(errors) != 0 {
 		t.Fail()
 	}
 }
@@ -112,20 +112,20 @@ func TestCheckNestedStruct(t *testing.T) {
 
 	person := &Person{}
 
-	mistakes, valid := Check(person)
+	errors, valid := Check(person)
 	if valid {
 		t.Fail()
 	}
 
-	if len(mistakes) != 2 {
+	if len(errors) != 2 {
 		t.Fail()
 	}
 
-	if mistakes["Name"] != ErrRequired {
+	if errors["Name"] != ErrRequired {
 		t.Fail()
 	}
 
-	if mistakes["Home.Street"] != ErrRequired {
+	if errors["Home.Street"] != ErrRequired {
 		t.Fail()
 	}
 }

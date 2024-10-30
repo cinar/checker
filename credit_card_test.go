@@ -38,7 +38,7 @@ func ExampleIsAnyCreditCard() {
 	err := checker.IsAnyCreditCard("6011111111111117")
 
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 
@@ -64,7 +64,7 @@ func ExampleIsAmexCreditCard() {
 	err := checker.IsAmexCreditCard("378282246310005")
 
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 
@@ -90,7 +90,7 @@ func ExampleIsDinersCreditCard() {
 	err := checker.IsDinersCreditCard("36227206271667")
 
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 func TestIsDinersCreditCardValid(t *testing.T) {
@@ -115,7 +115,7 @@ func ExampleIsDiscoverCreditCard() {
 	err := checker.IsDiscoverCreditCard("6011111111111117")
 
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 func TestIsDiscoverCreditCardValid(t *testing.T) {
@@ -140,7 +140,7 @@ func ExampleIsJcbCreditCard() {
 	err := checker.IsJcbCreditCard("3530111333300000")
 
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 
@@ -166,7 +166,7 @@ func ExampleIsMasterCardCreditCard() {
 	err := checker.IsMasterCardCreditCard("5555555555554444")
 
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 
@@ -192,7 +192,7 @@ func ExampleIsUnionPayCreditCard() {
 	err := checker.IsUnionPayCreditCard("6200000000000005")
 
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 
@@ -218,7 +218,7 @@ func ExampleIsVisaCreditCard() {
 	err := checker.IsVisaCreditCard("4111111111111111")
 
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 func TestIsVisaCreditCardValid(t *testing.T) {

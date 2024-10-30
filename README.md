@@ -37,9 +37,9 @@ type Person struct {
 
 person := &Person{}
 
-mistakes, valid := checker.Check(person)
+errors, valid := checker.Check(person)
 if !valid {
-    // Send the mistakes back to the user
+    // Send the errors back to the user
 }
 ```
 
@@ -333,7 +333,7 @@ import (
 func main() {
 	err := checker.IsASCII("Checker")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -365,7 +365,7 @@ import (
 func main() {
 	err := checker.IsAlphanumeric("ABcd1234")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -398,7 +398,7 @@ func main() {
 	err := checker.IsAmexCreditCard("378282246310005")
 
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -431,7 +431,7 @@ func main() {
 	err := checker.IsAnyCreditCard("6011111111111117")
 
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -463,7 +463,7 @@ import (
 func main() {
 	err := checker.IsCidr("2001:db8::/32")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -495,7 +495,7 @@ import (
 func main() {
 	err := checker.IsDigits("1234")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -528,7 +528,7 @@ func main() {
 	err := checker.IsDinersCreditCard("36227206271667")
 
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -561,7 +561,7 @@ func main() {
 	err := checker.IsDiscoverCreditCard("6011111111111117")
 
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -593,7 +593,7 @@ import (
 func main() {
 	err := checker.IsEmail("user@zdo.com")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -625,7 +625,7 @@ import (
 func main() {
 	err := checker.IsFqdn("zdo.com")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -657,7 +657,7 @@ import (
 func main() {
 	err := checker.IsIP("2001:db8::68")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -689,7 +689,7 @@ import (
 func main() {
 	err := checker.IsIPV4("192.168.1.1")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -722,7 +722,7 @@ func main() {
 	err := checker.IsIPV6("2001:db8::68")
 
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -754,7 +754,7 @@ import (
 func main() {
 	err := checker.IsISBN("1430248270")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -786,7 +786,7 @@ import (
 func main() {
 	err := checker.IsISBN10("1430248270")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -818,7 +818,7 @@ import (
 func main() {
 	err := checker.IsISBN13("9781430248279")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -851,7 +851,7 @@ func main() {
 	err := checker.IsJcbCreditCard("3530111333300000")
 
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -883,7 +883,7 @@ import (
 func main() {
 	err := checker.IsLuhn("4012888888881881")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -915,7 +915,7 @@ import (
 func main() {
 	err := checker.IsMac("00:00:5e:00:53:01")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -948,7 +948,7 @@ func main() {
 	err := checker.IsMasterCardCreditCard("5555555555554444")
 
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -982,7 +982,7 @@ func main() {
 
 	err := checker.IsMax(quantity, 10)
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -1016,7 +1016,7 @@ func main() {
 
 	err := checker.IsMaxLength(s, 4)
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -1050,7 +1050,7 @@ func main() {
 
 	err := checker.IsMin(age, 21)
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -1084,7 +1084,7 @@ func main() {
 
 	err := checker.IsMinLength(s, 4)
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -1150,7 +1150,7 @@ import (
 func main() {
 	err := checker.IsURL("https://zdo.com")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -1183,7 +1183,7 @@ func main() {
 	err := checker.IsUnionPayCreditCard("6200000000000005")
 
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```
@@ -1216,7 +1216,7 @@ func main() {
 	err := checker.IsVisaCreditCard("4111111111111111")
 
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 ```

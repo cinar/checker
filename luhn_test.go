@@ -14,7 +14,7 @@ import (
 func ExampleIsLuhn() {
 	err := checker.IsLuhn("4012888888881881")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 
