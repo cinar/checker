@@ -6,6 +6,7 @@
 package checker
 
 import (
+	"errors"
 	"reflect"
 	"unicode"
 )
@@ -13,18 +14,18 @@ import (
 // CheckerDigits is the name of the checker.
 const CheckerDigits = "digits"
 
-// ResultNotDigits indicates that the given string contains non-digit characters.
-const ResultNotDigits = "NOT_DIGITS"
+// ErrNotDigits indicates that the given string contains non-digit characters.
+var ErrNotDigits = errors.New("please enter a valid number")
 
 // IsDigits checks if the given string consists of only digit characters.
-func IsDigits(value string) Result {
+func IsDigits(value string) error {
 	for _, c := range value {
 		if !unicode.IsDigit(c) {
-			return ResultNotDigits
+			return ErrNotDigits
 		}
 	}
 
-	return ResultValid
+	return nil
 }
 
 // makeDigits makes a checker function for the digits checker.
@@ -33,7 +34,7 @@ func makeDigits(_ string) CheckFunc {
 }
 
 // checkDigits checks if the given string consists of only digit characters.
-func checkDigits(value, _ reflect.Value) Result {
+func checkDigits(value, _ reflect.Value) error {
 	if value.Kind() != reflect.String {
 		panic("string expected")
 	}

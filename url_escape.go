@@ -20,12 +20,12 @@ func makeURLEscape(_ string) CheckFunc {
 
 // normalizeURLEscape applies URL escaping to special characters.
 // Uses net.url.QueryEscape for the actual escape operation.
-func normalizeURLEscape(value, _ reflect.Value) Result {
+func normalizeURLEscape(value, _ reflect.Value) error {
 	if value.Kind() != reflect.String {
 		panic("string expected")
 	}
 
 	value.SetString(url.QueryEscape(value.String()))
 
-	return ResultValid
+	return nil
 }

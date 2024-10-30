@@ -12,17 +12,14 @@ import (
 	"strings"
 )
 
-// Result is a unique textual identifier for the mistake.
-type Result string
+// CheckFunc defines the signature for the checker functions.
+type CheckFunc func(value, parent reflect.Value) error
 
-// CheckFunc defines the checker function.
-type CheckFunc func(value, parent reflect.Value) Result
-
-// MakeFunc defines the maker function.
+// MakeFunc defines the signature for the checker maker functions.
 type MakeFunc func(params string) CheckFunc
 
-// Mistakes provides mapping to checker result for the invalid fields.
-type Mistakes map[string]Result
+// Errors provides a mapping of the checker errors keyed by the field names.
+type Errors map[string]error
 
 type checkerJob struct {
 	Parent reflect.Value
@@ -31,10 +28,7 @@ type checkerJob struct {
 	Config string
 }
 
-// ResultValid result indicates that the user input is valid.
-const ResultValid Result = "VALID"
-
-// makers provides mapping to maker function for the checkers.
+// makers provides a mapping of the maker functions keyed by the respective checker names.
 var makers = map[string]MakeFunc{
 	CheckerAlphanumeric:    makeAlphanumeric,
 	CheckerASCII:           makeASCII,
@@ -74,14 +68,14 @@ func Register(name string, maker MakeFunc) {
 	makers[name] = maker
 }
 
-// Check checks the given struct based on the checkers listed in each field's strcut tag named checkers.
-func Check(s interface{}) (Mistakes, bool) {
+// Check function checks the given struct based on the checkers listed in field tag names.
+func Check(s interface{}) (Errors, bool) {
 	root := reflect.Indirect(reflect.ValueOf(s))
 	if root.Kind() != reflect.Struct {
 		panic("expecting struct")
 	}
 
-	mistakes := Mistakes{}
+	errors := Errors{}
 
 	jobs := []checkerJob{
 		{
@@ -123,15 +117,15 @@ func Check(s interface{}) (Mistakes, bool) {
 			}
 		} else {
 			for _, checker := range initCheckers(job.Config) {
-				if result := checker(job.Value, job.Parent); result != ResultValid {
-					mistakes[job.Name] = result
+				if err := checker(job.Value, job.Parent); err != nil {
+					errors[job.Name] = err
 					break
 				}
 			}
 		}
 	}
 
-	return mistakes, len(mistakes) == 0
+	return errors, len(errors) == 0
 }
 
 // initCheckers initializes the checkers provided in the config.

@@ -6,6 +6,7 @@
 package checker
 
 import (
+	"fmt"
 	"reflect"
 	"strconv"
 )
@@ -13,11 +14,8 @@ import (
 // CheckerMin is the name of the checker.
 const CheckerMin = "min"
 
-// ResultNotMin indicates that the given value is below the defined minimum.
-const ResultNotMin = "NOT_MIN"
-
 // IsMin checks if the given value is above than the given minimum.
-func IsMin(value interface{}, min float64) Result {
+func IsMin(value interface{}, min float64) error {
 	return checkMin(reflect.Indirect(reflect.ValueOf(value)), reflect.ValueOf(nil), min)
 }
 
@@ -28,18 +26,18 @@ func makeMin(config string) CheckFunc {
 		panic("unable to parse min")
 	}
 
-	return func(value, parent reflect.Value) Result {
+	return func(value, parent reflect.Value) error {
 		return checkMin(value, parent, min)
 	}
 }
 
 // checkMin checks if the given value is greather than the given minimum.
-func checkMin(value, _ reflect.Value, min float64) Result {
+func checkMin(value, _ reflect.Value, min float64) error {
 	n := numberOf(value)
 
 	if n < min {
-		return ResultNotMin
+		return fmt.Errorf("please enter a number less than %g", min)
 	}
 
-	return ResultValid
+	return nil
 }

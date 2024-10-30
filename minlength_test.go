@@ -14,9 +14,8 @@ import (
 func ExampleIsMinLength() {
 	s := "1234"
 
-	result := checker.IsMinLength(s, 4)
-
-	if result != checker.ResultValid {
+	err := checker.IsMinLength(s, 4)
+	if err != nil {
 		// Send the mistakes back to the user
 	}
 }
@@ -24,7 +23,7 @@ func ExampleIsMinLength() {
 func TestIsMinLengthValid(t *testing.T) {
 	s := "1234"
 
-	if checker.IsMinLength(s, 4) != checker.ResultValid {
+	if checker.IsMinLength(s, 4) != nil {
 		t.Fail()
 	}
 }

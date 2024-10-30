@@ -12,21 +12,20 @@ import (
 )
 
 func ExampleIsIP() {
-	result := checker.IsIP("2001:db8::68")
-
-	if result != checker.ResultValid {
+	err := checker.IsIP("2001:db8::68")
+	if err != nil {
 		// Send the mistakes back to the user
 	}
 }
 
 func TestIsIPInvalid(t *testing.T) {
-	if checker.IsIP("900.800.200.100") == checker.ResultValid {
+	if checker.IsIP("900.800.200.100") == nil {
 		t.Fail()
 	}
 }
 
 func TestIsIPValid(t *testing.T) {
-	if checker.IsIP("2001:db8::68") != checker.ResultValid {
+	if checker.IsIP("2001:db8::68") != nil {
 		t.Fail()
 	}
 }

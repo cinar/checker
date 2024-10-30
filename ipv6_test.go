@@ -12,27 +12,27 @@ import (
 )
 
 func ExampleIsIPV6() {
-	result := checker.IsIPV6("2001:db8::68")
+	err := checker.IsIPV6("2001:db8::68")
 
-	if result != checker.ResultValid {
+	if err != nil {
 		// Send the mistakes back to the user
 	}
 }
 
 func TestIsIPV6Invalid(t *testing.T) {
-	if checker.IsIPV6("900.800.200.100") == checker.ResultValid {
+	if checker.IsIPV6("900.800.200.100") == nil {
 		t.Fail()
 	}
 }
 
 func TestIsIPV6InvalidV4(t *testing.T) {
-	if checker.IsIPV6("192.168.1.1") == checker.ResultValid {
+	if checker.IsIPV6("192.168.1.1") == nil {
 		t.Fail()
 	}
 }
 
 func TestIsIPV6Valid(t *testing.T) {
-	if checker.IsIPV6("2001:db8::68") != checker.ResultValid {
+	if checker.IsIPV6("2001:db8::68") != nil {
 		t.Fail()
 	}
 }

@@ -6,6 +6,7 @@
 package checker
 
 import (
+	"fmt"
 	"reflect"
 	"strconv"
 )
@@ -13,11 +14,8 @@ import (
 // CheckerMinLength is the name of the checker.
 const CheckerMinLength = "min-length"
 
-// ResultNotMinLength indicates that the length of the given value is below the defined number.
-const ResultNotMinLength = "NOT_MIN_LENGTH"
-
 // IsMinLength checks if the length of the given value is greather than the given minimum length.
-func IsMinLength(value interface{}, minLength int) Result {
+func IsMinLength(value interface{}, minLength int) error {
 	return checkMinLength(reflect.Indirect(reflect.ValueOf(value)), reflect.ValueOf(nil), minLength)
 }
 
@@ -28,17 +26,17 @@ func makeMinLength(config string) CheckFunc {
 		panic("unable to parse min length value")
 	}
 
-	return func(value, parent reflect.Value) Result {
+	return func(value, parent reflect.Value) error {
 		return checkMinLength(value, parent, minLength)
 	}
 }
 
 // checkMinLength checks if the length of the given value is greather than the given minimum length.
 // The function uses the reflect.Value.Len() function to determine the length of the value.
-func checkMinLength(value, _ reflect.Value, minLength int) Result {
+func checkMinLength(value, _ reflect.Value, minLength int) error {
 	if value.Len() < minLength {
-		return ResultNotMinLength
+		return fmt.Errorf("please enter at least %d characters", minLength)
 	}
 
-	return ResultValid
+	return nil
 }

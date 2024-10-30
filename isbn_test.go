@@ -6,112 +6,113 @@
 package checker_test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/cinar/checker"
 )
 
 func ExampleIsISBN10() {
-	result := checker.IsISBN10("1430248270")
-	if result != checker.ResultValid {
+	err := checker.IsISBN10("1430248270")
+	if err != nil {
 		// Send the mistakes back to the user
 	}
 }
 
 func TestIsISBN10Valid(t *testing.T) {
-	result := checker.IsISBN10("1430248270")
-	if result != checker.ResultValid {
+	err := checker.IsISBN10("1430248270")
+	if err != nil {
 		t.Fail()
 	}
 }
 
 func TestIsISBN10ValidX(t *testing.T) {
-	result := checker.IsISBN10("007462542X")
-	if result != checker.ResultValid {
+	err := checker.IsISBN10("007462542X")
+	if err != nil {
 		t.Fail()
 	}
 }
 
 func TestIsISBN10ValidWithDashes(t *testing.T) {
-	result := checker.IsISBN10("1-4302-4827-0")
-	if result != checker.ResultValid {
+	err := checker.IsISBN10("1-4302-4827-0")
+	if err != nil {
 		t.Fail()
 	}
 }
 
 func TestIsISBN10InvalidLength(t *testing.T) {
-	result := checker.IsISBN10("143024827")
-	if result != checker.ResultNotISBN {
+	err := checker.IsISBN10("143024827")
+	if !errors.Is(err, checker.ErrNotISBN) {
 		t.Fail()
 	}
 }
 
 func TestIsISBN10InvalidCheck(t *testing.T) {
-	result := checker.IsISBN10("1430248272")
-	if result != checker.ResultNotISBN {
+	err := checker.IsISBN10("1430248272")
+	if !errors.Is(err, checker.ErrNotISBN) {
 		t.Fail()
 	}
 }
 
 func ExampleIsISBN13() {
-	result := checker.IsISBN13("9781430248279")
-	if result != checker.ResultValid {
+	err := checker.IsISBN13("9781430248279")
+	if err != nil {
 		// Send the mistakes back to the user
 	}
 }
 
 func TestIsISBN13Valid(t *testing.T) {
-	result := checker.IsISBN13("9781430248279")
-	if result != checker.ResultValid {
+	err := checker.IsISBN13("9781430248279")
+	if err != nil {
 		t.Fail()
 	}
 }
 
 func TestIsISBN13ValidWithDashes(t *testing.T) {
-	result := checker.IsISBN13("978-1-4302-4827-9")
-	if result != checker.ResultValid {
+	err := checker.IsISBN13("978-1-4302-4827-9")
+	if err != nil {
 		t.Fail()
 	}
 }
 
 func TestIsISBN13InvalidLength(t *testing.T) {
-	result := checker.IsISBN13("978143024827")
-	if result != checker.ResultNotISBN {
+	err := checker.IsISBN13("978143024827")
+	if !errors.Is(err, checker.ErrNotISBN) {
 		t.Fail()
 	}
 }
 
 func TestIsISBN13InvalidCheck(t *testing.T) {
-	result := checker.IsISBN13("9781430248272")
-	if result != checker.ResultNotISBN {
+	err := checker.IsISBN13("9781430248272")
+	if !errors.Is(err, checker.ErrNotISBN) {
 		t.Fail()
 	}
 }
 
 func ExampleIsISBN() {
-	result := checker.IsISBN("1430248270")
-	if result != checker.ResultValid {
+	err := checker.IsISBN("1430248270")
+	if err != nil {
 		// Send the mistakes back to the user
 	}
 }
 
 func TestIsISBNValid10(t *testing.T) {
-	result := checker.IsISBN("1430248270")
-	if result != checker.ResultValid {
+	err := checker.IsISBN("1430248270")
+	if err != nil {
 		t.Fail()
 	}
 }
 
 func TestIsISBNValid13(t *testing.T) {
-	result := checker.IsISBN("9781430248279")
-	if result != checker.ResultValid {
+	err := checker.IsISBN("9781430248279")
+	if err != nil {
 		t.Fail()
 	}
 }
 
 func TestIsISBNInvalidLenght(t *testing.T) {
-	result := checker.IsISBN("978143024827")
-	if result != checker.ResultNotISBN {
+	err := checker.IsISBN("978143024827")
+	if err != checker.ErrNotISBN {
 		t.Fail()
 	}
 }

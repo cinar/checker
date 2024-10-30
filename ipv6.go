@@ -6,6 +6,7 @@
 package checker
 
 import (
+	"errors"
 	"net"
 	"reflect"
 )
@@ -13,21 +14,21 @@ import (
 // CheckerIPV6 is the name of the checker.
 const CheckerIPV6 = "ipv6"
 
-// ResultNotIPV6 indicates that the given value is not an IPv6 address.
-const ResultNotIPV6 = "NOT_IP_V6"
+// ErrNotIPV6 indicates that the given value is not an IPv6 address.
+var ErrNotIPV6 = errors.New("please enter a valid IPv6 address")
 
 // IsIPV6 checks if the given value is an IPv6 address.
-func IsIPV6(value string) Result {
+func IsIPV6(value string) error {
 	ip := net.ParseIP(value)
 	if ip == nil {
-		return ResultNotIPV6
+		return ErrNotIPV6
 	}
 
 	if ip.To4() != nil {
-		return ResultNotIPV6
+		return ErrNotIPV6
 	}
 
-	return ResultValid
+	return nil
 }
 
 // makeIPV6 makes a checker function for the ipV6 checker.
@@ -36,7 +37,7 @@ func makeIPV6(_ string) CheckFunc {
 }
 
 // checkIPV6 checks if the given value is an IPv6 address.
-func checkIPV6(value, _ reflect.Value) Result {
+func checkIPV6(value, _ reflect.Value) error {
 	if value.Kind() != reflect.String {
 		panic("string expected")
 	}

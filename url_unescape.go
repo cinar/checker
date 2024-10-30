@@ -20,7 +20,7 @@ func makeURLUnescape(_ string) CheckFunc {
 
 // normalizeURLUnescape applies URL unescaping to special characters.
 // Uses url.QueryUnescape for the actual unescape operation.
-func normalizeURLUnescape(value, _ reflect.Value) Result {
+func normalizeURLUnescape(value, _ reflect.Value) error {
 	if value.Kind() != reflect.String {
 		panic("string expected")
 	}
@@ -30,5 +30,5 @@ func normalizeURLUnescape(value, _ reflect.Value) Result {
 		value.SetString(unescaped)
 	}
 
-	return ResultValid
+	return nil
 }

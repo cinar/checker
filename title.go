@@ -20,7 +20,7 @@ func makeTitle(_ string) CheckFunc {
 }
 
 // normalizeTitle maps the first letter of each word to their upper case.
-func normalizeTitle(value, _ reflect.Value) Result {
+func normalizeTitle(value, _ reflect.Value) error {
 	if value.Kind() != reflect.String {
 		panic("string expected")
 	}
@@ -45,5 +45,5 @@ func normalizeTitle(value, _ reflect.Value) Result {
 
 	value.SetString(sb.String())
 
-	return ResultValid
+	return nil
 }

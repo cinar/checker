@@ -30,8 +30,8 @@ func TestInitCheckersKnwon(t *testing.T) {
 }
 
 func TestRegister(t *testing.T) {
-	var checker CheckFunc = func(_, _ reflect.Value) Result {
-		return ResultValid
+	var checker CheckFunc = func(_, _ reflect.Value) error {
+		return nil
 	}
 
 	var maker MakeFunc = func(_ string) CheckFunc {
@@ -69,7 +69,7 @@ func TestCheckInvalid(t *testing.T) {
 		t.Fail()
 	}
 
-	if mistakes["Name"] != ResultRequired {
+	if mistakes["Name"] != ErrRequired {
 		t.Fail()
 	}
 }
@@ -121,11 +121,11 @@ func TestCheckNestedStruct(t *testing.T) {
 		t.Fail()
 	}
 
-	if mistakes["Name"] != ResultRequired {
+	if mistakes["Name"] != ErrRequired {
 		t.Fail()
 	}
 
-	if mistakes["Home.Street"] != ResultRequired {
+	if mistakes["Home.Street"] != ErrRequired {
 		t.Fail()
 	}
 }

@@ -12,27 +12,26 @@ import (
 )
 
 func ExampleIsIPV4() {
-	result := checker.IsIPV4("192.168.1.1")
-
-	if result != checker.ResultValid {
+	err := checker.IsIPV4("192.168.1.1")
+	if err != nil {
 		// Send the mistakes back to the user
 	}
 }
 
 func TestIsIPV4Invalid(t *testing.T) {
-	if checker.IsIPV4("900.800.200.100") == checker.ResultValid {
+	if checker.IsIPV4("900.800.200.100") == nil {
 		t.Fail()
 	}
 }
 
 func TestIsIPV4InvalidV6(t *testing.T) {
-	if checker.IsIPV4("2001:db8::68") == checker.ResultValid {
+	if checker.IsIPV4("2001:db8::68") == nil {
 		t.Fail()
 	}
 }
 
 func TestIsIPV4Valid(t *testing.T) {
-	if checker.IsIPV4("192.168.1.1") != checker.ResultValid {
+	if checker.IsIPV4("192.168.1.1") != nil {
 		t.Fail()
 	}
 }

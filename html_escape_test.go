@@ -13,7 +13,6 @@ import (
 
 func TestNormalizeHTMLEscapeNonString(t *testing.T) {
 	defer checker.FailIfNoPanic(t)
-
 	type Comment struct {
 		Body int `checkers:"html-escape"`
 	}

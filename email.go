@@ -6,6 +6,7 @@
 package checker
 
 import (
+	"errors"
 	"reflect"
 	"regexp"
 	"strings"
@@ -14,8 +15,8 @@ import (
 // CheckerEmail is the name of the checker.
 const CheckerEmail = "email"
 
-// ResultNotEmail indicates that the given string is not a valid email.
-const ResultNotEmail = "NOT_EMAIL"
+// ErrNotEmail indicates that the given string is not a valid email.
+var ErrNotEmail = errors.New("please enter a valid email address")
 
 // ipV6Prefix is the IPv6 prefix for the domain.
 const ipV6Prefix = "[IPv6:"
@@ -24,15 +25,15 @@ const ipV6Prefix = "[IPv6:"
 var notQuotedChars = regexp.MustCompile("[a-zA-Z0-9!#$%&'*\\+\\-/=?^_`{|}~]")
 
 // IsEmail checks if the given string is an email address.
-func IsEmail(email string) Result {
+func IsEmail(email string) error {
 	atIndex := strings.LastIndex(email, "@")
 	if atIndex == -1 || atIndex == len(email)-1 {
-		return ResultNotEmail
+		return ErrNotEmail
 	}
 
 	domain := email[atIndex+1:]
-	if isValidEmailDomain(domain) != ResultValid {
-		return ResultNotEmail
+	if isValidEmailDomain(domain) != nil {
+		return ErrNotEmail
 	}
 
 	return isValidEmailUser(email[:atIndex])
@@ -44,7 +45,7 @@ func makeEmail(_ string) CheckFunc {
 }
 
 // checkEmail checks if the given string is an email address.
-func checkEmail(value, _ reflect.Value) Result {
+func checkEmail(value, _ reflect.Value) error {
 	if value.Kind() != reflect.String {
 		panic("string expected")
 	}
@@ -53,9 +54,9 @@ func checkEmail(value, _ reflect.Value) Result {
 }
 
 // isValidEmailDomain checks if the email domain is a IPv4 or IPv6 address, or a FQDN.
-func isValidEmailDomain(domain string) Result {
+func isValidEmailDomain(domain string) error {
 	if len(domain) > 255 {
-		return ResultNotEmail
+		return ErrNotEmail
 	}
 
 	if domain[0] == '[' {
@@ -72,22 +73,22 @@ func isValidEmailDomain(domain string) Result {
 }
 
 // isValidEmailUser checks if the email user is valid.
-func isValidEmailUser(user string) Result {
+func isValidEmailUser(user string) error {
 	// Cannot be empty user
 	if user == "" || len(user) > 64 {
-		return ResultNotEmail
+		return ErrNotEmail
 	}
 
 	// Cannot start or end with dot
 	if user[0] == '.' || user[len(user)-1] == '.' {
-		return ResultNotEmail
+		return ErrNotEmail
 	}
 
 	return isValidEmailUserCharacters(user)
 }
 
 // isValidEmailUserCharacters if the email user characters are valid.
-func isValidEmailUserCharacters(user string) Result {
+func isValidEmailUserCharacters(user string) error {
 	quoted := false
 	start := true
 	prev := ' '
@@ -95,7 +96,7 @@ func isValidEmailUserCharacters(user string) Result {
 	for _, c := range user {
 		// Cannot have a double dot unless quoted
 		if !quoted && c == '.' && prev == '.' {
-			return ResultNotEmail
+			return ErrNotEmail
 		}
 
 		if start {
@@ -112,7 +113,7 @@ func isValidEmailUserCharacters(user string) Result {
 			if c == '.' {
 				start = true
 			} else if !notQuotedChars.MatchString(string(c)) {
-				return ResultNotEmail
+				return ErrNotEmail
 			}
 		} else {
 			if c == '"' && prev != '\\' {
@@ -123,5 +124,5 @@ func isValidEmailUserCharacters(user string) Result {
 		prev = c
 	}
 
-	return ResultValid
+	return nil
 }

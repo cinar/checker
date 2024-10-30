@@ -12,9 +12,8 @@ import (
 )
 
 func ExampleIsEmail() {
-	result := checker.IsEmail("user@zdo.com")
-
-	if result != checker.ResultValid {
+	err := checker.IsEmail("user@zdo.com")
+	if err != nil {
 		// Send the mistakes back to the user
 	}
 }
@@ -69,7 +68,7 @@ func TestIsEmailValid(t *testing.T) {
 	}
 
 	for _, email := range validEmails {
-		if checker.IsEmail(email) != checker.ResultValid {
+		if checker.IsEmail(email) != nil {
 			t.Fatal(email)
 		}
 	}
@@ -93,7 +92,7 @@ func TestIsEmailInvalid(t *testing.T) {
 	}
 
 	for _, email := range validEmails {
-		if checker.IsEmail(email) == checker.ResultValid {
+		if checker.IsEmail(email) == nil {
 			t.Fatal(email)
 		}
 	}

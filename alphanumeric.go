@@ -6,6 +6,7 @@
 package checker
 
 import (
+	"errors"
 	"reflect"
 	"unicode"
 )
@@ -13,18 +14,18 @@ import (
 // CheckerAlphanumeric is the name of the checker.
 const CheckerAlphanumeric = "alphanumeric"
 
-// ResultNotAlphanumeric indicates that the given string contains non-alphanumeric characters.
-const ResultNotAlphanumeric = "NOT_ALPHANUMERIC"
+// ErrNotAlphanumeric indicates that the given string contains non-alphanumeric characters.
+var ErrNotAlphanumeric = errors.New("please use only letters and numbers")
 
 // IsAlphanumeric checks if the given string consists of only alphanumeric characters.
-func IsAlphanumeric(value string) Result {
+func IsAlphanumeric(value string) error {
 	for _, c := range value {
 		if !unicode.IsDigit(c) && !unicode.IsLetter(c) {
-			return ResultNotAlphanumeric
+			return ErrNotAlphanumeric
 		}
 	}
 
-	return ResultValid
+	return nil
 }
 
 // makeAlphanumeric makes a checker function for the alphanumeric checker.
@@ -33,7 +34,7 @@ func makeAlphanumeric(_ string) CheckFunc {
 }
 
 // checkAlphanumeric checks if the given string consists of only alphanumeric characters.
-func checkAlphanumeric(value, _ reflect.Value) Result {
+func checkAlphanumeric(value, _ reflect.Value) error {
 	if value.Kind() != reflect.String {
 		panic("string expected")
 	}

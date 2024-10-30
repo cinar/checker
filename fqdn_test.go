@@ -12,63 +12,62 @@ import (
 )
 
 func ExampleIsFqdn() {
-	result := checker.IsFqdn("zdo.com")
-
-	if result != checker.ResultValid {
+	err := checker.IsFqdn("zdo.com")
+	if err != nil {
 		// Send the mistakes back to the user
 	}
 }
 
 func TestCheckFdqnWithoutTld(t *testing.T) {
-	if checker.IsFqdn("abcd") != checker.ResultNotFqdn {
+	if checker.IsFqdn("abcd") == nil {
 		t.Fail()
 	}
 }
 
 func TestCheckFdqnShortTld(t *testing.T) {
-	if checker.IsFqdn("abcd.c") != checker.ResultNotFqdn {
+	if checker.IsFqdn("abcd.c") == nil {
 		t.Fail()
 	}
 }
 
 func TestCheckFdqnNumericTld(t *testing.T) {
-	if checker.IsFqdn("abcd.1234") != checker.ResultNotFqdn {
+	if checker.IsFqdn("abcd.1234") == nil {
 		t.Fail()
 	}
 }
 
 func TestCheckFdqnLong(t *testing.T) {
-	if checker.IsFqdn("abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd.com") != checker.ResultNotFqdn {
+	if checker.IsFqdn("abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd.com") == nil {
 		t.Fail()
 	}
 }
 
 func TestCheckFdqnInvalidCharacters(t *testing.T) {
-	if checker.IsFqdn("ab_cd.com") != checker.ResultNotFqdn {
+	if checker.IsFqdn("ab_cd.com") == nil {
 		t.Fail()
 	}
 }
 
 func TestCheckFdqnStaringWithHyphen(t *testing.T) {
-	if checker.IsFqdn("-abcd.com") != checker.ResultNotFqdn {
+	if checker.IsFqdn("-abcd.com") == nil {
 		t.Fail()
 	}
 }
 
 func TestCheckFdqnStaringEndingWithHyphen(t *testing.T) {
-	if checker.IsFqdn("abcd-.com") != checker.ResultNotFqdn {
+	if checker.IsFqdn("abcd-.com") == nil {
 		t.Fail()
 	}
 }
 
 func TestCheckFdqnStartingWithDot(t *testing.T) {
-	if checker.IsFqdn(".abcd.com") != checker.ResultNotFqdn {
+	if checker.IsFqdn(".abcd.com") == nil {
 		t.Fail()
 	}
 }
 
 func TestCheckFdqnEndingWithDot(t *testing.T) {
-	if checker.IsFqdn("abcd.com.") != checker.ResultNotFqdn {
+	if checker.IsFqdn("abcd.com.") == nil {
 		t.Fail()
 	}
 }

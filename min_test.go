@@ -14,9 +14,8 @@ import (
 func ExampleIsMin() {
 	age := 45
 
-	result := checker.IsMin(age, 21)
-
-	if result != checker.ResultValid {
+	err := checker.IsMin(age, 21)
+	if err != nil {
 		// Send the mistakes back to the user
 	}
 }
@@ -24,7 +23,7 @@ func ExampleIsMin() {
 func TestIsMinValid(t *testing.T) {
 	n := 45
 
-	if checker.IsMin(n, 21) != checker.ResultValid {
+	if checker.IsMin(n, 21) != nil {
 		t.Fail()
 	}
 }

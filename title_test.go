@@ -23,7 +23,7 @@ func TestNormalizeTitleNonString(t *testing.T) {
 	checker.Check(book)
 }
 
-func TestNormalizeTitleResultValid(t *testing.T) {
+func TestNormalizeTitleErrValid(t *testing.T) {
 	type Book struct {
 		Chapter string `checkers:"title"`
 	}

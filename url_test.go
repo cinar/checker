@@ -12,22 +12,22 @@ import (
 )
 
 func ExampleIsURL() {
-	result := checker.IsURL("https://zdo.com")
-	if result != checker.ResultValid {
+	err := checker.IsURL("https://zdo.com")
+	if err != nil {
 		// Send the mistakes back to the user
 	}
 }
 
 func TestIsURLValid(t *testing.T) {
-	result := checker.IsURL("https://zdo.com")
-	if result != checker.ResultValid {
+	err := checker.IsURL("https://zdo.com")
+	if err != nil {
 		t.Fail()
 	}
 }
 
 func TestIsURLInvalid(t *testing.T) {
-	result := checker.IsURL("https:://index.html")
-	if result == checker.ResultValid {
+	err := checker.IsURL("https:://index.html")
+	if err == nil {
 		t.Fail()
 	}
 }

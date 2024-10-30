@@ -6,6 +6,7 @@
 package checker
 
 import (
+	"errors"
 	"net"
 	"reflect"
 )
@@ -13,17 +14,17 @@ import (
 // CheckerCidr is the name of the checker.
 const CheckerCidr = "cidr"
 
-// ResultNotCidr indicates that the given value is not a valid CIDR.
-const ResultNotCidr = "NOT_CIDR"
+// ErrNotCidr indicates that the given value is not a valid CIDR.
+var ErrNotCidr = errors.New("please enter a valid CIDR")
 
 // IsCidr checker checks if the value is a valid CIDR notation IP address and prefix length.
-func IsCidr(value string) Result {
+func IsCidr(value string) error {
 	_, _, err := net.ParseCIDR(value)
 	if err != nil {
-		return ResultNotCidr
+		return ErrNotCidr
 	}
 
-	return ResultValid
+	return nil
 }
 
 // makeCidr makes a checker function for the ip checker.
@@ -32,7 +33,7 @@ func makeCidr(_ string) CheckFunc {
 }
 
 // checkCidr checker checks if the value is a valid CIDR notation IP address and prefix length.
-func checkCidr(value, _ reflect.Value) Result {
+func checkCidr(value, _ reflect.Value) error {
 	if value.Kind() != reflect.String {
 		panic("string expected")
 	}

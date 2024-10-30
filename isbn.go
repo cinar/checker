@@ -6,6 +6,7 @@
 package checker
 
 import (
+	"errors"
 	"reflect"
 	"strings"
 )
@@ -19,15 +20,15 @@ import (
 // CheckerISBN is the name of the checker.
 const CheckerISBN = "isbn"
 
-// ResultNotISBN indicates that the given value is not a valid ISBN.
-const ResultNotISBN = "NOT_ISBN"
+// ErrNotISBN indicates that the given value is not a valid ISBN.
+var ErrNotISBN = errors.New("please enter a valid ISBN number")
 
 // IsISBN10 checks if the given value is a valid ISBN-10 number.
-func IsISBN10(value string) Result {
+func IsISBN10(value string) error {
 	value = strings.ReplaceAll(value, "-", "")
 
 	if len(value) != 10 {
-		return ResultNotISBN
+		return ErrNotISBN
 	}
 
 	digits := []rune(value)
@@ -39,18 +40,18 @@ func IsISBN10(value string) Result {
 	}
 
 	if sum%11 != 0 {
-		return ResultNotISBN
+		return ErrNotISBN
 	}
 
-	return ResultValid
+	return nil
 }
 
 // IsISBN13 checks if the given value is a valid ISBN-13 number.
-func IsISBN13(value string) Result {
+func IsISBN13(value string) error {
 	value = strings.ReplaceAll(value, "-", "")
 
 	if len(value) != 13 {
-		return ResultNotISBN
+		return ErrNotISBN
 	}
 
 	digits := []rune(value)
@@ -66,14 +67,14 @@ func IsISBN13(value string) Result {
 	}
 
 	if sum%10 != 0 {
-		return ResultNotISBN
+		return ErrNotISBN
 	}
 
-	return ResultValid
+	return nil
 }
 
 // IsISBN checks if the given value is a valid ISBN number.
-func IsISBN(value string) Result {
+func IsISBN(value string) error {
 	value = strings.ReplaceAll(value, "-", "")
 
 	if len(value) == 10 {
@@ -82,7 +83,7 @@ func IsISBN(value string) Result {
 		return IsISBN13(value)
 	}
 
-	return ResultNotISBN
+	return ErrNotISBN
 }
 
 // isbnDigitToInt returns the integer value of given ISBN digit.
@@ -100,13 +101,13 @@ func makeISBN(config string) CheckFunc {
 		panic("invalid format")
 	}
 
-	return func(value, parent reflect.Value) Result {
+	return func(value, parent reflect.Value) error {
 		return checkISBN(value, parent, config)
 	}
 }
 
 // checkISBN checks if the given value is a valid ISBN number.
-func checkISBN(value, _ reflect.Value, mode string) Result {
+func checkISBN(value, _ reflect.Value, mode string) error {
 	if value.Kind() != reflect.String {
 		panic("string expected")
 	}

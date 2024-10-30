@@ -12,21 +12,20 @@ import (
 )
 
 func ExampleIsAlphanumeric() {
-	result := checker.IsAlphanumeric("ABcd1234")
-
-	if result != checker.ResultValid {
+	err := checker.IsAlphanumeric("ABcd1234")
+	if err != nil {
 		// Send the mistakes back to the user
 	}
 }
 
 func TestIsAlphanumericInvalid(t *testing.T) {
-	if checker.IsAlphanumeric("-/") == checker.ResultValid {
+	if checker.IsAlphanumeric("-/") == nil {
 		t.Fail()
 	}
 }
 
 func TestIsAlphanumericValid(t *testing.T) {
-	if checker.IsAlphanumeric("ABcd1234") != checker.ResultValid {
+	if checker.IsAlphanumeric("ABcd1234") != nil {
 		t.Fail()
 	}
 }
