@@ -1,7 +1,7 @@
 [![GoDoc](https://godoc.org/github.com/cinar/checker?status.svg)](https://godoc.org/github.com/cinar/checker)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Go Report Card](https://goreportcard.com/badge/github.com/cinar/checker)](https://goreportcard.com/report/github.com/cinar/checker)
-![Go CI](https://github.com/cinar/checker/actions/workflows/go.yml/badge.svg)
+![Go CI](https://github.com/cinar/checker/actions/workflows/ci.yml/badge.svg)
 [![codecov](https://codecov.io/gh/cinar/checker/branch/main/graph/badge.svg?token=VO9BYBHJHE)](https://codecov.io/gh/cinar/checker)
 
 # Checker
