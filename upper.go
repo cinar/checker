@@ -10,8 +10,8 @@ import (
 	"strings"
 )
 
-// NormalizerUpper is the name of the normalizer.
-const NormalizerUpper = "upper"
+// tagUpper is the tag of the normalizer.
+const tagUpper = "upper"
 
 // makeUpper makes a normalizer function for the upper normalizer.
 func makeUpper(_ string) CheckFunc {

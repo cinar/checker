@@ -10,8 +10,8 @@ import (
 	"strings"
 )
 
-// NormalizerLower is the name of the normalizer.
-const NormalizerLower = "lower"
+// tagLower is the tag of the normalizer.
+const tagLower = "lower"
 
 // makeLower makes a normalizer function for the lower normalizer.
 func makeLower(_ string) CheckFunc {

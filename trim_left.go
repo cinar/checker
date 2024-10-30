@@ -10,8 +10,8 @@ import (
 	"strings"
 )
 
-// NormalizerTrimLeft is the name of the normalizer.
-const NormalizerTrimLeft = "trim-left"
+// tagTrimLeft is the tag of the normalizer.
+const tagTrimLeft = "trim-left"
 
 // makeTrimLeft makes a normalizer function for the trim left normalizer.
 func makeTrimLeft(_ string) CheckFunc {

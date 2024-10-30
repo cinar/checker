@@ -10,8 +10,8 @@ import (
 	"reflect"
 )
 
-// NormalizerURLUnescape is the name of the normalizer.
-const NormalizerURLUnescape = "url-unescape"
+// tagURLUnescape is the tag of the normalizer.
+const tagURLUnescape = "url-unescape"
 
 // makeURLUnescape makes a normalizer function for the URL unscape normalizer.
 func makeURLUnescape(_ string) CheckFunc {

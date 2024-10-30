@@ -12,8 +12,8 @@ import (
 	"strings"
 )
 
-// CheckerEmail is the name of the checker.
-const CheckerEmail = "email"
+// tagEmail is the tag of the checker.
+const tagEmail = "email"
 
 // ErrNotEmail indicates that the given string is not a valid email.
 var ErrNotEmail = errors.New("please enter a valid email address")

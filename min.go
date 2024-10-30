@@ -11,8 +11,8 @@ import (
 	"strconv"
 )
 
-// CheckerMin is the name of the checker.
-const CheckerMin = "min"
+// tagMin is the tag of the checker.
+const tagMin = "min"
 
 // IsMin checks if the given value is above than the given minimum.
 func IsMin(value interface{}, min float64) error {

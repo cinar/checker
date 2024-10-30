@@ -11,8 +11,8 @@ import (
 	"reflect"
 )
 
-// CheckerIPV6 is the name of the checker.
-const CheckerIPV6 = "ipv6"
+// tagIPV6 is the tag of the checker.
+const tagIPV6 = "ipv6"
 
 // ErrNotIPV6 indicates that the given value is not an IPv6 address.
 var ErrNotIPV6 = errors.New("please enter a valid IPv6 address")

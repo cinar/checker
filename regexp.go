@@ -11,8 +11,8 @@ import (
 	"regexp"
 )
 
-// CheckerRegexp is the name of the checker.
-const CheckerRegexp = "regexp"
+// tagRegexp is the tag of the checker.
+const tagRegexp = "regexp"
 
 // ErrNotMatch indicates that the given string does not match the regexp pattern.
 var ErrNotMatch = errors.New("please enter a valid input")

@@ -11,8 +11,8 @@ import (
 	"strconv"
 )
 
-// CheckerMaxLength is the name of the checker.
-const CheckerMaxLength = "max-length"
+// tagMaxLength is the tag of the checker.
+const tagMaxLength = "max-length"
 
 // IsMaxLength checks if the length of the given value is less than the given maximum length.
 func IsMaxLength(value interface{}, maxLength int) error {

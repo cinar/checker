@@ -10,8 +10,8 @@ import (
 	"reflect"
 )
 
-// NormalizerHTMLUnescape is the name of the normalizer.
-const NormalizerHTMLUnescape = "html-unescape"
+// tagHTMLUnescape is the tag of the normalizer.
+const tagHTMLUnescape = "html-unescape"
 
 // makeHTMLUnescape makes a normalizer function for the HTML unscape normalizer.
 func makeHTMLUnescape(_ string) CheckFunc {

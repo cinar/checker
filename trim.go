@@ -10,8 +10,8 @@ import (
 	"strings"
 )
 
-// NormalizerTrim is the name of the normalizer.
-const NormalizerTrim = "trim"
+// tagTrim is the tag of the normalizer.
+const tagTrim = "trim"
 
 // makeTrim makes a normalizer function for the trim normalizer.
 func makeTrim(_ string) CheckFunc {

@@ -72,42 +72,42 @@ type Person struct {
 
 This package currently provides the following checkers:
 
-- [alphanumeric](doc/checkers/alphanumeric.md) checks if the given string consists of only alphanumeric characters.
-- [ascii](doc/checkers/ascii.md) checks if the given string consists of only ASCII characters.
-- [cidr](doc/checkers/cidr.md) checker checks if the value is a valid CIDR notation IP address and prefix length.
-- [credit-card](doc/checkers/credit_card.md) checks if the given value is a valid credit card number.
-- [digits](doc/checkers/digits.md) checks if the given string consists of only digit characters.
-- [email](doc/checkers/email.md) checks if the given string is an email address.
-- [fqdn](doc/checkers/fqdn.md) checks if the given string is a fully qualified domain name.
-- [ip](doc/checkers/ip.md) checks if the given value is an IP address.
-- [ipv4](doc/checkers/ipv4.md) checks if the given value is an IPv4 address.
-- [ipv6](doc/checkers/ipv6.md) checks if the given value is an IPv6 address.
-- [isbn](doc/checkers/isbn.md) checks if the given value is a valid ISBN number.
-- [luhn](doc/checkers/luhn.md) checks if the given number is valid based on the Luhn algorithm.
-- [mac](doc/checkers/mac.md) checks if the given value is a valid an IEEE 802 MAC-48, EUI-48, EUI-64, or a 20-octet IP over InfiniBand link-layer address.
-- [max](doc/checkers/max.md) checks if the given value is less than the given maximum.
-- [max-length](doc/checkers/maxlength.md) checks if the length of the given value is less than the given maximum length.
-- [min](doc/checkers/min.md) checks if the given value is greather than the given minimum.
-- [min-length](doc/checkers/minlength.md) checks if the length of the given value is greather than the given minimum length.
-- [regexp](doc/checkers/regexp.md) checks if the given string matches the regexp pattern.
-- [required](doc/checkers/required.md) checks if the required value is provided.
-- [same](doc/checkers/same.md) checks if the given value is equal to the value of the field with the given name.
-- [url](doc/checkers/url.md) checks if the given value is a valid URL.
+- `alphanumeric` checks if the given string consists of only alphanumeric characters.
+- `ascii` checks if the given string consists of only ASCII characters.
+- `cidr` checker checks if the value is a valid CIDR notation IP address and prefix length.
+- `credit-card` checks if the given value is a valid credit card number.
+- `digits` checks if the given string consists of only digit characters.
+- `email` checks if the given string is an email address.
+- `fqdn` checks if the given string is a fully qualified domain name.
+- `ip` checks if the given value is an IP address.
+- `ipv4` checks if the given value is an IPv4 address.
+- `ipv6` checks if the given value is an IPv6 address.
+- `isbn` checks if the given value is a valid ISBN number.
+- `luhn` checks if the given number is valid based on the Luhn algorithm.
+- `mac` checks if the given value is a valid an IEEE 802 MAC-48, EUI-48, EUI-64, or a 20-octet IP over InfiniBand link-layer address.
+- `max` checks if the given value is less than the given maximum.
+- `max-length` checks if the length of the given value is less than the given maximum length.
+- `min` checks if the given value is greather than the given minimum.
+- `min-length` checks if the length of the given value is greather than the given minimum length.
+- `regexp` checks if the given string matches the regexp pattern.
+- `required` checks if the required value is provided.
+- `same` checks if the given value is equal to the value of the field with the given name.
+- `url` checks if the given value is a valid URL.
 
 # Normalizers Provided
 
 This package currently provides the following normalizers. They can be mixed with the checkers when defining the validation steps for user data.
 
-- [html-escape](doc/normalizers/html_escape.md) applies HTML escaping to special characters.
-- [html-unescape](doc/normalizers/html_unescape.md) applies HTML unescaping to special characters.
-- [lower](doc/normalizers/lower.md) maps all Unicode letters in the given value to their lower case.
-- [upper](doc/normalizers/upper.md) maps all Unicode letters in the given value to their upper case.
-- [title](doc/normalizers/title.md) maps the first letter of each word to their upper case.
-- [trim](doc/normalizers/trim.md) removes the whitespaces at the beginning and at the end of the given value.
-- [trim-left](doc/normalizers/trim_left.md) removes the whitespaces at the beginning of the given value.
-- [trim-right](doc/normalizers/trim_right.md) removes the whitespaces at the end of the given value.
-- [url-escape](doc/normalizers/url_escape.md) applies URL escaping to special characters.
-- [url-unescape](doc/normalizers/url_unescape.md) applies URL unescaping to special characters.
+- `html-escape` applies HTML escaping to special characters.
+- `html-unescape` applies HTML unescaping to special characters.
+- `lower` maps all Unicode letters in the given value to their lower case.
+- `upper` maps all Unicode letters in the given value to their upper case.
+- `title` maps the first letter of each word to their upper case.
+- `trim` removes the whitespaces at the beginning and at the end of the given value.
+- `trim-left` removes the whitespaces at the beginning of the given value.
+- `trim-right` removes the whitespaces at the end of the given value.
+- `url-escape` applies URL escaping to special characters.
+- `url-unescape` applies URL unescaping to special characters.
 
 # Custom Checkers
 
@@ -157,7 +157,6 @@ Copyright \(c\) 2023\-2024 Onur Cinar. Use of this source code is governed by a 
 
 ## Index
 
-- [Constants](<#constants>)
 - [Variables](<#variables>)
 - [func FailIfNoPanic\(t \*testing.T\)](<#FailIfNoPanic>)
 - [func IsASCII\(value string\) error](<#IsASCII>)
@@ -196,194 +195,6 @@ Copyright \(c\) 2023\-2024 Onur Cinar. Use of this source code is governed by a 
 - [type MakeFunc](<#MakeFunc>)
   - [func MakeRegexpMaker\(expression string, invalidError error\) MakeFunc](<#MakeRegexpMaker>)
 
-
-## Constants
-
-<a name="CheckerASCII"></a>CheckerASCII is the name of the checker.
-
-```go
-const CheckerASCII = "ascii"
-```
-
-<a name="CheckerAlphanumeric"></a>CheckerAlphanumeric is the name of the checker.
-
-```go
-const CheckerAlphanumeric = "alphanumeric"
-```
-
-<a name="CheckerCidr"></a>CheckerCidr is the name of the checker.
-
-```go
-const CheckerCidr = "cidr"
-```
-
-<a name="CheckerCreditCard"></a>CheckerCreditCard is the name of the checker.
-
-```go
-const CheckerCreditCard = "credit-card"
-```
-
-<a name="CheckerDigits"></a>CheckerDigits is the name of the checker.
-
-```go
-const CheckerDigits = "digits"
-```
-
-<a name="CheckerEmail"></a>CheckerEmail is the name of the checker.
-
-```go
-const CheckerEmail = "email"
-```
-
-<a name="CheckerFqdn"></a>CheckerFqdn is the name of the checker.
-
-```go
-const CheckerFqdn = "fqdn"
-```
-
-<a name="CheckerIP"></a>CheckerIP is the name of the checker.
-
-```go
-const CheckerIP = "ip"
-```
-
-<a name="CheckerIPV4"></a>CheckerIPV4 is the name of the checker.
-
-```go
-const CheckerIPV4 = "ipv4"
-```
-
-<a name="CheckerIPV6"></a>CheckerIPV6 is the name of the checker.
-
-```go
-const CheckerIPV6 = "ipv6"
-```
-
-<a name="CheckerISBN"></a>CheckerISBN is the name of the checker.
-
-```go
-const CheckerISBN = "isbn"
-```
-
-<a name="CheckerLuhn"></a>CheckerLuhn is the name of the checker.
-
-```go
-const CheckerLuhn = "luhn"
-```
-
-<a name="CheckerMac"></a>CheckerMac is the name of the checker.
-
-```go
-const CheckerMac = "mac"
-```
-
-<a name="CheckerMax"></a>CheckerMax is the name of the checker.
-
-```go
-const CheckerMax = "max"
-```
-
-<a name="CheckerMaxLength"></a>CheckerMaxLength is the name of the checker.
-
-```go
-const CheckerMaxLength = "max-length"
-```
-
-<a name="CheckerMin"></a>CheckerMin is the name of the checker.
-
-```go
-const CheckerMin = "min"
-```
-
-<a name="CheckerMinLength"></a>CheckerMinLength is the name of the checker.
-
-```go
-const CheckerMinLength = "min-length"
-```
-
-<a name="CheckerRegexp"></a>CheckerRegexp is the name of the checker.
-
-```go
-const CheckerRegexp = "regexp"
-```
-
-<a name="CheckerRequired"></a>CheckerRequired is the name of the checker.
-
-```go
-const CheckerRequired = "required"
-```
-
-<a name="CheckerSame"></a>CheckerSame is the name of the checker.
-
-```go
-const CheckerSame = "same"
-```
-
-<a name="CheckerURL"></a>CheckerURL is the name of the checker.
-
-```go
-const CheckerURL = "url"
-```
-
-<a name="NormalizerHTMLEscape"></a>NormalizerHTMLEscape is the name of the normalizer.
-
-```go
-const NormalizerHTMLEscape = "html-escape"
-```
-
-<a name="NormalizerHTMLUnescape"></a>NormalizerHTMLUnescape is the name of the normalizer.
-
-```go
-const NormalizerHTMLUnescape = "html-unescape"
-```
-
-<a name="NormalizerLower"></a>NormalizerLower is the name of the normalizer.
-
-```go
-const NormalizerLower = "lower"
-```
-
-<a name="NormalizerTitle"></a>NormalizerTitle is the name of the normalizer.
-
-```go
-const NormalizerTitle = "title"
-```
-
-<a name="NormalizerTrim"></a>NormalizerTrim is the name of the normalizer.
-
-```go
-const NormalizerTrim = "trim"
-```
-
-<a name="NormalizerTrimLeft"></a>NormalizerTrimLeft is the name of the normalizer.
-
-```go
-const NormalizerTrimLeft = "trim-left"
-```
-
-<a name="NormalizerTrimRight"></a>NormalizerTrimRight is the name of the normalizer.
-
-```go
-const NormalizerTrimRight = "trim-right"
-```
-
-<a name="NormalizerURLEscape"></a>NormalizerURLEscape is the name of the normalizer.
-
-```go
-const NormalizerURLEscape = "url-escape"
-```
-
-<a name="NormalizerURLUnescape"></a>NormalizerURLUnescape is the name of the normalizer.
-
-```go
-const NormalizerURLUnescape = "url-unescape"
-```
-
-<a name="NormalizerUpper"></a>NormalizerUpper is the name of the normalizer.
-
-```go
-const NormalizerUpper = "upper"
-```
 
 ## Variables
 

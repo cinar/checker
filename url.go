@@ -11,8 +11,8 @@ import (
 	"reflect"
 )
 
-// CheckerURL is the name of the checker.
-const CheckerURL = "url"
+// tagURL is the tag of the checker.
+const tagURL = "url"
 
 // ErrNotURL indicates that the given value is not a valid URL.
 var ErrNotURL = errors.New("please enter a valid URL")
