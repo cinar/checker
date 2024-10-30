@@ -50,8 +50,8 @@ If you do not want to validate user input stored in a struct, you can individual
 ```golang
 var name
 
-result := checker.IsRequired(name)
-if result != ResultValid {
+err := checker.IsRequired(name)
+if err != nil {
     // Send the result back to the user
 }
 ```
@@ -114,8 +114,8 @@ This package currently provides the following normalizers. They can be mixed wit
 To define a custom checker, you need to create a new function with the following parameters:
 
 ```golang
-func CustomChecker(value, parent reflect.Value) Result {
-    return ResultValid
+func CustomChecker(value, parent reflect.Value) error {
+    return nil
 }
 ```
 type MakeFunc 
