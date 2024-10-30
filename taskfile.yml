@@ -7,6 +7,7 @@ tasks:
       - task: fmt
       - task: lint
       - task: test
+      - task: docs
 
   action:
     deps: [lint, test]
