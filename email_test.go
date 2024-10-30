@@ -14,7 +14,7 @@ import (
 func ExampleIsEmail() {
 	err := checker.IsEmail("user@zdo.com")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 

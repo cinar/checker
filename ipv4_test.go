@@ -14,7 +14,7 @@ import (
 func ExampleIsIPV4() {
 	err := checker.IsIPV4("192.168.1.1")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 

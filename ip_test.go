@@ -14,7 +14,7 @@ import (
 func ExampleIsIP() {
 	err := checker.IsIP("2001:db8::68")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 

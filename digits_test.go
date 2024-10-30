@@ -14,7 +14,7 @@ import (
 func ExampleIsDigits() {
 	err := checker.IsDigits("1234")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 

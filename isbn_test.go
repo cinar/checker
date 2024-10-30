@@ -15,7 +15,7 @@ import (
 func ExampleIsISBN10() {
 	err := checker.IsISBN10("1430248270")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 
@@ -57,7 +57,7 @@ func TestIsISBN10InvalidCheck(t *testing.T) {
 func ExampleIsISBN13() {
 	err := checker.IsISBN13("9781430248279")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 
@@ -92,7 +92,7 @@ func TestIsISBN13InvalidCheck(t *testing.T) {
 func ExampleIsISBN() {
 	err := checker.IsISBN("1430248270")
 	if err != nil {
-		// Send the mistakes back to the user
+		// Send the errors back to the user
 	}
 }
 
