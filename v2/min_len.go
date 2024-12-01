@@ -7,6 +7,13 @@ package v2
 
 import (
 	"fmt"
+	"reflect"
+	"strconv"
+)
+
+const (
+	// nameMinLen is the name of the minimum length check.
+	nameMinLen = "min-len"
 )
 
 // MinLenError defines the minimum length error.
@@ -36,5 +43,26 @@ func MinLen(n int) CheckFunc[string] {
 		}
 
 		return value, nil
+	}
+}
+
+// makeMinLen returns the minimum length check function.
+func makeMinLen(params string) ReflectCheckFunc {
+	n, err := strconv.Atoi(params)
+	if err != nil {
+		panic("unable to parse min length")
+	}
+
+	check := MinLen(n)
+
+	return func(value reflect.Value) error {
+		value = reflect.Indirect(value)
+		if value.Kind() != reflect.String {
+			panic("expected string")
+		}
+
+		_, err := check(value.String())
+
+		return err
 	}
 }

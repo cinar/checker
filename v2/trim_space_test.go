@@ -24,3 +24,24 @@ func TestTrimSpace(t *testing.T) {
 		t.Fatalf("actual %s expected %s", actual, expected)
 	}
 }
+
+func TestReflectTrimSpace(t *testing.T) {
+	type Person struct {
+		Name string `checker:"trim"`
+	}
+
+	person := &Person{
+		Name: "    test    ",
+	}
+
+	expected := "test"
+
+	errs, ok := v2.CheckStruct(person)
+	if !ok {
+		t.Fatalf("got unexpected errors %v", errs)
+	}
+
+	if person.Name != expected {
+		t.Fatalf("actual %s expected %s", person.Name, expected)
+	}
+}

@@ -12,10 +12,10 @@ import (
 	v2 "github.com/cinar/checker/v2"
 )
 
-func TestMinLenSuccess(t *testing.T) {
+func TestMaxLenSuccess(t *testing.T) {
 	value := "test"
 
-	check := v2.MinLen(4)
+	check := v2.MaxLen(4)
 
 	result, err := check(value)
 	if result != value {
@@ -27,17 +27,17 @@ func TestMinLenSuccess(t *testing.T) {
 	}
 }
 
-func TestMinLenError(t *testing.T) {
-	value := "test"
+func TestMaxLenError(t *testing.T) {
+	value := "test test"
 
-	check := v2.MinLen(5)
+	check := v2.MaxLen(5)
 
 	result, err := check(value)
 	if result != value {
 		t.Fatalf("result (%s) is not the original value (%s)", result, value)
 	}
 
-	_, ok := err.(*v2.MinLenError)
+	_, ok := err.(*v2.MaxLenError)
 	if !ok {
 		t.Fatalf("got unexpected error %v", err)
 	}
@@ -45,13 +45,13 @@ func TestMinLenError(t *testing.T) {
 	log.Println(err)
 }
 
-func TestReflectMinLenError(t *testing.T) {
+func TestReflectMaxLenError(t *testing.T) {
 	type Person struct {
-		Name string `checker:"trim min-len:8"`
+		Name string `checker:"max-len:2"`
 	}
 
 	person := &Person{
-		Name: "    Onur    ",
+		Name: "Onur",
 	}
 
 	errs, ok := v2.CheckStruct(person)
@@ -60,15 +60,15 @@ func TestReflectMinLenError(t *testing.T) {
 	}
 
 	if errs["Name"] == nil {
-		t.Fatalf("expected minimum length error")
+		t.Fatalf("expected maximum length error")
 	}
 }
 
-func TestReflectMinLenInvalidMinLen(t *testing.T) {
+func TestReflectMaxLenInvalidMaxLen(t *testing.T) {
 	defer FailIfNoPanic(t, "expected panic")
 
 	type Person struct {
-		Name string `checker:"min-len:abcd"`
+		Name string `checker:"max-len:abcd"`
 	}
 
 	person := &Person{
@@ -78,11 +78,11 @@ func TestReflectMinLenInvalidMinLen(t *testing.T) {
 	v2.CheckStruct(person)
 }
 
-func TestReflectMinLenInvalidType(t *testing.T) {
+func TestReflectMaxLenInvalidType(t *testing.T) {
 	defer FailIfNoPanic(t, "expected panic")
 
 	type Person struct {
-		Name int `checker:"min-len:8"`
+		Name int `checker:"max-len:8"`
 	}
 
 	person := &Person{

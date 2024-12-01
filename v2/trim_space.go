@@ -5,9 +5,30 @@
 
 package v2
 
-import "strings"
+import (
+	"reflect"
+	"strings"
+)
+
+const (
+	// nameTrimSpace is the name of the trim normalizer.
+	nameTrimSpace = "trim"
+)
 
 // TrimSpace returns the value of the string with whitespace removed from both ends.
 func TrimSpace(value string) (string, error) {
 	return strings.TrimSpace(value), nil
+}
+
+// reflectTrimSpace returns the value of the string with whitespace removed from both ends.
+func reflectTrimSpace(value reflect.Value) error {
+	newValue, err := TrimSpace(value.String())
+	value.SetString(newValue)
+
+	return err
+}
+
+// makeTrimSpace returns the trim space normalizer function.
+func makeTrimSpace(_ string) ReflectCheckFunc {
+	return reflectTrimSpace
 }

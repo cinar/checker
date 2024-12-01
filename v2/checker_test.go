@@ -39,3 +39,76 @@ func TestCheckTrimSpaceRequiredMissing(t *testing.T) {
 		t.Fatalf("actual %s expected %s", actual, expected)
 	}
 }
+
+func TestCheckStructSuccess(t *testing.T) {
+	type Address struct {
+		Street string `checker:"required"`
+	}
+
+	type Person struct {
+		Name    string `checker:"required"`
+		Address *Address
+	}
+
+	person := &Person{
+		Name: "Onur Cinar",
+		Address: &Address{
+			Street: "1234 Main",
+		},
+	}
+
+	errors, ok := v2.CheckStruct(person)
+	if !ok {
+		t.Fatalf("got unexpected errors %v", errors)
+	}
+}
+
+func TestCheckStructRequiredMissing(t *testing.T) {
+	type Address struct {
+		Street string `checker:"required"`
+	}
+
+	type Person struct {
+		Name    string `checker:"required"`
+		Address *Address
+	}
+
+	person := &Person{
+		Name: "",
+		Address: &Address{
+			Street: "",
+		},
+	}
+
+	errs, ok := v2.CheckStruct(person)
+	if ok {
+		t.Fatal("expected errors")
+	}
+
+	if !errors.Is(errs["Name"], v2.ErrRequired) {
+		t.Fatalf("expected name required %v", errs)
+	}
+
+	if !errors.Is(errs["Address.Street"], v2.ErrRequired) {
+		t.Fatalf("expected streed required %v", errs)
+	}
+}
+
+func TestCheckStructCustomName(t *testing.T) {
+	type Person struct {
+		Name string `json:"name" checker:"required"`
+	}
+
+	person := &Person{
+		Name: "",
+	}
+
+	errs, ok := v2.CheckStruct(person)
+	if ok {
+		t.Fatal("expected errors")
+	}
+
+	if !errors.Is(errs["name"], v2.ErrRequired) {
+		t.Fatalf("expected name required %v", errs)
+	}
+}
