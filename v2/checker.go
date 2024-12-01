@@ -29,25 +29,17 @@ func Check[T any](value T, checks ...CheckFunc[T]) (T, error) {
 	return value, err
 }
 
-// ReflectCheck applies one or more check functions to a value. It returns the
-// first encountered error, if any.
-func ReflectCheck(value reflect.Value, checks ...ReflectCheckFunc) error {
-	var err error
-
-	for _, check := range checks {
-		err = check(value)
-		if err != nil {
-			break
-		}
-	}
-
-	return err
+// CheckWithConfig applies one or more check functions specified by the config to the given value.
+// It returns the first encountered error, if any.
+func CheckWithConfig[T any](value T, config string) (T, error) {
+	newValue, err := ReflectCheckWithConfig(reflect.Indirect(reflect.ValueOf(value)), config)
+	return newValue.Interface().(T), err
 }
 
 // ReflectCheckWithConfig applies one or more check functions specified by the
 // config to the given value. It returns the first encountered error, if any.
-func ReflectCheckWithConfig(value reflect.Value, config string) error {
-	return ReflectCheck(value, makeChecks(config)...)
+func ReflectCheckWithConfig(value reflect.Value, config string) (reflect.Value, error) {
+	return Check(value, makeChecks(config)...)
 }
 
 // CheckStruct checks the given struct based on the checks specified through
@@ -81,10 +73,12 @@ func CheckStruct(st any) (map[string]error, bool) {
 				continue
 			}
 
-			err := ReflectCheckWithConfig(value, field.Tag.Get("checker"))
+			newValue, err := ReflectCheckWithConfig(value, field.Tag.Get("checker"))
 			if err != nil {
 				errs[name] = err
 			}
+
+			value.Set(newValue)
 		}
 	}
 

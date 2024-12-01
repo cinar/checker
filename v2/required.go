@@ -20,20 +20,23 @@ var (
 // Required checks if the given value of type T is its zero value. It
 // returns an error if the value is zero.
 func Required[T any](value T) (T, error) {
-	return value, reflectRequired(reflect.ValueOf(value))
+	_, err := reflectRequired(reflect.ValueOf(value))
+	return value, err
 }
 
 // reflectRequired checks if the given value is its zero value. It
 // returns an error if the value is zero.
-func reflectRequired(value reflect.Value) error {
+func reflectRequired(value reflect.Value) (reflect.Value, error) {
+	var err error
+
 	if value.IsZero() {
-		return ErrRequired
-	} else {
-		return nil
+		err = ErrRequired
 	}
+
+	return value, err
 }
 
 // makeRequired returns the required check function.
-func makeRequired(_ string) ReflectCheckFunc {
+func makeRequired(_ string) CheckFunc[reflect.Value] {
 	return reflectRequired
 }

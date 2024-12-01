@@ -73,6 +73,34 @@ func TestCheckTrimSpaceRequiredMissing(t *testing.T) {
 	}
 }
 
+func TestCheckWithConfigSuccess(t *testing.T) {
+	input := "    test    "
+	expected := "test"
+
+	actual, err := v2.CheckWithConfig(input, "trim required")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if actual != expected {
+		t.Fatalf("actual %s expected %s", actual, expected)
+	}
+}
+
+func TestCheckWithConfigRequiredMissing(t *testing.T) {
+	input := "    "
+	expected := ""
+
+	actual, err := v2.CheckWithConfig(input, "trim required")
+	if !errors.Is(err, v2.ErrRequired) {
+		t.Fatalf("got unexpected error %v", err)
+	}
+
+	if actual != expected {
+		t.Fatalf("actual %s expected %s", actual, expected)
+	}
+}
+
 func TestCheckStructSuccess(t *testing.T) {
 	type Address struct {
 		Street string `checker:"required"`

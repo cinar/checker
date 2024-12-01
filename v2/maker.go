@@ -11,13 +11,8 @@ import (
 	"strings"
 )
 
-// ReflectCheckFunc is a function that takes reflect value and performs
-// a check on it. It updates the value and it returns any error that
-// occurred during the check.
-type ReflectCheckFunc func(value reflect.Value) error
-
 // MakeCheckFunc is a function that returns a check function using the given params.
-type MakeCheckFunc func(params string) ReflectCheckFunc
+type MakeCheckFunc func(params string) CheckFunc[reflect.Value]
 
 // makers provides a mapping of maker functions keyed by the check name.
 var makers = map[string]MakeCheckFunc{
@@ -28,10 +23,10 @@ var makers = map[string]MakeCheckFunc{
 }
 
 // makeChecks take a checker config and returns the check functions.
-func makeChecks(config string) []ReflectCheckFunc {
+func makeChecks(config string) []CheckFunc[reflect.Value] {
 	fields := strings.Fields(config)
 
-	checks := make([]ReflectCheckFunc, len(fields))
+	checks := make([]CheckFunc[reflect.Value], len(fields))
 
 	for i, field := range fields {
 		name, params, _ := strings.Cut(field, ":")

@@ -47,7 +47,7 @@ func MaxLen(n int) CheckFunc[string] {
 }
 
 // makeMaxLen returns the maximum length check function.
-func makeMaxLen(params string) ReflectCheckFunc {
+func makeMaxLen(params string) CheckFunc[reflect.Value] {
 	n, err := strconv.Atoi(params)
 	if err != nil {
 		panic("unable to parse max length")
@@ -55,14 +55,8 @@ func makeMaxLen(params string) ReflectCheckFunc {
 
 	check := MaxLen(n)
 
-	return func(value reflect.Value) error {
-		value = reflect.Indirect(value)
-		if value.Kind() != reflect.String {
-			panic("expected string")
-		}
-
-		_, err := check(value.String())
-
-		return err
+	return func(value reflect.Value) (reflect.Value, error) {
+		_, err := check(value.Interface().(string))
+		return value, err
 	}
 }

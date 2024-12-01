@@ -47,7 +47,7 @@ func MinLen(n int) CheckFunc[string] {
 }
 
 // makeMinLen returns the minimum length check function.
-func makeMinLen(params string) ReflectCheckFunc {
+func makeMinLen(params string) CheckFunc[reflect.Value] {
 	n, err := strconv.Atoi(params)
 	if err != nil {
 		panic("unable to parse min length")
@@ -55,14 +55,8 @@ func makeMinLen(params string) ReflectCheckFunc {
 
 	check := MinLen(n)
 
-	return func(value reflect.Value) error {
-		value = reflect.Indirect(value)
-		if value.Kind() != reflect.String {
-			panic("expected string")
-		}
-
-		_, err := check(value.String())
-
-		return err
+	return func(value reflect.Value) (reflect.Value, error) {
+		_, err := check(value.Interface().(string))
+		return value, err
 	}
 }
