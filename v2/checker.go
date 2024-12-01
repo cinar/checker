@@ -85,7 +85,8 @@ func CheckStruct(st any) (map[string]error, bool) {
 	return errs, len(errs) == 0
 }
 
-// fieldName returns the JSON name for the field if defined or the field name.
+// fieldName returns the JSON name for the field if defined, otherwise it returns
+// the field name. If a prefix is provided, it prepends the prefix with a dot.
 func fieldName(prefix string, field reflect.StructField) string {
 	name, ok := field.Tag.Lookup("json")
 	if !ok {
