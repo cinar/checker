@@ -7,12 +7,45 @@ package v2_test
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 
 	v2 "github.com/cinar/checker/v2"
 )
 
-func TestCheckTrimeSpaceRequiredSuccess(t *testing.T) {
+func ExampleCheck() {
+	name := "    Onur Cinar    "
+
+	name, err := v2.Check(name, v2.TrimSpace, v2.Required)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(name)
+	// Output: Onur Cinar
+}
+
+func ExampleCheckStruct() {
+	type Person struct {
+		Name string `checker:"trim required"`
+	}
+
+	person := &Person{
+		Name: "    Onur Cinar    ",
+	}
+
+	errs, ok := v2.CheckStruct(person)
+	if !ok {
+		fmt.Println(errs)
+		return
+	}
+
+	fmt.Println(person.Name)
+	// Output: Onur Cinar
+}
+
+func TestCheckTrimSpaceRequiredSuccess(t *testing.T) {
 	input := "    test    "
 	expected := "test"
 
