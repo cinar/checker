@@ -14,8 +14,8 @@ type checkStructJob struct {
 	Value reflect.Value
 }
 
-// Check applies one or more check functions to a value. It returns the
-// final value and the first encountered error, if any.
+// Check applies the given check functions to a value sequentially.
+// It returns the final value and the first encountered error, if any.
 func Check[T any](value T, checks ...CheckFunc[T]) (T, error) {
 	var err error
 
@@ -29,21 +29,23 @@ func Check[T any](value T, checks ...CheckFunc[T]) (T, error) {
 	return value, err
 }
 
-// CheckWithConfig applies one or more check functions specified by the config to the given value.
-// It returns the first encountered error, if any.
+// CheckWithConfig applies the check functions specified by the config string to the given value.
+// It returns the modified value and the first encountered error, if any.
 func CheckWithConfig[T any](value T, config string) (T, error) {
 	newValue, err := ReflectCheckWithConfig(reflect.Indirect(reflect.ValueOf(value)), config)
 	return newValue.Interface().(T), err
 }
 
-// ReflectCheckWithConfig applies one or more check functions specified by the
-// config to the given value. It returns the first encountered error, if any.
+// ReflectCheckWithConfig applies the check functions specified by the config string
+// to the given reflect.Value. It returns the modified reflect.Value and the first
+// encountered error, if any.
 func ReflectCheckWithConfig(value reflect.Value, config string) (reflect.Value, error) {
 	return Check(value, makeChecks(config)...)
 }
 
-// CheckStruct checks the given struct based on the checks specified through
-// the struct field tags. It returns a map of field name to error.
+// CheckStruct checks the given struct based on the validation rules specified in the
+// "checker" tag of each struct field. It returns a map of field names to their
+// corresponding errors, and a boolean indicating if all checks passed.
 func CheckStruct(st any) (map[string]error, bool) {
 	errs := make(map[string]error)
 
@@ -58,7 +60,7 @@ func CheckStruct(st any) (map[string]error, bool) {
 		job := jobs[0]
 		jobs = jobs[1:]
 
-		for i := range job.Value.NumField() {
+		for i := 0; i < job.Value.NumField(); i++ {
 			field := job.Value.Type().Field(i)
 
 			name := fieldName(job.Name, field)
@@ -85,14 +87,19 @@ func CheckStruct(st any) (map[string]error, bool) {
 	return errs, len(errs) == 0
 }
 
-// fieldName returns the JSON name for the field if defined, otherwise it returns
-// the field name. If a prefix is provided, it prepends the prefix with a dot.
+// fieldName returns the field name. If a "json" tag is present, it uses the
+// tag value instead. It also prepends the parent struct's name (if any) to
+// create a fully qualified field name.
 func fieldName(prefix string, field reflect.StructField) string {
-	name, ok := field.Tag.Lookup("json")
-	if !ok {
-		name = field.Name
+	// Default to field name
+	name := field.Name
+
+	// Use json tag if present
+	if jsonTag, ok := field.Tag.Lookup("json"); ok {
+		name = jsonTag
 	}
 
+	// Prepend parent name
 	if prefix != "" {
 		name = prefix + "." + name
 	}
