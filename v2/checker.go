@@ -9,9 +9,16 @@ import (
 	"reflect"
 )
 
+const (
+	// checkerTag is the name of the field tag used for checker.
+	checkerTag = "checker"
+)
+
+// checkStructJob defines a check strcut job.
 type checkStructJob struct {
-	Name  string
-	Value reflect.Value
+	Name   string
+	Value  reflect.Value
+	Config string
 }
 
 // Check applies the given check functions to a value sequentially.
@@ -60,27 +67,29 @@ func CheckStruct(st any) (map[string]error, bool) {
 		job := jobs[0]
 		jobs = jobs[1:]
 
-		for i := 0; i < job.Value.NumField(); i++ {
-			field := job.Value.Type().Field(i)
+		switch job.Value.Kind() {
+		case reflect.Struct:
+			for i := 0; i < job.Value.NumField(); i++ {
+				field := job.Value.Type().Field(i)
 
-			name := fieldName(job.Name, field)
-			value := reflect.Indirect(job.Value.FieldByIndex(field.Index))
+				name := fieldName(job.Name, field)
+				value := reflect.Indirect(job.Value.FieldByIndex(field.Index))
 
-			if value.Kind() == reflect.Struct {
 				jobs = append(jobs, &checkStructJob{
-					Name:  name,
-					Value: value,
+					Name:   name,
+					Value:  value,
+					Config: field.Tag.Get("checker"),
 				})
-
-				continue
 			}
+		}
 
-			newValue, err := ReflectCheckWithConfig(value, field.Tag.Get("checker"))
+		if job.Config != "" {
+			newValue, err := ReflectCheckWithConfig(job.Value, job.Config)
 			if err != nil {
-				errs[name] = err
+				errs[job.Name] = err
 			}
 
-			value.Set(newValue)
+			job.Value.Set(newValue)
 		}
 	}
 
