@@ -15,7 +15,7 @@ func TestMakeCheckersUnknown(t *testing.T) {
 	defer FailIfNoPanic(t, "expected panic")
 
 	type Person struct {
-		Name string `checker:"unknown"`
+		Name string `checkers:"unknown"`
 	}
 
 	person := &Person{

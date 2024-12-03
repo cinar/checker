@@ -47,7 +47,7 @@ func TestMaxLenError(t *testing.T) {
 
 func TestReflectMaxLenError(t *testing.T) {
 	type Person struct {
-		Name string `checker:"max-len:2"`
+		Name string `checkers:"max-len:2"`
 	}
 
 	person := &Person{
@@ -68,7 +68,7 @@ func TestReflectMaxLenInvalidMaxLen(t *testing.T) {
 	defer FailIfNoPanic(t, "expected panic")
 
 	type Person struct {
-		Name string `checker:"max-len:abcd"`
+		Name string `checkers:"max-len:abcd"`
 	}
 
 	person := &Person{
@@ -82,7 +82,7 @@ func TestReflectMaxLenInvalidType(t *testing.T) {
 	defer FailIfNoPanic(t, "expected panic")
 
 	type Person struct {
-		Name int `checker:"max-len:8"`
+		Name int `checkers:"max-len:8"`
 	}
 
 	person := &Person{

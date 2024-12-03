@@ -27,7 +27,7 @@ func TestTrimSpace(t *testing.T) {
 
 func TestReflectTrimSpace(t *testing.T) {
 	type Person struct {
-		Name string `checker:"trim"`
+		Name string `checkers:"trim"`
 	}
 
 	person := &Person{

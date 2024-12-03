@@ -47,7 +47,7 @@ func TestMinLenError(t *testing.T) {
 
 func TestReflectMinLenError(t *testing.T) {
 	type Person struct {
-		Name string `checker:"trim min-len:8"`
+		Name string `checkers:"trim min-len:8"`
 	}
 
 	person := &Person{
@@ -68,7 +68,7 @@ func TestReflectMinLenInvalidMinLen(t *testing.T) {
 	defer FailIfNoPanic(t, "expected panic")
 
 	type Person struct {
-		Name string `checker:"min-len:abcd"`
+		Name string `checkers:"min-len:abcd"`
 	}
 
 	person := &Person{
@@ -82,7 +82,7 @@ func TestReflectMinLenInvalidType(t *testing.T) {
 	defer FailIfNoPanic(t, "expected panic")
 
 	type Person struct {
-		Name int `checker:"min-len:8"`
+		Name int `checkers:"min-len:8"`
 	}
 
 	person := &Person{

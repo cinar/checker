@@ -16,10 +16,11 @@ type MakeCheckFunc func(params string) CheckFunc[reflect.Value]
 
 // makers provides a mapping of maker functions keyed by the check name.
 var makers = map[string]MakeCheckFunc{
-	nameMaxLen:    makeMaxLen,
-	nameMinLen:    makeMinLen,
-	nameRequired:  makeRequired,
-	nameTrimSpace: makeTrimSpace,
+	nameAlphanumeric: makeAlphanumeric,
+	nameMaxLen:       makeMaxLen,
+	nameMinLen:       makeMinLen,
+	nameRequired:     makeRequired,
+	nameTrimSpace:    makeTrimSpace,
 }
 
 // makeChecks take a checker config and returns the check functions.

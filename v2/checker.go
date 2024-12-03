@@ -13,7 +13,7 @@ import (
 
 const (
 	// checkerTag is the name of the field tag used for checker.
-	checkerTag = "checker"
+	checkerTag = "checkers"
 
 	// sliceConfigPrefix is the prefix used to distinguish slice-level checks from item-level checks.
 	sliceConfigPrefix = "@"
@@ -83,7 +83,7 @@ func CheckStruct(st any) (map[string]error, bool) {
 				jobs = append(jobs, &checkStructJob{
 					Name:   name,
 					Value:  value,
-					Config: field.Tag.Get("checker"),
+					Config: field.Tag.Get(checkerTag),
 				})
 			}
 

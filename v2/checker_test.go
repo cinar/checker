@@ -28,7 +28,7 @@ func ExampleCheck() {
 
 func ExampleCheckStruct() {
 	type Person struct {
-		Name string `checker:"trim required"`
+		Name string `checkers:"trim required"`
 	}
 
 	person := &Person{
@@ -103,11 +103,11 @@ func TestCheckWithConfigRequiredMissing(t *testing.T) {
 
 func TestCheckStructSuccess(t *testing.T) {
 	type Address struct {
-		Street string `checker:"required"`
+		Street string `checkers:"required"`
 	}
 
 	type Person struct {
-		Name    string `checker:"required"`
+		Name    string `checkers:"required"`
 		Address *Address
 	}
 
@@ -126,11 +126,11 @@ func TestCheckStructSuccess(t *testing.T) {
 
 func TestCheckStructRequiredMissing(t *testing.T) {
 	type Address struct {
-		Street string `checker:"required"`
+		Street string `checkers:"required"`
 	}
 
 	type Person struct {
-		Name    string `checker:"required"`
+		Name    string `checkers:"required"`
 		Address *Address
 	}
 
@@ -157,7 +157,7 @@ func TestCheckStructRequiredMissing(t *testing.T) {
 
 func TestCheckStructCustomName(t *testing.T) {
 	type Person struct {
-		Name string `json:"name" checker:"required"`
+		Name string `json:"name" checkers:"required"`
 	}
 
 	person := &Person{
@@ -176,15 +176,14 @@ func TestCheckStructCustomName(t *testing.T) {
 
 func TestCheckStructSlice(t *testing.T) {
 	type Person struct {
-		Name   string   `checker:"required"`
-		Emails []string `checker:"@max-len:1"`
+		Name   string   `checkers:"required"`
+		Emails []string `checkers:"@max-len:1 max-len:4"`
 	}
 
 	person := &Person{
 		Name: "Onur Cinar",
 		Emails: []string{
-			"",
-			"",
+			"onur.cinar",
 		},
 	}
 
@@ -193,5 +192,7 @@ func TestCheckStructSlice(t *testing.T) {
 		t.Fatal("expected errors")
 	}
 
-	t.Fatal(errs)
+	if !errors.Is(errs["Emails[0]"], v2.ErrMaxLen) {
+		t.Fatalf("expected email max len")
+	}
 }
