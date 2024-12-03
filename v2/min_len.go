@@ -6,7 +6,6 @@
 package v2
 
 import (
-	"fmt"
 	"reflect"
 	"strconv"
 )
@@ -16,47 +15,37 @@ const (
 	nameMinLen = "min-len"
 )
 
-// MinLenError defines the minimum length error.
-type MinLenError struct {
-	// minLen is the minimum number of characters required.
-	minLen int
-}
+var (
+	// ErrMinLen indicates that the value's length is less than the specified minimum.
+	ErrMinLen = NewCheckError("MIN_LEN")
+)
 
-// newMinLenError initializes a new minimum length error based on the given minimum length.
-func newMinLenError(minLen int) *MinLenError {
-	return &MinLenError{
-		minLen: minLen,
-	}
-}
+// MinLen checks if the length of the given value (string, slice, or map) is at least n.
+// Returns an error if the length is less than n.
+func MinLen[T any](n int) CheckFunc[T] {
+	return func(value T) (T, error) {
+		v, ok := any(value).(reflect.Value)
+		if !ok {
+			v = reflect.ValueOf(value)
+		}
 
-// Error provides the string representation of the error.
-func (m *MinLenError) Error() string {
-	return fmt.Sprintf("must be at least %d characters", m.minLen)
-}
+		v = reflect.Indirect(v)
 
-// MinLen checks if a string has at least n characters. It returns an
-// error if the string is shorter than n.
-func MinLen(n int) CheckFunc[string] {
-	return func(value string) (string, error) {
-		if len(value) < n {
-			return value, newMinLenError(n)
+		if v.Len() < n {
+			return value, ErrMinLen
 		}
 
 		return value, nil
 	}
 }
 
-// makeMinLen returns the minimum length check function.
+// makeMinLen creates a minimum length check function from a string parameter.
+// Panics if the parameter cannot be parsed as an integer.
 func makeMinLen(params string) CheckFunc[reflect.Value] {
 	n, err := strconv.Atoi(params)
 	if err != nil {
 		panic("unable to parse min length")
 	}
 
-	check := MinLen(n)
-
-	return func(value reflect.Value) (reflect.Value, error) {
-		_, err := check(value.Interface().(string))
-		return value, err
-	}
+	return MinLen[reflect.Value](n)
 }

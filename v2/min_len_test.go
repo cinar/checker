@@ -6,6 +6,7 @@
 package v2_test
 
 import (
+	"errors"
 	"log"
 	"testing"
 
@@ -15,7 +16,7 @@ import (
 func TestMinLenSuccess(t *testing.T) {
 	value := "test"
 
-	check := v2.MinLen(4)
+	check := v2.MinLen[string](4)
 
 	result, err := check(value)
 	if result != value {
@@ -30,15 +31,14 @@ func TestMinLenSuccess(t *testing.T) {
 func TestMinLenError(t *testing.T) {
 	value := "test"
 
-	check := v2.MinLen(5)
+	check := v2.MinLen[string](5)
 
 	result, err := check(value)
 	if result != value {
 		t.Fatalf("result (%s) is not the original value (%s)", result, value)
 	}
 
-	_, ok := err.(*v2.MinLenError)
-	if !ok {
+	if !errors.Is(err, v2.ErrMinLen) {
 		t.Fatalf("got unexpected error %v", err)
 	}
 

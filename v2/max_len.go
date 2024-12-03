@@ -6,7 +6,6 @@
 package v2
 
 import (
-	"fmt"
 	"reflect"
 	"strconv"
 )
@@ -16,47 +15,37 @@ const (
 	nameMaxLen = "max-len"
 )
 
-// MaxLenError defines the maximum length error.
-type MaxLenError struct {
-	// MaxLen is the maximum number of characters required.
-	MaxLen int
-}
+var (
+	// ErrMaxLen indicates that the value's length is greater than the specified maximum.
+	ErrMaxLen = NewCheckError("MAX_LEN")
+)
 
-// newMaxLenError initializes a new maximum length error based on the given maximum length.
-func newMaxLenError(MaxLen int) *MaxLenError {
-	return &MaxLenError{
-		MaxLen: MaxLen,
-	}
-}
+// MaxLen checks if the length of the given value (string, slice, or map) is at most n.
+// Returns an error if the length is greater than n.
+func MaxLen[T any](n int) CheckFunc[T] {
+	return func(value T) (T, error) {
+		v, ok := any(value).(reflect.Value)
+		if !ok {
+			v = reflect.ValueOf(value)
+		}
 
-// Error provides the string representation of the error.
-func (m *MaxLenError) Error() string {
-	return fmt.Sprintf("must be at most %d characters", m.MaxLen)
-}
+		v = reflect.Indirect(v)
 
-// MaxLen checks if a string has at least n characters. It returns an
-// error if the string is shorter than n.
-func MaxLen(n int) CheckFunc[string] {
-	return func(value string) (string, error) {
-		if len(value) > n {
-			return value, newMaxLenError(n)
+		if v.Len() > n {
+			return value, ErrMaxLen
 		}
 
 		return value, nil
 	}
 }
 
-// makeMaxLen returns the maximum length check function.
+// makeMaxLen creates a maximum length check function from a string parameter.
+// Panics if the parameter cannot be parsed as an integer.
 func makeMaxLen(params string) CheckFunc[reflect.Value] {
 	n, err := strconv.Atoi(params)
 	if err != nil {
 		panic("unable to parse max length")
 	}
 
-	check := MaxLen(n)
-
-	return func(value reflect.Value) (reflect.Value, error) {
-		_, err := check(value.Interface().(string))
-		return value, err
-	}
+	return MaxLen[reflect.Value](n)
 }

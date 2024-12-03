@@ -6,12 +6,17 @@
 package v2
 
 import (
+	"fmt"
 	"reflect"
+	"strings"
 )
 
 const (
 	// checkerTag is the name of the field tag used for checker.
 	checkerTag = "checker"
+
+	// sliceConfigPrefix is the prefix used to distinguish slice-level checks from item-level checks.
+	sliceConfigPrefix = "@"
 )
 
 // checkStructJob defines a check strcut job.
@@ -81,6 +86,21 @@ func CheckStruct(st any) (map[string]error, bool) {
 					Config: field.Tag.Get("checker"),
 				})
 			}
+
+		case reflect.Slice:
+			sliceConfig, itemConfig := splitSliceConfig(job.Config)
+			job.Config = sliceConfig
+
+			for i := 0; i < job.Value.Len(); i++ {
+				name := fmt.Sprintf("%s[%d]", job.Name, i)
+				value := reflect.Indirect(job.Value.Index(i))
+
+				jobs = append(jobs, &checkStructJob{
+					Name:   name,
+					Value:  value,
+					Config: itemConfig,
+				})
+			}
 		}
 
 		if job.Config != "" {
@@ -114,4 +134,20 @@ func fieldName(prefix string, field reflect.StructField) string {
 	}
 
 	return name
+}
+
+// splitSliceConfig splits config string into slice and item-level configurations.
+func splitSliceConfig(config string) (string, string) {
+	sliceFileds := make([]string, 0)
+	itemFields := make([]string, 0)
+
+	for _, configField := range strings.Fields(config) {
+		if strings.HasPrefix(configField, sliceConfigPrefix) {
+			sliceFileds = append(sliceFileds, strings.TrimPrefix(configField, sliceConfigPrefix))
+		} else {
+			itemFields = append(itemFields, configField)
+		}
+	}
+
+	return strings.Join(sliceFileds, " "), strings.Join(itemFields, " ")
 }

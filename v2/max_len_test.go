@@ -6,6 +6,7 @@
 package v2_test
 
 import (
+	"errors"
 	"log"
 	"testing"
 
@@ -15,7 +16,7 @@ import (
 func TestMaxLenSuccess(t *testing.T) {
 	value := "test"
 
-	check := v2.MaxLen(4)
+	check := v2.MaxLen[string](4)
 
 	result, err := check(value)
 	if result != value {
@@ -30,15 +31,14 @@ func TestMaxLenSuccess(t *testing.T) {
 func TestMaxLenError(t *testing.T) {
 	value := "test test"
 
-	check := v2.MaxLen(5)
+	check := v2.MaxLen[string](5)
 
 	result, err := check(value)
 	if result != value {
 		t.Fatalf("result (%s) is not the original value (%s)", result, value)
 	}
 
-	_, ok := err.(*v2.MaxLenError)
-	if !ok {
+	if !errors.Is(err, v2.ErrMaxLen) {
 		t.Fatalf("got unexpected error %v", err)
 	}
 

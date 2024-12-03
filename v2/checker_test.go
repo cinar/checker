@@ -173,3 +173,25 @@ func TestCheckStructCustomName(t *testing.T) {
 		t.Fatalf("expected name required %v", errs)
 	}
 }
+
+func TestCheckStructSlice(t *testing.T) {
+	type Person struct {
+		Name   string   `checker:"required"`
+		Emails []string `checker:"@max-len:1"`
+	}
+
+	person := &Person{
+		Name: "Onur Cinar",
+		Emails: []string{
+			"",
+			"",
+		},
+	}
+
+	errs, ok := v2.CheckStruct(person)
+	if ok {
+		t.Fatal("expected errors")
+	}
+
+	t.Fatal(errs)
+}
