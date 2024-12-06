@@ -1,8 +1,9 @@
+// Package v2 of Checker is a Go library for validating user input through struct tags.
+//
 // Copyright (c) 2023-2024 Onur Cinar.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
-
 package v2
 
 import (
@@ -19,7 +20,7 @@ const (
 	sliceConfigPrefix = "@"
 )
 
-// checkStructJob defines a check strcut job.
+// checkStructJob defines a check struct job.
 type checkStructJob struct {
 	Name   string
 	Value  reflect.Value
@@ -138,16 +139,16 @@ func fieldName(prefix string, field reflect.StructField) string {
 
 // splitSliceConfig splits config string into slice and item-level configurations.
 func splitSliceConfig(config string) (string, string) {
-	sliceFileds := make([]string, 0)
+	sliceFields := make([]string, 0)
 	itemFields := make([]string, 0)
 
 	for _, configField := range strings.Fields(config) {
 		if strings.HasPrefix(configField, sliceConfigPrefix) {
-			sliceFileds = append(sliceFileds, strings.TrimPrefix(configField, sliceConfigPrefix))
+			sliceFields = append(sliceFields, strings.TrimPrefix(configField, sliceConfigPrefix))
 		} else {
 			itemFields = append(itemFields, configField)
 		}
 	}
 
-	return strings.Join(sliceFileds, " "), strings.Join(itemFields, " ")
+	return strings.Join(sliceFields, " "), strings.Join(itemFields, " ")
 }

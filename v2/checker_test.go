@@ -118,9 +118,9 @@ func TestCheckStructSuccess(t *testing.T) {
 		},
 	}
 
-	errors, ok := v2.CheckStruct(person)
+	errs, ok := v2.CheckStruct(person)
 	if !ok {
-		t.Fatalf("got unexpected errors %v", errors)
+		t.Fatalf("got unexpected errs %v", errs)
 	}
 }
 
