@@ -3,20 +3,20 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package v2_test
+package checker_test
 
 import (
 	"errors"
 	"log"
 	"testing"
 
-	v2 "github.com/cinar/checker/v2"
+	checker."github.com/cinar/checker/checker.
 )
 
 func TestMinLenSuccess(t *testing.T) {
 	value := "test"
 
-	check := v2.MinLen[string](4)
+	check := checker.MinLen[string](4)
 
 	result, err := check(value)
 	if result != value {
@@ -31,14 +31,14 @@ func TestMinLenSuccess(t *testing.T) {
 func TestMinLenError(t *testing.T) {
 	value := "test"
 
-	check := v2.MinLen[string](5)
+	check := checker.MinLen[string](5)
 
 	result, err := check(value)
 	if result != value {
 		t.Fatalf("result (%s) is not the original value (%s)", result, value)
 	}
 
-	if !errors.Is(err, v2.ErrMinLen) {
+	if !errors.Is(err, checker.ErrMinLen) {
 		t.Fatalf("got unexpected error %v", err)
 	}
 
@@ -54,7 +54,7 @@ func TestReflectMinLenError(t *testing.T) {
 		Name: "    Onur    ",
 	}
 
-	errs, ok := v2.CheckStruct(person)
+	errs, ok := checker.CheckStruct(person)
 	if ok {
 		t.Fatalf("expected errors")
 	}
@@ -75,7 +75,7 @@ func TestReflectMinLenInvalidMinLen(t *testing.T) {
 		Name: "Onur",
 	}
 
-	v2.CheckStruct(person)
+	checker.CheckStruct(person)
 }
 
 func TestReflectMinLenInvalidType(t *testing.T) {
@@ -89,5 +89,5 @@ func TestReflectMinLenInvalidType(t *testing.T) {
 		Name: 1,
 	}
 
-	v2.CheckStruct(person)
+	checker.CheckStruct(person)
 }

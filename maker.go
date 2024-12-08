@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package v2
+package checker
 
 import (
 	"fmt"
@@ -18,6 +18,7 @@ type MakeCheckFunc func(params string) CheckFunc[reflect.Value]
 var makers = map[string]MakeCheckFunc{
 	nameAlphanumeric: makeAlphanumeric,
 	nameASCII:        makeASCII,
+	nameCIDR:         makeCIDR,
 	nameMaxLen:       makeMaxLen,
 	nameMinLen:       makeMinLen,
 	nameRequired:     makeRequired,

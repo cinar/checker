@@ -3,18 +3,18 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package v2_test
+package checker_test
 
 import (
 	"testing"
 
-	v2 "github.com/cinar/checker/v2"
+	"github.com/cinar/checker"
 )
 
 func TestCheckErrorError(t *testing.T) {
 	code := "CODE"
 
-	err := v2.NewCheckError(code)
+	err := checker.NewCheckError(code)
 
 	if err.Error() != code {
 		t.Fatalf("actaul %s expected %s", err.Error(), code)

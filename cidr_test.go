@@ -6,32 +6,35 @@
 package checker_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/cinar/checker"
 )
 
-func ExampleIsCidr() {
-	err := checker.IsCidr("2001:db8::/32")
+func ExampleIsCIDR() {
+	_, err := checker.IsCIDR("2001:db8::/32")
 	if err != nil {
-		// Send the errors back to the user
+		fmt.Println(err)
 	}
 }
 
-func TestIsCidrInvalid(t *testing.T) {
-	if checker.IsCidr("900.800.200.100//24") == nil {
-		t.Fail()
+func TestIsCIDRInvalid(t *testing.T) {
+	_, err := checker.IsCIDR("900.800.200.100//24")
+	if err == nil {
+		t.Fatal("expected error")
 	}
 }
 
-func TestIsCidrValid(t *testing.T) {
-	if checker.IsCidr("2001:db8::/32") != nil {
-		t.Fail()
+func TestIsCIDRValid(t *testing.T) {
+	_, err := checker.IsCIDR("2001:db8::/32")
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 
 func TestCheckCidrNonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
+	defer FailIfNoPanic(t, "expected panic")
 
 	type Network struct {
 		Subnet int `checkers:"cidr"`
@@ -39,10 +42,10 @@ func TestCheckCidrNonString(t *testing.T) {
 
 	network := &Network{}
 
-	checker.Check(network)
+	checker.CheckStruct(network)
 }
 
-func TestCheckCidrInvalid(t *testing.T) {
+func TestCheckCIDRInvalid(t *testing.T) {
 	type Network struct {
 		Subnet string `checkers:"cidr"`
 	}
@@ -51,13 +54,13 @@ func TestCheckCidrInvalid(t *testing.T) {
 		Subnet: "900.800.200.100//24",
 	}
 
-	_, valid := checker.Check(network)
+	_, valid := checker.CheckStruct(network)
 	if valid {
 		t.Fail()
 	}
 }
 
-func TestCheckCidrValid(t *testing.T) {
+func TestCheckCIDRValid(t *testing.T) {
 	type Network struct {
 		Subnet string `checkers:"cidr"`
 	}
@@ -66,7 +69,7 @@ func TestCheckCidrValid(t *testing.T) {
 		Subnet: "192.0.2.0/24",
 	}
 
-	_, valid := checker.Check(network)
+	_, valid := checker.CheckStruct(network)
 	if !valid {
 		t.Fail()
 	}

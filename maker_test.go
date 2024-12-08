@@ -3,12 +3,12 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package v2_test
+package checker_test
 
 import (
 	"testing"
 
-	v2 "github.com/cinar/checker/v2"
+	"github.com/cinar/checker"
 )
 
 func TestMakeCheckersUnknown(t *testing.T) {
@@ -22,5 +22,5 @@ func TestMakeCheckersUnknown(t *testing.T) {
 		Name: "Onur",
 	}
 
-	v2.CheckStruct(person)
+	checker.CheckStruct(person)
 }

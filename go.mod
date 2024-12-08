@@ -1,3 +1,3 @@
 module github.com/cinar/checker
 
-go 1.22
+go 1.23.2

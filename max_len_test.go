@@ -3,20 +3,20 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package v2_test
+package checker_test
 
 import (
 	"errors"
 	"log"
 	"testing"
 
-	v2 "github.com/cinar/checker/v2"
+	"github.com/cinar/checker"
 )
 
 func TestMaxLenSuccess(t *testing.T) {
 	value := "test"
 
-	check := v2.MaxLen[string](4)
+	check := checker.MaxLen[string](4)
 
 	result, err := check(value)
 	if result != value {
@@ -31,14 +31,14 @@ func TestMaxLenSuccess(t *testing.T) {
 func TestMaxLenError(t *testing.T) {
 	value := "test test"
 
-	check := v2.MaxLen[string](5)
+	check := checker.MaxLen[string](5)
 
 	result, err := check(value)
 	if result != value {
 		t.Fatalf("result (%s) is not the original value (%s)", result, value)
 	}
 
-	if !errors.Is(err, v2.ErrMaxLen) {
+	if !errors.Is(err, checker.ErrMaxLen) {
 		t.Fatalf("got unexpected error %v", err)
 	}
 
@@ -54,7 +54,7 @@ func TestReflectMaxLenError(t *testing.T) {
 		Name: "Onur",
 	}
 
-	errs, ok := v2.CheckStruct(person)
+	errs, ok := checker.CheckStruct(person)
 	if ok {
 		t.Fatalf("expected errors")
 	}
@@ -75,7 +75,7 @@ func TestReflectMaxLenInvalidMaxLen(t *testing.T) {
 		Name: "Onur",
 	}
 
-	v2.CheckStruct(person)
+	checker.CheckStruct(person)
 }
 
 func TestReflectMaxLenInvalidType(t *testing.T) {
@@ -89,5 +89,5 @@ func TestReflectMaxLenInvalidType(t *testing.T) {
 		Name: 1,
 	}
 
-	v2.CheckStruct(person)
+	checker.CheckStruct(person)
 }

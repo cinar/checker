@@ -19,16 +19,16 @@ var ErrNotURL = errors.New("please enter a valid URL")
 
 // IsURL checks if the given value is a valid URL.
 func IsURL(value string) error {
-	url, err := url.ParseRequestURI(value)
+	u, err := url.ParseRequestURI(value)
 	if err != nil {
 		return ErrNotURL
 	}
 
-	if url.Scheme == "" {
+	if u.Scheme == "" {
 		return ErrNotURL
 	}
 
-	if url.Host == "" {
+	if u.Host == "" {
 		return ErrNotURL
 	}
 

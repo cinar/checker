@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package v2
+package checker
 
 // CheckError defines the check error.
 type CheckError struct {

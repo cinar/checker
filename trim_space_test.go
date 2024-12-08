@@ -3,19 +3,19 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package v2_test
+package checker_test
 
 import (
 	"testing"
 
-	v2 "github.com/cinar/checker/v2"
+	checker."github.com/cinar/checker/checker.
 )
 
 func TestTrimSpace(t *testing.T) {
 	input := "    test     "
 	expected := "test"
 
-	actual, err := v2.TrimSpace(input)
+	actual, err := checker.TrimSpace(input)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -36,7 +36,7 @@ func TestReflectTrimSpace(t *testing.T) {
 
 	expected := "test"
 
-	errs, ok := v2.CheckStruct(person)
+	errs, ok := checker.CheckStruct(person)
 	if !ok {
 		t.Fatalf("got unexpected errors %v", errs)
 	}

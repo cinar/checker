@@ -6,38 +6,38 @@
 package checker
 
 import (
-	"errors"
 	"reflect"
 	"unicode"
 )
 
-// tagASCII is the tag of the checker.
-const tagASCII = "ascii"
+const (
+	// nameASCII is the name of the ASCII check.
+	nameASCII = "ascii"
+)
 
-// ErrNotASCII indicates that the given string contains non-ASCII characters.
-var ErrNotASCII = errors.New("please use standard English characters only")
+var (
+	// ErrNotASCII indicates that the given string contains non-ASCII characters.
+	ErrNotASCII = NewCheckError("NOT_ASCII")
+)
 
 // IsASCII checks if the given string consists of only ASCII characters.
-func IsASCII(value string) error {
+func IsASCII(value string) (string, error) {
 	for _, c := range value {
 		if c > unicode.MaxASCII {
-			return ErrNotASCII
+			return value, ErrNotASCII
 		}
 	}
 
-	return nil
+	return value, nil
+}
+
+// isASCII checks if the given string consists of only ASCII characters.
+func isASCII(value reflect.Value) (reflect.Value, error) {
+	_, err := IsASCII(value.Interface().(string))
+	return value, err
 }
 
 // makeASCII makes a checker function for the ASCII checker.
-func makeASCII(_ string) CheckFunc {
-	return checkASCII
-}
-
-// checkASCII checks if the given string consists of only ASCII characters.
-func checkASCII(value, _ reflect.Value) error {
-	if value.Kind() != reflect.String {
-		panic("string expected")
-	}
-
-	return IsASCII(value.String())
+func makeASCII(_ string) CheckFunc[reflect.Value] {
+	return isASCII
 }

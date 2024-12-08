@@ -6,68 +6,71 @@
 package checker_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/cinar/checker"
 )
 
 func ExampleIsAlphanumeric() {
-	err := checker.IsAlphanumeric("ABcd1234")
+	_, err := checker.IsAlphanumeric("ABcd1234")
 	if err != nil {
-		// Send the errors back to the user
+		fmt.Println(err)
 	}
 }
 
 func TestIsAlphanumericInvalid(t *testing.T) {
-	if checker.IsAlphanumeric("-/") == nil {
-		t.Fail()
+	_, err := checker.IsAlphanumeric("-/")
+	if err == nil {
+		t.Fatal("expected error")
 	}
 }
 
 func TestIsAlphanumericValid(t *testing.T) {
-	if checker.IsAlphanumeric("ABcd1234") != nil {
-		t.Fail()
+	_, err := checker.IsAlphanumeric("ABcd1234")
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 
 func TestCheckAlphanumericNonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
+	defer FailIfNoPanic(t, "expected panic")
 
-	type User struct {
-		Username int `checkers:"alphanumeric"`
+	type Person struct {
+		Name int `checkers:"alphanumeric"`
 	}
 
-	user := &User{}
+	person := &Person{}
 
-	checker.Check(user)
+	checker.CheckStruct(person)
 }
 
 func TestCheckAlphanumericInvalid(t *testing.T) {
-	type User struct {
-		Username string `checkers:"alphanumeric"`
+	type Person struct {
+		Name string `checkers:"alphanumeric"`
 	}
 
-	user := &User{
-		Username: "user-/",
+	person := &Person{
+		Name: "name-/",
 	}
 
-	_, valid := checker.Check(user)
-	if valid {
-		t.Fail()
+	_, ok := checker.CheckStruct(person)
+	if ok {
+		t.Fatal("expected error")
 	}
 }
 
 func TestCheckAlphanumericValid(t *testing.T) {
-	type User struct {
-		Username string `checkers:"alphanumeric"`
+	type Person struct {
+		Name string `checkers:"alphanumeric"`
 	}
 
-	user := &User{
-		Username: "ABcd1234",
+	person := &Person{
+		Name: "ABcd1234",
 	}
 
-	_, valid := checker.Check(user)
-	if !valid {
-		t.Fail()
+	errs, ok := checker.CheckStruct(person)
+	if !ok {
+		t.Fatal(errs)
 	}
 }

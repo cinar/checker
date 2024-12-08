@@ -6,67 +6,70 @@
 package checker_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/cinar/checker"
 )
 
 func ExampleIsASCII() {
-	err := checker.IsASCII("Checker")
+	_, err := checker.IsASCII("Checker")
 	if err != nil {
-		// Send the errors back to the user
+		fmt.Println(err)
 	}
 }
 
 func TestIsASCIIInvalid(t *testing.T) {
-	if checker.IsASCII("𝄞 Music!") == nil {
-		t.Fail()
+	_, err := checker.IsASCII("𝄞 Music!")
+	if err == nil {
+		t.Fatal("expected error")
 	}
 }
 
 func TestIsASCIIValid(t *testing.T) {
-	if checker.IsASCII("Checker") != nil {
-		t.Fail()
+	_, err := checker.IsASCII("Checker")
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 
 func TestCheckASCIINonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
+	defer FailIfNoPanic(t, "expected panic")
 
-	type User struct {
-		Age int `checkers:"ascii"`
+	type Person struct {
+		Name int `checkers:"ascii"`
 	}
 
-	user := &User{}
+	person := &Person{}
 
-	checker.Check(user)
+	checker.CheckStruct(person)
 }
 
 func TestCheckASCIIInvalid(t *testing.T) {
-	type User struct {
-		Username string `checkers:"ascii"`
+	type Person struct {
+		Name string `checkers:"ascii"`
 	}
 
-	user := &User{
-		Username: "𝄞 Music!",
+	person := &Person{
+		Name: "𝄞 Music!",
 	}
 
-	_, valid := checker.Check(user)
+	_, valid := checker.CheckStruct(person)
 	if valid {
 		t.Fail()
 	}
 }
 
 func TestCheckASCIIValid(t *testing.T) {
-	type User struct {
-		Username string `checkers:"ascii"`
+	type Person struct {
+		Name string `checkers:"ascii"`
 	}
 
-	user := &User{
-		Username: "checker",
+	person := &Person{
+		Name: "checker",
 	}
 
-	_, valid := checker.Check(user)
+	_, valid := checker.CheckStruct(person)
 	if !valid {
 		t.Fail()
 	}

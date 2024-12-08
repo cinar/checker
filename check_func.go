@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package v2
+package checker
 
 // CheckFunc is a function that takes a value of type T and performs
 // a check on it. It returns the resulting value and any error that
