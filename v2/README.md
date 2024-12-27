@@ -63,7 +63,7 @@ if err != nil {
 For simpler validation, you can call individual checker functions. Here is an example:
 
 ```golang
-name := "John Doe"
+name := "Onur Cinar"
 
 err := checker.IsRequired(name)
 if err != nil {
@@ -92,6 +92,7 @@ type Person struct {
 - [`digits`](DOC.md#IsDigits): Ensures the string contains only digits.
 - [`email`](DOC.md#IsEmail): Ensures the string is a valid email address.
 - [`fqdn`](DOC.md#IsFQDN): Ensures the string is a valid fully qualified domain name.
+- [`hex`](DOC.md#IsHex): Ensures the string contains only hex digits.
 - [`ip`](DOC.md#IsIP): Ensures the string is a valid IP address.
 - [`ipv4`](DOC.md#IsIPv4): Ensures the string is a valid IPv4 address.
 - [`ipv6`](DOC.md#IsIPv6): Ensures the string is a valid IPv6 address.
