@@ -13,70 +13,102 @@ import (
 
 const (
 	// nameCreditCard is the name of the credit card check.
-	nameCreditCard = "credit_card"
+	nameCreditCard = "credit-card"
 )
 
 var (
 	// ErrNotCreditCard indicates that the given value is not a valid credit card number.
 	ErrNotCreditCard = NewCheckError("CreditCard")
 
-	// creditCardPatterns contains the regular expressions for validating different credit card types.
-	creditCardPatterns = map[string]*regexp.Regexp{
-		"visa":       regexp.MustCompile(`^4[0-9]{12}(?:[0-9]{3})?$`),
-		"mastercard": regexp.MustCompile(`^5[1-5][0-9]{14}$`),
-		"amex":       regexp.MustCompile(`^3[47][0-9]{13}$`),
-		"discover":   regexp.MustCompile(`^6(?:011|5[0-9]{2})[0-9]{12}$`),
-		"jcb":        regexp.MustCompile(`^(?:2131|1800|35\d{3})\d{11}$`),
-		"diners":     regexp.MustCompile(`^3(?:0[0-5]|[68][0-9])[0-9]{11}$`),
-	}
+	// amexExpression is the regexp for the AMEX cards. They start with 34 or 37, and has 15 digits.
+	amexExpression = "(?:^(?:3[47])[0-9]{13}$)"
+	amexPattern    = regexp.MustCompile(amexExpression)
 
-	// anyCreditCardPattern is the regular expression for validating any credit card number.
+	// dinersExpression is the regexp for the Diners cards. They start with 305, 36, 38, and has 14 digits.
+	dinersExpression = "(?:^3(?:(?:05[0-9]{11})|(?:[68][0-9]{12}))$)"
+	dinersPattern    = regexp.MustCompile(dinersExpression)
+
+	// discoverExpression is the regexp for the Discover cards. They start with 6011 and has 16 digits.
+	discoverExpression = "(?:^6011[0-9]{12}$)"
+	discoverPattern    = regexp.MustCompile(discoverExpression)
+
+	// jcbExpression is the regexp for the JCB 15 cards. They start with 2131, 1800, and has 15 digits, or start with 35 and has 16 digits.
+	jcbExpression = "(?:^(?:(?:2131)|(?:1800)|(?:35[0-9]{3}))[0-9]{11}$)"
+	jcbPattern    = regexp.MustCompile(jcbExpression)
+
+	// masterCardExpression is the regexp for the MasterCard cards. They start with 51, 52, 53, 54, or 55, and has 15 digits.
+	masterCardExpression = "(?:^5[12345][0-9]{14}$)"
+	masterCardPattern    = regexp.MustCompile(masterCardExpression)
+
+	// unionPayExpression is the regexp for the UnionPay cards. They start either with 62 or 67, and has 16 digits, or they start with 81 and has 16 to 19 digits.
+	unionPayExpression = "(?:(?:6[27][0-9]{14})|(?:81[0-9]{14,17})^$)"
+	unionPayPattern    = regexp.MustCompile(unionPayExpression)
+
+	// visaExpression is the regexp for the Visa cards. They start with 4 and has 13 or 16 digits.
+	visaExpression = "(?:^4[0-9]{12}(?:[0-9]{3})?$)"
+	visaPattern    = regexp.MustCompile(visaExpression)
+
+	// anyCreditCardPattern is the regexp for any credit card.
 	anyCreditCardPattern = regexp.MustCompile(strings.Join([]string{
-		creditCardPatterns["visa"].String(),
-		creditCardPatterns["mastercard"].String(),
-		creditCardPatterns["amex"].String(),
-		creditCardPatterns["discover"].String(),
-		creditCardPatterns["jcb"].String(),
-		creditCardPatterns["diners"].String(),
+		amexExpression,
+		dinersExpression,
+		discoverExpression,
+		jcbExpression,
+		masterCardExpression,
+		unionPayExpression,
+		visaExpression,
 	}, "|"))
+
+	// creditCardPatterns is the mapping for credit card names to patterns.
+	creditCardPatterns = map[string]*regexp.Regexp{
+		"amex":       amexPattern,
+		"diners":     dinersPattern,
+		"discover":   discoverPattern,
+		"jcb":        jcbPattern,
+		"mastercard": masterCardPattern,
+		"unionpay":   unionPayPattern,
+		"visa":       visaPattern,
+	}
 )
 
-// IsCreditCard checks if the value is a valid credit card number.
-func IsCreditCard(value string) (string, error) {
-	if !anyCreditCardPattern.MatchString(value) {
-		return value, ErrNotCreditCard
-	}
-	return value, nil
+// IsAnyCreditCard checks if the given value is a valid credit card number.
+func IsAnyCreditCard(number string) (string, error) {
+	return isCreditCard(number, anyCreditCardPattern)
 }
 
-// IsVisaCreditCard checks if the value is a valid Visa credit card number.
-func IsVisaCreditCard(value string) (string, error) {
-	if !creditCardPatterns["visa"].MatchString(value) {
-		return value, ErrNotCreditCard
-	}
-	return value, nil
+// IsAmexCreditCard checks if the given valie is a valid AMEX credit card.
+func IsAmexCreditCard(number string) (string, error) {
+	return isCreditCard(number, amexPattern)
 }
 
-// IsMasterCardCreditCard checks if the value is a valid MasterCard credit card number.
-func IsMasterCardCreditCard(value string) (string, error) {
-	if !creditCardPatterns["mastercard"].MatchString(value) {
-		return value, ErrNotCreditCard
-	}
-	return value, nil
+// IsDinersCreditCard checks if the given valie is a valid Diners credit card.
+func IsDinersCreditCard(number string) (string, error) {
+	return isCreditCard(number, dinersPattern)
 }
 
-// IsAmexCreditCard checks if the value is a valid American Express credit card number.
-func IsAmexCreditCard(value string) (string, error) {
-	if !creditCardPatterns["amex"].MatchString(value) {
-		return value, ErrNotCreditCard
-	}
-	return value, nil
+// IsDiscoverCreditCard checks if the given valie is a valid Discover credit card.
+func IsDiscoverCreditCard(number string) (string, error) {
+	return isCreditCard(number, discoverPattern)
 }
 
-// checkCreditCard checks if the value is a valid credit card number.
-func checkCreditCard(value reflect.Value) (reflect.Value, error) {
-	_, err := IsCreditCard(value.Interface().(string))
-	return value, err
+// IsJcbCreditCard checks if the given valie is a valid JCB 15 credit card.
+func IsJcbCreditCard(number string) (string, error) {
+	return isCreditCard(number, jcbPattern)
+}
+
+// IsMasterCardCreditCard checks if the given valie is a valid MasterCard credit card.
+func IsMasterCardCreditCard(number string) (string, error) {
+	return isCreditCard(number, masterCardPattern)
+}
+
+// IsUnionPayCreditCard checks if the given valie is a valid UnionPay credit card.
+func IsUnionPayCreditCard(number string) (string, error) {
+	return isCreditCard(number, unionPayPattern)
+}
+
+// IsVisaCreditCard checks if the given valie is a valid Visa credit card.
+func IsVisaCreditCard(number string) (string, error) {
+	return isCreditCard(number, visaPattern)
 }
 
 // makeCreditCard makes a checker function for the credit card checker.
@@ -104,11 +136,21 @@ func makeCreditCard(config string) CheckFunc[reflect.Value] {
 		number := value.String()
 
 		for _, pattern := range patterns {
-			if pattern.MatchString(number) {
+			_, err := isCreditCard(number, pattern)
+			if err == nil {
 				return value, nil
 			}
 		}
 
 		return value, ErrNotCreditCard
 	}
+}
+
+// isCreditCard checks if the given number based on the given credit card pattern and the Luhn algorithm check digit.
+func isCreditCard(number string, pattern *regexp.Regexp) (string, error) {
+	if !pattern.MatchString(number) {
+		return number, ErrNotCreditCard
+	}
+
+	return IsLUHN(number)
 }
