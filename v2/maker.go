@@ -46,6 +46,11 @@ var makers = map[string]MakeCheckFunc{
 	nameURLUnescape:  makeURLUnescape,
 }
 
+// RegisterMaker registers a new maker function with the given name.
+func RegisterMaker(name string, maker MakeCheckFunc) {
+	makers[name] = maker
+}
+
 // makeChecks take a checker config and returns the check functions.
 func makeChecks(config string) []CheckFunc[reflect.Value] {
 	fields := strings.Fields(config)
