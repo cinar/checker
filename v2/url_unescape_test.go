@@ -11,11 +11,11 @@ import (
 	v2 "github.com/cinar/checker/v2"
 )
 
-func TestURLEscape(t *testing.T) {
-	input := "param1/param2 = 1 + 2 & 3 + 4"
-	expected := "param1%2Fparam2+%3D+1+%2B+2+%26+3+%2B+4"
+func TestURLUnescape(t *testing.T) {
+	input := "param1%2Fparam2+%3D+1+%2B+2+%26+3+%2B+4"
+	expected := "param1/param2 = 1 + 2 & 3 + 4"
 
-	actual, err := v2.URLEscape(input)
+	actual, err := v2.URLUnescape(input)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -25,16 +25,16 @@ func TestURLEscape(t *testing.T) {
 	}
 }
 
-func TestReflectURLEscape(t *testing.T) {
+func TestReflectURLUnescape(t *testing.T) {
 	type Request struct {
-		Query string `checkers:"url-escape"`
+		Query string `checkers:"url-unescape"`
 	}
 
 	request := &Request{
-		Query: "param1/param2 = 1 + 2 & 3 + 4",
+		Query: "param1%2Fparam2+%3D+1+%2B+2+%26+3+%2B+4",
 	}
 
-	expected := "param1%2Fparam2+%3D+1+%2B+2+%26+3+%2B+4"
+	expected := "param1/param2 = 1 + 2 & 3 + 4"
 
 	errs, ok := v2.CheckStruct(request)
 	if !ok {

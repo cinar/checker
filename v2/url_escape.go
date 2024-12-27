@@ -10,28 +10,21 @@ import (
 	"reflect"
 )
 
-const (
-	// nameURLEscape is the name of the URL escape normalizer.
-	nameURLEscape = "url-escape"
-)
+// nameURLEscape is the name of the URL escape normalizer.
+const nameURLEscape = "url-escape"
 
-// normalizeURLEscape applies URL escaping to special characters.
-// Uses net.url.QueryEscape for the actual escape operation.
-func normalizeURLEscape(value string) (string, error) {
+// URLEscape applies URL escaping to special characters.
+func URLEscape(value string) (string, error) {
 	return url.QueryEscape(value), nil
 }
 
-// checkURLEscape checks if the value is a valid URL escape string.
-func checkURLEscape(value reflect.Value) (reflect.Value, error) {
-	escaped, err := normalizeURLEscape(value.Interface().(string))
-	if err != nil {
-		return value, err
-	}
-	value.SetString(escaped)
-	return value, nil
+// reflectURLEscape applies URL escaping to special characters.
+func reflectURLEscape(value reflect.Value) (reflect.Value, error) {
+	newValue, err := URLEscape(value.Interface().(string))
+	return reflect.ValueOf(newValue), err
 }
 
-// makeURLEscape makes a normalizer function for the URL escape normalizer.
+// makeURLEscape returns the URL escape normalizer function.
 func makeURLEscape(_ string) CheckFunc[reflect.Value] {
-	return checkURLEscape
+	return reflectURLEscape
 }
