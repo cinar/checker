@@ -22,6 +22,8 @@ var makers = map[string]MakeCheckFunc{
 	nameCreditCard:   makeCreditCard,
 	nameDigits:       makeDigits,
 	nameEmail:        makeEmail,
+	nameHTMLEscape:   makeHTMLEscape,
+	nameHTMLUnescape: makeHTMLUnescape,
 	nameFQDN:         makeFQDN,
 	nameIP:           makeIP,
 	nameIPv4:         makeIPv4,
