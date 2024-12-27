@@ -26,6 +26,13 @@ func TestIsLUHNInvalid(t *testing.T) {
 	}
 }
 
+func TestIsLUHNInvalidDigits(t *testing.T) {
+	_, err := v2.IsLUHN("ABCD")
+	if err == nil {
+		t.Fatal("expected error")
+	}
+}
+
 func TestIsLUHNValid(t *testing.T) {
 	_, err := v2.IsLUHN("4012888888881881")
 	if err != nil {

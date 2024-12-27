@@ -6,11 +6,32 @@
 package v2_test
 
 import (
-	"reflect"
+	"fmt"
 	"testing"
 
 	v2 "github.com/cinar/checker/v2"
 )
+
+func ExampleIsRegexp() {
+	_, err := v2.IsRegexp("^[0-9a-fA-F]+$", "ABcd1234")
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func TestIsRegexpInvalid(t *testing.T) {
+	_, err := v2.IsRegexp("^[0-9a-fA-F]+$", "Onur")
+	if err == nil {
+		t.Fatal("expected error")
+	}
+}
+
+func TestIsRegexpValid(t *testing.T) {
+	_, err := v2.IsRegexp("^[0-9a-fA-F]+$", "ABcd1234")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
 
 func TestCheckRegexpNonString(t *testing.T) {
 	defer FailIfNoPanic(t, "expected panic")
@@ -51,14 +72,5 @@ func TestCheckRegexpValid(t *testing.T) {
 	_, ok := v2.CheckStruct(user)
 	if !ok {
 		t.Fatal("expected valid")
-	}
-}
-
-func TestMakeRegexpChecker(t *testing.T) {
-	checkHex := v2.MakeRegexpChecker("^[A-Fa-f0-9]+$", v2.ErrNotMatch)
-
-	_, err := checkHex(reflect.ValueOf("f0f0f0"))
-	if err != nil {
-		t.Fail()
 	}
 }

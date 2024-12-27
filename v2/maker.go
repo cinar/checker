@@ -23,6 +23,7 @@ var makers = map[string]MakeCheckFunc{
 	nameDigits:       makeDigits,
 	nameEmail:        makeEmail,
 	nameFQDN:         makeFQDN,
+	nameHex:          makeHex,
 	nameHTMLEscape:   makeHTMLEscape,
 	nameHTMLUnescape: makeHTMLUnescape,
 	nameIP:           makeIP,
