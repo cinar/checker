@@ -13,7 +13,7 @@ import (
 )
 
 func ExampleIsISBN() {
-	_, err := v2.IsISBN("9783161484100")
+	_, err := v2.IsISBN("1430248270")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -27,7 +27,7 @@ func TestIsISBNInvalid(t *testing.T) {
 }
 
 func TestIsISBNValid(t *testing.T) {
-	_, err := v2.IsISBN("9783161484100")
+	_, err := v2.IsISBN("1430248270")
 	if err != nil {
 		t.Fatal(err)
 	}

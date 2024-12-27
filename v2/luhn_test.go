@@ -13,7 +13,7 @@ import (
 )
 
 func ExampleIsLUHN() {
-	_, err := v2.IsLUHN("79927398713")
+	_, err := v2.IsLUHN("4012888888881881")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -27,7 +27,7 @@ func TestIsLUHNInvalid(t *testing.T) {
 }
 
 func TestIsLUHNValid(t *testing.T) {
-	_, err := v2.IsLUHN("79927398713")
+	_, err := v2.IsLUHN("4012888888881881")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -19,6 +19,7 @@ var makers = map[string]MakeCheckFunc{
 	nameAlphanumeric: makeAlphanumeric,
 	nameASCII:        makeASCII,
 	nameCIDR:         makeCIDR,
+	nameCreditCard:   makeCreditCard,
 	nameDigits:       makeDigits,
 	nameEmail:        makeEmail,
 	nameFQDN:         makeFQDN,
