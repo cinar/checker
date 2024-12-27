@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
+// Package v2 Checker is a Go library for validating user input through checker rules provided in struct tags.
 package v2
 
 import (
