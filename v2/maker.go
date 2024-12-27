@@ -27,6 +27,7 @@ var makers = map[string]MakeCheckFunc{
 	nameIPv6:         makeIPv6,
 	nameISBN:         makeISBN,
 	nameLUHN:         makeLUHN,
+	nameMAC:          makeMAC,
 	nameMaxLen:       makeMaxLen,
 	nameMinLen:       makeMinLen,
 	nameRequired:     makeRequired,
