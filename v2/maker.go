@@ -21,6 +21,7 @@ var makers = map[string]MakeCheckFunc{
 	nameCIDR:         makeCIDR,
 	nameDigits:       makeDigits,
 	nameEmail:        makeEmail,
+	nameFQDN:         makeFQDN,
 	nameMaxLen:       makeMaxLen,
 	nameMinLen:       makeMinLen,
 	nameRequired:     makeRequired,
