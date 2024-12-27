@@ -6,125 +6,120 @@
 
 # Checker
 
-Checker is a Go library that helps you validate user input. It can be used to validate user input stored in a struct, or to validate individual pieces of input.
+Checker is a lightweight Go library designed to validate user input efficiently. It supports validation of both struct fields and individual input values.
 
-There are many validation libraries available, but I prefer to build my own tools and avoid pulling in unnecessary dependencies. That's why I created Checker, a simple validation library with no dependencies. It's easy to use and gets the job done.
+While there are numerous validation libraries available, Checker stands out due to its simplicity and lack of external dependencies. This makes it an ideal choice for developers who prefer to minimize dependencies and maintain control over their tools. Checker is straightforward to use and effectively meets your validation needs.
 
 ## Usage
 
-To get started, install the Checker library with the following command:
+To begin using the Checker library, install it with the following command:
 
 ```bash
 go get github.com/cinar/checker/v2
 ```
 
-Next, you will need to import the library into your source file. You can do this by following the example below:
+Then, import the library into your source file as shown below:
 
 ```golang
 import (
-    checker "github.com/cinar/checker/v2"
+	checker "github.com/cinar/checker/v2"
 )
 ```
 
 ### Validating User Input Stored in a Struct
 
-Checker can be used in two ways. The first way is to validate user input stored in a struct. To do this, you can list the checkers through the struct tag for each field. Here is an example:
+Checker can validate user input stored in a struct by listing the checkers in the struct tags for each field. Here is an example:
 
 ```golang
 type Person struct {
-    Name string `checkers:"trim required"`
+	Name string `checkers:"trim required"`
 }
 
-person := &Person{}
+person := &Person{
+	Name: " Onur Cinar ",
+}
 
 errors, valid := checker.CheckStruct(person)
 if !valid {
-    // Send the errors back to the user
+	// Handle validation errors
 }
 ```
 
 ### Validating Individual User Input with Multiple Checkers
 
-If you do not want to validate user input stored in a struct, you can individually call the checker functions to validate the user input. Here is an example:
+You can also validate individual user input by calling checker functions directly. Here is an example:
 
 ```golang
-var name
+name := " Onur Cinar "
 
-name, err := v2.Check(name, v2.TrimSpace, v2.Required)
+name, err := checker.Check(name, checker.Trim, checker.Required)
 if err != nil {
-    // Send the result back to the user
+	// Handle validation error
 }
 ```
 
 ### Validating Individual User Input
 
-If you do not want to validate user input stored in a struct, you can individually call the checker functions to validate the user input. Here is an example:
+For simpler validation, you can call individual checker functions. Here is an example:
 
 ```golang
-var name
+name := "John Doe"
 
 err := checker.IsRequired(name)
 if err != nil {
-    // Send the result back to the user
+	// Handle validation error
 }
 ```
 
 ## Normalizers and Checkers
 
-Checkers are used to check for problems in user input, while normalizers are used to transform user input into a preferred format. For example, a normalizer could be used to trim spaces from the beginning and end of a string, or to convert a string to title case.
+Checkers validate user input, while normalizers transform it into a preferred format. For example, a normalizer can trim spaces from a string or convert it to title case.
 
-I am not entirely happy with the decision to combine checkers and normalizers into a single library, but using them together can be useful. Normalizers and checkers can be mixed in any order when defining the validation steps for user data. For example, the trim normalizer can be used in conjunction with the required checker to first trim the user input and then check if the user provided the required information. Here is an example:
+Although combining checkers and normalizers into a single library might seem unconventional, using them together can be beneficial. They can be mixed in any order when defining validation steps. For instance, you can use the `trim` normalizer with the `required` checker to first trim the input and then ensure it is provided. Here is an example:
 
 ```golang
 type Person struct {
-    Name string `checkers:"trim required"`
+	Name string `checkers:"trim required"`
 }
 ```
 
 # Checkers Provided
 
-This package currently provides the following checkers:
-
-- `alphanumeric` checks if the given string consists of only alphanumeric characters.
-- `ascii` checks if the given string consists of only ASCII characters.
-- `cidr` checker checks if the value is a valid CIDR notation IP address and prefix length.
-- `credit-card` checks if the given value is a valid credit card number.
-- `digits` checks if the given string consists of only digit characters.
-- `email` checks if the given string is an email address.
-- `fqdn` checks if the given string is a fully qualified domain name.
-- `ip` checks if the given value is an IP address.
-- `ipv4` checks if the given value is an IPv4 address.
-- `ipv6` checks if the given value is an IPv6 address.
-- `isbn` checks if the given value is a valid ISBN number.
-- `luhn` checks if the given number is valid based on the Luhn algorithm.
-- `mac` checks if the given value is a valid an IEEE 802 MAC-48, EUI-48, EUI-64, or a 20-octet IP over InfiniBand link-layer address.
-- `max` checks if the given value is less than the given maximum.
-- `max-length` checks if the length of the given value is less than the given maximum length.
-- `min` checks if the given value is greather than the given minimum.
-- `min-length` checks if the length of the given value is greather than the given minimum length.
-- `regexp` checks if the given string matches the regexp pattern.
-- `required` checks if the required value is provided.
-- `same` checks if the given value is equal to the value of the field with the given name.
-- `url` checks if the given value is a valid URL.
+- [`ascii`](DOC.md#IsASCII): Ensures the string contains only ASCII characters.
+- [`alphanumeric`](DOC.md#IsAlphanumeric): Ensures the string contains only letters and numbers.
+- [`credit-card`](DOC.md#IsAnyCreditCard): Ensures the string is a valid credit card number.
+- [`cidr`](DOC.md#IsCIDR): Ensures the string is a valid CIDR notation.
+- [`digits`](DOC.md#IsDigits): Ensures the string contains only digits.
+- [`email`](DOC.md#IsEmail): Ensures the string is a valid email address.
+- [`fqdn`](DOC.md#IsFQDN): Ensures the string is a valid fully qualified domain name.
+- [`ip`](DOC.md#IsIP): Ensures the string is a valid IP address.
+- [`ipv4`](DOC.md#IsIPv4): Ensures the string is a valid IPv4 address.
+- [`ipv6`](DOC.md#IsIPv6): Ensures the string is a valid IPv6 address.
+- [`isbn`](DOC.md#IsISBN): Ensures the string is a valid ISBN.
+- [`luhn`](DOC.md#IsLUHN): Ensures the string is a valid LUHN number.
+- [`mac`](DOC.md#IsMAC): Ensures the string is a valid MAC address.
+- [`required`](DOC.md#func-required) Ensures the value is provided.
+- [`regexp`](DOC.md#func-makeregexpchecker) Ensured the string matches the pattern.
+- [`url`](DOC.md#IsURL): Ensures the string is a valid URL.
 
 # Normalizers Provided
 
-This package currently provides the following normalizers. They can be mixed with the checkers when defining the validation steps for user data.
-
-- `html-escape` applies HTML escaping to special characters.
-- `html-unescape` applies HTML unescaping to special characters.
-- `lower` maps all Unicode letters in the given value to their lower case.
-- `upper` maps all Unicode letters in the given value to their upper case.
-- `title` maps the first letter of each word to their upper case.
-- `trim` removes the whitespaces at the beginning and at the end of the given value.
-- `trim-left` removes the whitespaces at the beginning of the given value.
-- `trim-right` removes the whitespaces at the end of the given value.
-- `url-escape` applies URL escaping to special characters.
-- `url-unescape` applies URL unescaping to special characters.
+- [`lower`](DOC.md#Lower): Converts the string to lowercase.
+- [`title`](DOC.md#Title): Converts the string to title case.
+- [`trim-left`](DOC.md#TrimLeft): Trims whitespace from the left side of the string.
+- [`trim-right`](DOC.md#TrimRight): Trims whitespace from the right side of the string.
+- [`trim`](DOC.md#TrimSpace): Trims whitespace from both sides of the string.
+- [`upper`](DOC.md#Upper): Converts the string to uppercase.
+- [`html-escape`](DOC.md#HTMLEscape): Escapes special characters in the string for HTML.
+- [`html-unescape`](DOC.md#HTMLUnescape): Unescapes special characters in the string for HTML.
+- [`url-escape`](DOC.md#URLEscape): Escapes special characters in the string for URLs.
+- [`url-unescape`](DOC.md#URLUnescape): Unescapes special characters in the string for URLs.
 
 # Custom Checkers
 
-You can define a custom checker or normalizer and register it as shown below:
+## Custom Checkers and Normalizers
+
+You can define custom checkers or normalizers and register them for use in your validation logic. Here is an example of how to create and register a custom checker:
 
 ```golang
 checker.RegisterMaker("is-fruit", func(params string) v2.CheckFunc[reflect.Value] {
@@ -140,22 +135,26 @@ checker.RegisterMaker("is-fruit", func(params string) v2.CheckFunc[reflect.Value
 })
 ```
 
-Once you have registered your custom checker, you can use it by simply specifying its name.
+In this example, the custom checker `is-fruit` checks if the input value is either "apple" or "banana". If the value is not one of these, it returns an error.
+
+Once registered, you can use your custom checker in struct tags just like the built-in checkers:
 
 ```golang
 type Item struct {
 	Name string `checkers:"is-fruit"`
 }
 
-person := &Item{
+item := &Item{
 	Name: "banana",
 }
 
-err, ok := v2.CheckStruct(person)
-if !ok {
-	fmt.Println(err)
+errors, valid := v2.CheckStruct(item)
+if !valid {
+	fmt.Println(errors)
 }
 ```
+
+In this example, the `is-fruit` checker is used to validate that the `Name` field of the `Item` struct is either "apple" or "banana".
 
 # Contributing to the Project
 
