@@ -13,7 +13,7 @@ import (
 
 const (
 	// nameCreditCard is the name of the credit card check.
-	nameCreditCard = "credit-card"
+	nameCreditCard = "credit_card"
 )
 
 var (
@@ -31,12 +31,43 @@ var (
 	}
 
 	// anyCreditCardPattern is the regular expression for validating any credit card number.
-	anyCreditCardPattern = regexp.MustCompile(`^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|6(?:011|5[0-9]{2})[0-9]{12}|(?:2131|1800|35\d{3})\d{11})$`)
+	anyCreditCardPattern = regexp.MustCompile(strings.Join([]string{
+		creditCardPatterns["visa"].String(),
+		creditCardPatterns["mastercard"].String(),
+		creditCardPatterns["amex"].String(),
+		creditCardPatterns["discover"].String(),
+		creditCardPatterns["jcb"].String(),
+		creditCardPatterns["diners"].String(),
+	}, "|"))
 )
 
 // IsCreditCard checks if the value is a valid credit card number.
 func IsCreditCard(value string) (string, error) {
 	if !anyCreditCardPattern.MatchString(value) {
+		return value, ErrNotCreditCard
+	}
+	return value, nil
+}
+
+// IsVisaCreditCard checks if the value is a valid Visa credit card number.
+func IsVisaCreditCard(value string) (string, error) {
+	if !creditCardPatterns["visa"].MatchString(value) {
+		return value, ErrNotCreditCard
+	}
+	return value, nil
+}
+
+// IsMasterCardCreditCard checks if the value is a valid MasterCard credit card number.
+func IsMasterCardCreditCard(value string) (string, error) {
+	if !creditCardPatterns["mastercard"].MatchString(value) {
+		return value, ErrNotCreditCard
+	}
+	return value, nil
+}
+
+// IsAmexCreditCard checks if the value is a valid American Express credit card number.
+func IsAmexCreditCard(value string) (string, error) {
+	if !creditCardPatterns["amex"].MatchString(value) {
 		return value, ErrNotCreditCard
 	}
 	return value, nil

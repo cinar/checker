@@ -41,7 +41,7 @@ func TestIsAnyCreditCardInvalidLuhn(t *testing.T) {
 }
 
 func ExampleIsAmexCreditCard() {
-	_, err := v2.IsCreditCard("378282246310005")
+	_, err := v2.IsAmexCreditCard("378282246310005")
 
 	if err != nil {
 		// Send the errors back to the user
@@ -49,13 +49,13 @@ func ExampleIsAmexCreditCard() {
 }
 
 func TestIsAmexCreditCardValid(t *testing.T) {
-	if _, err := v2.IsCreditCard(amexCard); err != nil {
+	if _, err := v2.IsAmexCreditCard(amexCard); err != nil {
 		t.Fail()
 	}
 }
 
 func TestIsAmexCreditCardInvalidPattern(t *testing.T) {
-	if _, err := v2.IsCreditCard(invalidCard); err == nil {
+	if _, err := v2.IsAmexCreditCard(invalidCard); err == nil {
 		t.Fail()
 	}
 }
