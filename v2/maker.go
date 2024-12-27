@@ -18,6 +18,7 @@ type MakeCheckFunc func(params string) CheckFunc[reflect.Value]
 var makers = map[string]MakeCheckFunc{
 	nameAlphanumeric: makeAlphanumeric,
 	nameASCII:        makeASCII,
+	nameCIDR:         makeCIDR,
 	nameMaxLen:       makeMaxLen,
 	nameMinLen:       makeMinLen,
 	nameRequired:     makeRequired,
