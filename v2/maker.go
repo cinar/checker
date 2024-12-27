@@ -34,6 +34,7 @@ var makers = map[string]MakeCheckFunc{
 	nameRequired:     makeRequired,
 	nameTrimSpace:    makeTrimSpace,
 	nameURL:          makeURL,
+	nameURLEscape:    makeURLEscape,
 }
 
 // makeChecks take a checker config and returns the check functions.
