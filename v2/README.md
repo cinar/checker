@@ -164,13 +164,13 @@ When adding checker struct tags to a slice, you can use the `@` prefix to indica
 ```golang
 type Person struct {
 	Name   string   `checkers:"required"`
-	Emails []string `checkers:"@max-len:1 max-len:4"`
+	Emails []string `checkers:"@max-len:2 max-len:64"`
 }
 ```
 
 In this example:
-- `@max-len:1` ensures that the `Emails` slice itself has at most one item.
-- `max-len:4` ensures that each email string within the `Emails` slice has a maximum length of 4 characters.
+- `@max-len:2` ensures that the `Emails` slice itself has at most two items.
+- `max-len:64` ensures that each email string within the `Emails` slice has a maximum length of 64 characters.
 
 # Localized Error Messages
 
@@ -192,7 +192,7 @@ checker.RegisterLocale(locales.DeDE, locales.DeDEMessages)
 
 _, err := checker.IsEmail("abcd")
 if err != nil {
-	fmt.Println(err)
+	fmt.Println(err.ErrorWithLocale(locales.DeDE))
 	// Output: Keine gültige E-Mail-Adresse.
 }
 ```
@@ -217,7 +217,7 @@ Error messages are generated using Golang template functions, allowing them to i
 err := NewCheckErrorWithData(
 	"NOT_FRUIT",
 	map[string]interface{}{
-		"name": name,
+		"name": "abcd",
 	},
 )
 
