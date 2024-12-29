@@ -18,7 +18,7 @@ const (
 
 var (
 	// ErrNotCreditCard indicates that the given value is not a valid credit card number.
-	ErrNotCreditCard = NewCheckError("CreditCard")
+	ErrNotCreditCard = NewCheckError("NOT_CREDIT_CARD")
 
 	// amexExpression is the regexp for the AMEX cards. They start with 34 or 37, and has 15 digits.
 	amexExpression = "(?:^(?:3[47])[0-9]{13}$)"

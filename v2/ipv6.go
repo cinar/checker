@@ -17,7 +17,7 @@ const (
 
 var (
 	// ErrNotIPv6 indicates that the given value is not a valid IPv6 address.
-	ErrNotIPv6 = NewCheckError("IPv6")
+	ErrNotIPv6 = NewCheckError("NOT_IPV6")
 )
 
 // IsIPv6 checks if the value is a valid IPv6 address.

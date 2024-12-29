@@ -17,7 +17,7 @@ const (
 
 var (
 	// ErrNotURL indicates that the given value is not a valid URL.
-	ErrNotURL = NewCheckError("URL")
+	ErrNotURL = NewCheckError("NOT_URL")
 )
 
 // IsURL checks if the value is a valid URL.

@@ -17,7 +17,7 @@ const (
 
 var (
 	// ErrNotIP indicates that the given value is not a valid IP address.
-	ErrNotIP = NewCheckError("IP")
+	ErrNotIP = NewCheckError("NOT_IP")
 )
 
 // IsIP checks if the value is a valid IP address.

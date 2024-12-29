@@ -8,8 +8,11 @@
 import "github.com/cinar/checker/v2"
 ```
 
+Package v2 Checker is a Go library for validating user input through checker rules provided in struct tags.
+
 ## Index
 
+- [Constants](<#constants>)
 - [Variables](<#variables>)
 - [func Check\[T any\]\(value T, checks ...CheckFunc\[T\]\) \(T, error\)](<#Check>)
 - [func CheckStruct\(st any\) \(map\[string\]error, bool\)](<#CheckStruct>)
@@ -26,6 +29,7 @@ import "github.com/cinar/checker/v2"
 - [func IsDiscoverCreditCard\(number string\) \(string, error\)](<#IsDiscoverCreditCard>)
 - [func IsEmail\(value string\) \(string, error\)](<#IsEmail>)
 - [func IsFQDN\(value string\) \(string, error\)](<#IsFQDN>)
+- [func IsHex\(value string\) \(string, error\)](<#IsHex>)
 - [func IsIP\(value string\) \(string, error\)](<#IsIP>)
 - [func IsIPv4\(value string\) \(string, error\)](<#IsIPv4>)
 - [func IsIPv6\(value string\) \(string, error\)](<#IsIPv6>)
@@ -34,11 +38,14 @@ import "github.com/cinar/checker/v2"
 - [func IsLUHN\(value string\) \(string, error\)](<#IsLUHN>)
 - [func IsMAC\(value string\) \(string, error\)](<#IsMAC>)
 - [func IsMasterCardCreditCard\(number string\) \(string, error\)](<#IsMasterCardCreditCard>)
+- [func IsRegexp\(expression, value string\) \(string, error\)](<#IsRegexp>)
 - [func IsURL\(value string\) \(string, error\)](<#IsURL>)
 - [func IsUnionPayCreditCard\(number string\) \(string, error\)](<#IsUnionPayCreditCard>)
 - [func IsVisaCreditCard\(number string\) \(string, error\)](<#IsVisaCreditCard>)
 - [func Lower\(value string\) \(string, error\)](<#Lower>)
 - [func ReflectCheckWithConfig\(value reflect.Value, config string\) \(reflect.Value, error\)](<#ReflectCheckWithConfig>)
+- [func RegisterLocale\(locale string, messages map\[string\]string\)](<#RegisterLocale>)
+- [func RegisterMaker\(name string, maker MakeCheckFunc\)](<#RegisterMaker>)
 - [func Required\[T any\]\(value T\) \(T, error\)](<#Required>)
 - [func Title\(value string\) \(string, error\)](<#Title>)
 - [func TrimLeft\(value string\) \(string, error\)](<#TrimLeft>)
@@ -49,13 +56,27 @@ import "github.com/cinar/checker/v2"
 - [func Upper\(value string\) \(string, error\)](<#Upper>)
 - [type CheckError](<#CheckError>)
   - [func NewCheckError\(code string\) \*CheckError](<#NewCheckError>)
+  - [func NewCheckErrorWithData\(code string, data map\[string\]interface\{\}\) \*CheckError](<#NewCheckErrorWithData>)
   - [func \(c \*CheckError\) Error\(\) string](<#CheckError.Error>)
+  - [func \(c \*CheckError\) ErrorWithLocale\(locale string\) string](<#CheckError.ErrorWithLocale>)
+  - [func \(c \*CheckError\) Is\(target error\) bool](<#CheckError.Is>)
 - [type CheckFunc](<#CheckFunc>)
   - [func MakeRegexpChecker\(expression string, invalidError error\) CheckFunc\[reflect.Value\]](<#MakeRegexpChecker>)
   - [func MaxLen\[T any\]\(n int\) CheckFunc\[T\]](<#MaxLen>)
   - [func MinLen\[T any\]\(n int\) CheckFunc\[T\]](<#MinLen>)
 - [type MakeCheckFunc](<#MakeCheckFunc>)
 
+
+## Constants
+
+<a name="DefaultLocale"></a>
+
+```go
+const (
+    // DefaultLocale is the default locale.
+    DefaultLocale = locales.EnUS
+)
+```
 
 ## Variables
 
@@ -64,7 +85,7 @@ import "github.com/cinar/checker/v2"
 ```go
 var (
     // ErrMaxLen indicates that the value's length is greater than the specified maximum.
-    ErrMaxLen = NewCheckError("MAX_LEN")
+    ErrMaxLen = NewCheckError("NOT_MAX_LEN")
 )
 ```
 
@@ -73,7 +94,7 @@ var (
 ```go
 var (
     // ErrMinLen indicates that the value's length is less than the specified minimum.
-    ErrMinLen = NewCheckError("MIN_LEN")
+    ErrMinLen = NewCheckError("NOT_MIN_LEN")
 )
 ```
 
@@ -82,7 +103,7 @@ var (
 ```go
 var (
     // ErrNotASCII indicates that the given string contains non-ASCII characters.
-    ErrNotASCII = NewCheckError("ASCII")
+    ErrNotASCII = NewCheckError("NOT_ASCII")
 )
 ```
 
@@ -91,7 +112,7 @@ var (
 ```go
 var (
     // ErrNotAlphanumeric indicates that the given string contains non-alphanumeric characters.
-    ErrNotAlphanumeric = NewCheckError("ALPHANUMERIC")
+    ErrNotAlphanumeric = NewCheckError("NOT_ALPHANUMERIC")
 )
 ```
 
@@ -100,7 +121,7 @@ var (
 ```go
 var (
     // ErrNotCIDR indicates that the given value is not a valid CIDR.
-    ErrNotCIDR = NewCheckError("CIDR")
+    ErrNotCIDR = NewCheckError("NOT_CIDR")
 )
 ```
 
@@ -109,7 +130,7 @@ var (
 ```go
 var (
     // ErrNotCreditCard indicates that the given value is not a valid credit card number.
-    ErrNotCreditCard = NewCheckError("CreditCard")
+    ErrNotCreditCard = NewCheckError("NOT_CREDIT_CARD")
 )
 ```
 
@@ -118,7 +139,7 @@ var (
 ```go
 var (
     // ErrNotDigits indicates that the given value is not a valid digits string.
-    ErrNotDigits = NewCheckError("Digits")
+    ErrNotDigits = NewCheckError("NOT_DIGITS")
 )
 ```
 
@@ -127,7 +148,7 @@ var (
 ```go
 var (
     // ErrNotEmail indicates that the given value is not a valid email address.
-    ErrNotEmail = NewCheckError("Email")
+    ErrNotEmail = NewCheckError("NOT_EMAIL")
 )
 ```
 
@@ -140,12 +161,21 @@ var (
 )
 ```
 
+<a name="ErrNotHex"></a>
+
+```go
+var (
+    // ErrNotHex indicates that the given string contains hex characters.
+    ErrNotHex = NewCheckError("NOT_HEX")
+)
+```
+
 <a name="ErrNotIP"></a>
 
 ```go
 var (
     // ErrNotIP indicates that the given value is not a valid IP address.
-    ErrNotIP = NewCheckError("IP")
+    ErrNotIP = NewCheckError("NOT_IP")
 )
 ```
 
@@ -154,7 +184,7 @@ var (
 ```go
 var (
     // ErrNotIPv4 indicates that the given value is not a valid IPv4 address.
-    ErrNotIPv4 = NewCheckError("IPv4")
+    ErrNotIPv4 = NewCheckError("NOT_IPV4")
 )
 ```
 
@@ -163,7 +193,7 @@ var (
 ```go
 var (
     // ErrNotIPv6 indicates that the given value is not a valid IPv6 address.
-    ErrNotIPv6 = NewCheckError("IPv6")
+    ErrNotIPv6 = NewCheckError("NOT_IPV6")
 )
 ```
 
@@ -172,7 +202,7 @@ var (
 ```go
 var (
     // ErrNotISBN indicates that the given value is not a valid ISBN.
-    ErrNotISBN = NewCheckError("ISBN")
+    ErrNotISBN = NewCheckError("NOT_ISBN")
 )
 ```
 
@@ -181,7 +211,7 @@ var (
 ```go
 var (
     // ErrNotLUHN indicates that the given value is not a valid LUHN number.
-    ErrNotLUHN = NewCheckError("LUHN")
+    ErrNotLUHN = NewCheckError("NOT_LUHN")
 )
 ```
 
@@ -190,7 +220,7 @@ var (
 ```go
 var (
     // ErrNotMAC indicates that the given value is not a valid MAC address.
-    ErrNotMAC = NewCheckError("MAC")
+    ErrNotMAC = NewCheckError("NOT_MAC")
 )
 ```
 
@@ -205,7 +235,7 @@ var ErrNotMatch = NewCheckError("REGEXP")
 ```go
 var (
     // ErrNotURL indicates that the given value is not a valid URL.
-    ErrNotURL = NewCheckError("URL")
+    ErrNotURL = NewCheckError("NOT_URL")
 )
 ```
 
@@ -219,7 +249,7 @@ var (
 ```
 
 <a name="Check"></a>
-## func [Check](<https://github.com/cinar/checker/blob/main/v2/checker.go#L31>)
+## func [Check](<https://github.com/cinar/checker/blob/main/v2/checker.go#L32>)
 
 ```go
 func Check[T any](value T, checks ...CheckFunc[T]) (T, error)
@@ -264,7 +294,7 @@ Onur Cinar
 </details>
 
 <a name="CheckStruct"></a>
-## func [CheckStruct](<https://github.com/cinar/checker/blob/main/v2/checker.go#L61>)
+## func [CheckStruct](<https://github.com/cinar/checker/blob/main/v2/checker.go#L62>)
 
 ```go
 func CheckStruct(st any) (map[string]error, bool)
@@ -315,7 +345,7 @@ Onur Cinar
 </details>
 
 <a name="CheckWithConfig"></a>
-## func [CheckWithConfig](<https://github.com/cinar/checker/blob/main/v2/checker.go#L46>)
+## func [CheckWithConfig](<https://github.com/cinar/checker/blob/main/v2/checker.go#L47>)
 
 ```go
 func CheckWithConfig[T any](value T, config string) (T, error)
@@ -677,6 +707,40 @@ func main() {
 </p>
 </details>
 
+<a name="IsHex"></a>
+## func [IsHex](<https://github.com/cinar/checker/blob/main/v2/hex.go#L23>)
+
+```go
+func IsHex(value string) (string, error)
+```
+
+IsHex checks if the given string consists of only hex characters.
+
+<details><summary>Example</summary>
+<p>
+
+
+
+```go
+package main
+
+import (
+	"fmt"
+
+	v2 "github.com/cinar/checker/v2"
+)
+
+func main() {
+	_, err := v2.IsHex("0123456789abcdefABCDEF")
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+```
+
+</p>
+</details>
+
 <a name="IsIP"></a>
 ## func [IsIP](<https://github.com/cinar/checker/blob/main/v2/ip.go#L24>)
 
@@ -947,6 +1011,40 @@ func main() {
 </p>
 </details>
 
+<a name="IsRegexp"></a>
+## func [IsRegexp](<https://github.com/cinar/checker/blob/main/v2/regexp.go#L20>)
+
+```go
+func IsRegexp(expression, value string) (string, error)
+```
+
+IsRegexp checks if the given string matches the given regexp expression.
+
+<details><summary>Example</summary>
+<p>
+
+
+
+```go
+package main
+
+import (
+	"fmt"
+
+	v2 "github.com/cinar/checker/v2"
+)
+
+func main() {
+	_, err := v2.IsRegexp("^[0-9a-fA-F]+$", "ABcd1234")
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+```
+
+</p>
+</details>
+
 <a name="IsURL"></a>
 ## func [IsURL](<https://github.com/cinar/checker/blob/main/v2/url.go#L24>)
 
@@ -1057,13 +1155,77 @@ func Lower(value string) (string, error)
 Lower maps all Unicode letters in the given value to their lower case.
 
 <a name="ReflectCheckWithConfig"></a>
-## func [ReflectCheckWithConfig](<https://github.com/cinar/checker/blob/main/v2/checker.go#L54>)
+## func [ReflectCheckWithConfig](<https://github.com/cinar/checker/blob/main/v2/checker.go#L55>)
 
 ```go
 func ReflectCheckWithConfig(value reflect.Value, config string) (reflect.Value, error)
 ```
 
 ReflectCheckWithConfig applies the check functions specified by the config string to the given reflect.Value. It returns the modified reflect.Value and the first encountered error, if any.
+
+<a name="RegisterLocale"></a>
+## func [RegisterLocale](<https://github.com/cinar/checker/blob/main/v2/check_error.go#L80>)
+
+```go
+func RegisterLocale(locale string, messages map[string]string)
+```
+
+RegisterLocale registers the localized error messages for the given locale.
+
+<a name="RegisterMaker"></a>
+## func [RegisterMaker](<https://github.com/cinar/checker/blob/main/v2/maker.go#L51>)
+
+```go
+func RegisterMaker(name string, maker MakeCheckFunc)
+```
+
+RegisterMaker registers a new maker function with the given name.
+
+<details><summary>Example</summary>
+<p>
+
+
+
+```go
+package main
+
+import (
+	"fmt"
+	"reflect"
+
+	v2 "github.com/cinar/checker/v2"
+)
+
+func main() {
+	v2.RegisterMaker("is-fruit", func(params string) v2.CheckFunc[reflect.Value] {
+		return func(value reflect.Value) (reflect.Value, error) {
+			stringValue := value.Interface().(string)
+
+			if stringValue == "apple" || stringValue == "banana" {
+				return value, nil
+			}
+
+			return value, v2.NewCheckError("NOT_FRUIT")
+		}
+	})
+
+	type Item struct {
+		Name string `checkers:"is-fruit"`
+	}
+
+	person := &Item{
+		Name: "banana",
+	}
+
+	err, ok := v2.CheckStruct(person)
+	if !ok {
+		fmt.Println(err)
+	}
+}
+```
+
+</p>
+</details>
 
 <a name="Required"></a>
 ## func [Required](<https://github.com/cinar/checker/blob/main/v2/required.go#L22>)
@@ -1138,33 +1300,64 @@ func Upper(value string) (string, error)
 Upper maps all Unicode letters in the given value to their upper case.
 
 <a name="CheckError"></a>
-## type [CheckError](<https://github.com/cinar/checker/blob/main/v2/check_error.go#L9-L12>)
+## type [CheckError](<https://github.com/cinar/checker/blob/main/v2/check_error.go#L16-L22>)
 
 CheckError defines the check error.
 
 ```go
 type CheckError struct {
-    // contains filtered or unexported fields
+    // Code is the error code.
+    Code string
+
+    // data is the error data.
+    Data map[string]interface{}
 }
 ```
 
 <a name="NewCheckError"></a>
-### func [NewCheckError](<https://github.com/cinar/checker/blob/main/v2/check_error.go#L15>)
+### func [NewCheckError](<https://github.com/cinar/checker/blob/main/v2/check_error.go#L35>)
 
 ```go
 func NewCheckError(code string) *CheckError
 ```
 
-NewCheckError creates a new check error with the specified error code.
+NewCheckError creates a new check error with the given code.
+
+<a name="NewCheckErrorWithData"></a>
+### func [NewCheckErrorWithData](<https://github.com/cinar/checker/blob/main/v2/check_error.go#L43>)
+
+```go
+func NewCheckErrorWithData(code string, data map[string]interface{}) *CheckError
+```
+
+NewCheckErrorWithData creates a new check error with the given code and data.
 
 <a name="CheckError.Error"></a>
-### func \(\*CheckError\) [Error](<https://github.com/cinar/checker/blob/main/v2/check_error.go#L22>)
+### func \(\*CheckError\) [Error](<https://github.com/cinar/checker/blob/main/v2/check_error.go#L51>)
 
 ```go
 func (c *CheckError) Error() string
 ```
 
 Error returns the error message for the check.
+
+<a name="CheckError.ErrorWithLocale"></a>
+### func \(\*CheckError\) [ErrorWithLocale](<https://github.com/cinar/checker/blob/main/v2/check_error.go#L65>)
+
+```go
+func (c *CheckError) ErrorWithLocale(locale string) string
+```
+
+ErrorWithLocale returns the localized error message for the check with the given locale.
+
+<a name="CheckError.Is"></a>
+### func \(\*CheckError\) [Is](<https://github.com/cinar/checker/blob/main/v2/check_error.go#L56>)
+
+```go
+func (c *CheckError) Is(target error) bool
+```
+
+Is reports whether the check error is the same as the target error.
 
 <a name="CheckFunc"></a>
 ## type [CheckFunc](<https://github.com/cinar/checker/blob/main/v2/check_func.go#L11>)
@@ -1176,7 +1369,7 @@ type CheckFunc[T any] func(value T) (T, error)
 ```
 
 <a name="MakeRegexpChecker"></a>
-### func [MakeRegexpChecker](<https://github.com/cinar/checker/blob/main/v2/regexp.go#L20>)
+### func [MakeRegexpChecker](<https://github.com/cinar/checker/blob/main/v2/regexp.go#L29>)
 
 ```go
 func MakeRegexpChecker(expression string, invalidError error) CheckFunc[reflect.Value]

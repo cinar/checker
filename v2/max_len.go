@@ -17,7 +17,7 @@ const (
 
 var (
 	// ErrMaxLen indicates that the value's length is greater than the specified maximum.
-	ErrMaxLen = NewCheckError("MAX_LEN")
+	ErrMaxLen = NewCheckError("NOT_MAX_LEN")
 )
 
 // MaxLen checks if the length of the given value (string, slice, or map) is at most n.
@@ -32,7 +32,7 @@ func MaxLen[T any](n int) CheckFunc[T] {
 		v = reflect.Indirect(v)
 
 		if v.Len() > n {
-			return value, ErrMaxLen
+			return value, newMaxLenError(n)
 		}
 
 		return value, nil
@@ -48,4 +48,14 @@ func makeMaxLen(params string) CheckFunc[reflect.Value] {
 	}
 
 	return MaxLen[reflect.Value](n)
+}
+
+// newMaxLenError creates a new maximum length error with the given maximum length.
+func newMaxLenError(n int) error {
+	return NewCheckErrorWithData(
+		ErrMaxLen.Code,
+		map[string]interface{}{
+			"max": n,
+		},
+	)
 }

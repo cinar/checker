@@ -17,7 +17,7 @@ const (
 
 var (
 	// ErrNotASCII indicates that the given string contains non-ASCII characters.
-	ErrNotASCII = NewCheckError("ASCII")
+	ErrNotASCII = NewCheckError("NOT_ASCII")
 )
 
 // IsASCII checks if the given string consists of only ASCII characters.

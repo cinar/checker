@@ -17,7 +17,7 @@ const (
 
 var (
 	// ErrNotEmail indicates that the given value is not a valid email address.
-	ErrNotEmail = NewCheckError("Email")
+	ErrNotEmail = NewCheckError("NOT_EMAIL")
 )
 
 // IsEmail checks if the value is a valid email address.

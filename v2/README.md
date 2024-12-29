@@ -99,6 +99,8 @@ type Person struct {
 - [`isbn`](DOC.md#IsISBN): Ensures the string is a valid ISBN.
 - [`luhn`](DOC.md#IsLUHN): Ensures the string is a valid LUHN number.
 - [`mac`](DOC.md#IsMAC): Ensures the string is a valid MAC address.
+- [`max-len`](DOC.md#func-maxlen): Ensures the length of the given value (string, slice, or map) is at most n.
+- [`min-len`](DOC.md#func-minlen): Ensures the length of the given value (string, slice, or map) is at least n.
 - [`required`](DOC.md#func-required) Ensures the value is provided.
 - [`regexp`](DOC.md#func-makeregexpchecker) Ensured the string matches the pattern.
 - [`url`](DOC.md#IsURL): Ensures the string is a valid URL.
@@ -116,9 +118,7 @@ type Person struct {
 - [`url-escape`](DOC.md#URLEscape): Escapes special characters in the string for URLs.
 - [`url-unescape`](DOC.md#URLUnescape): Unescapes special characters in the string for URLs.
 
-# Custom Checkers
-
-## Custom Checkers and Normalizers
+# Custom Checkers and Normalizers
 
 You can define custom checkers or normalizers and register them for use in your validation logic. Here is an example of how to create and register a custom checker:
 
@@ -156,6 +156,16 @@ if !valid {
 ```
 
 In this example, the `is-fruit` checker is used to validate that the `Name` field of the `Item` struct is either "apple" or "banana".
+
+# Localized Error Messages
+
+When validation fails, Checker returns an error. By default, the [Error()](DOC.md#CheckError.Error) function provides a human-readable error message in `en-US` locale.
+
+To get error messages in other languages, use the [ErrorWithLocale()](DOC.md#CheckError.ErrorWithLocale) function. By default, only `en-US` is registered. You can register additional languages by calling [RegisterLocale](DOC.md##RegisterLocale).
+
+You can also customize existing error messages or add new ones to `locales.EnUSMessages` and other locale maps.
+
+Error messages are generated using Golang template functions, allowing them to include variables.
 
 # Contributing to the Project
 

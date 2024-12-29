@@ -17,7 +17,7 @@ const (
 
 var (
 	// ErrMinLen indicates that the value's length is less than the specified minimum.
-	ErrMinLen = NewCheckError("MIN_LEN")
+	ErrMinLen = NewCheckError("NOT_MIN_LEN")
 )
 
 // MinLen checks if the length of the given value (string, slice, or map) is at least n.
@@ -32,7 +32,7 @@ func MinLen[T any](n int) CheckFunc[T] {
 		v = reflect.Indirect(v)
 
 		if v.Len() < n {
-			return value, ErrMinLen
+			return value, newMinLenError(n)
 		}
 
 		return value, nil
@@ -48,4 +48,14 @@ func makeMinLen(params string) CheckFunc[reflect.Value] {
 	}
 
 	return MinLen[reflect.Value](n)
+}
+
+// newMinLenError creates a new minimum length error with the given minimum value.
+func newMinLenError(n int) error {
+	return NewCheckErrorWithData(
+		ErrMinLen.Code,
+		map[string]interface{}{
+			"min": n,
+		},
+	)
 }
