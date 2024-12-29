@@ -214,7 +214,7 @@ Error messages are generated using Golang template functions, allowing them to i
 
 ```golang
 // Custrom checker error containing the item name.
-err := NewCheckErrorWithData(
+err := checker.NewCheckErrorWithData(
 	"NOT_FRUIT",
 	map[string]interface{}{
 		"name": "abcd",
