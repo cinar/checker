@@ -10,6 +10,8 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/cinar/checker/v2/locales"
+
 	v2 "github.com/cinar/checker/v2"
 )
 
@@ -28,6 +30,8 @@ func TestMakeCheckersUnknown(t *testing.T) {
 }
 
 func ExampleRegisterMaker() {
+	locales.EnUSMessages["NOT_FRUIT"] = "Not a fruit name."
+
 	v2.RegisterMaker("is-fruit", func(params string) v2.CheckFunc[reflect.Value] {
 		return func(value reflect.Value) (reflect.Value, error) {
 			stringValue := value.Interface().(string)

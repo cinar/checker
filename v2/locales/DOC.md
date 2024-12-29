@@ -29,10 +29,10 @@ const (
 
 ## Variables
 
-<a name="EnUsMessages"></a>EnUsMessages is the map of en\-US messages.
+<a name="EnUSMessages"></a>EnUSMessages is the map of en\-US messages.
 
 ```go
-var EnUsMessages = map[string]string{
+var EnUSMessages = map[string]string{
     "NOT_ALPHANUMERIC": "Not an alphanumeric string.",
     "NOT_ASCII":        "Can only contain ASCII characters.",
     "NOT_CIDR":         "Not a valid CIDR notation.",

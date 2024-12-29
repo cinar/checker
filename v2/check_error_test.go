@@ -27,7 +27,7 @@ func TestCheckErrorWithLocalizedCode(t *testing.T) {
 	code := "TEST"
 	message := "Test message"
 
-	locales.EnUsMessages[code] = message
+	locales.EnUSMessages[code] = message
 
 	err := v2.NewCheckError(code)
 
@@ -40,7 +40,7 @@ func TestCheckErrorWithDefaultLocalizedCode(t *testing.T) {
 	code := "TEST"
 	message := "Test message"
 
-	locales.EnUsMessages[code] = message
+	locales.EnUSMessages[code] = message
 
 	err := v2.NewCheckError(code)
 
@@ -53,7 +53,7 @@ func TestCheckErrorWithDataAndLocalizedCode(t *testing.T) {
 	code := "TEST"
 	message := "Test message {{.Name}}"
 
-	locales.EnUsMessages[code] = message
+	locales.EnUSMessages[code] = message
 
 	err := v2.NewCheckErrorWithData(code, map[string]interface{}{
 		"Name": "Onur",
@@ -70,7 +70,7 @@ func TestCheckErrorWithLocalizedCodeInvalidTemplate(t *testing.T) {
 	code := "TEST"
 	message := "Test message {{}"
 
-	locales.EnUsMessages[code] = message
+	locales.EnUSMessages[code] = message
 
 	err := v2.NewCheckError(code)
 
@@ -83,7 +83,7 @@ func TestCheckErrorWithLocalizedCodeInvalidExecute(t *testing.T) {
 	code := "TEST"
 	message := "{{ len .Name}}"
 
-	locales.EnUsMessages[code] = message
+	locales.EnUSMessages[code] = message
 
 	err := v2.NewCheckError(code)
 
