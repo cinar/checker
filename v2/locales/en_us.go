@@ -5,8 +5,8 @@ const (
 	EnUS = "en-US"
 )
 
-// EnUsMessages is the map of en-US messages.
-var EnUsMessages = map[string]string{
+// EnUSMessages is the map of en-US messages.
+var EnUSMessages = map[string]string{
 	"NOT_ALPHANUMERIC": "Not an alphanumeric string.",
 	"NOT_ASCII":        "Can only contain ASCII characters.",
 	"NOT_CIDR":         "Not a valid CIDR notation.",

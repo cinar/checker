@@ -176,11 +176,60 @@ In this example:
 
 When validation fails, Checker returns an error. By default, the [Error()](DOC.md#CheckError.Error) function provides a human-readable error message in `en-US` locale.
 
+```golang
+_, err := checker.IsEmail("abcd")
+if err != nil {
+	fmt.Println(err)
+	// Output: Not a valid email address.
+}
+```
+
 To get error messages in other languages, use the [ErrorWithLocale()](DOC.md#CheckError.ErrorWithLocale) function. By default, only `en-US` is registered. You can register additional languages by calling [RegisterLocale](DOC.md#RegisterLocale).
+
+```golang
+// Register de-DE localized error messages.
+checker.RegisterLocale(locales.DeDE, locales.DeDEMessages)
+
+_, err := checker.IsEmail("abcd")
+if err != nil {
+	fmt.Println(err)
+	// Output: Keine gültige E-Mail-Adresse.
+}
+```
 
 You can also customize existing error messages or add new ones to `locales.EnUSMessages` and other locale maps.
 
+```golang
+// Register the en-US localized error message for the custom NOT_FRUIT error code.
+locales.EnUSMessages["NOT_FRUIT"] = "Not a fruit name."
+
+errors, valid := v2.CheckStruct(item)
+if !valid {
+	fmt.Println(errors)
+	// Output: map[Name:Not a fruit name.]
+}
+```
+
 Error messages are generated using Golang template functions, allowing them to include variables.
+
+```golang
+// Custrom checker error containing the item name.
+err := NewCheckErrorWithData(
+	"NOT_FRUIT",
+	map[string]interface{}{
+		"name": name,
+	},
+)
+
+// Register the en-US localized error message for the custom NOT_FRUIT error code.
+locales.EnUSMessages["NOT_FRUIT"] = "Name {{ .name }} is not a fruit name."
+
+errors, valid := v2.CheckStruct(item)
+if !valid {
+	fmt.Println(errors)
+	// Output: map[Name:Name abcd is not a fruit name.]
+}
+```
 
 # Contributing to the Project
 

@@ -28,7 +28,7 @@ const (
 
 // errorMessages is the map of localized error messages.
 var errorMessages = map[string]map[string]string{
-	locales.EnUS: locales.EnUsMessages,
+	locales.EnUS: locales.EnUSMessages,
 }
 
 // NewCheckError creates a new check error with the given code.
