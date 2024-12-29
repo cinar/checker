@@ -3,75 +3,41 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker
+package v2
 
 import (
-	"errors"
-	"reflect"
-	"regexp"
-	"strings"
+    "reflect"
+    "regexp"
 )
 
-// tagFqdn is the tag of the checker.
-const tagFqdn = "fqdn"
+const (
+    // nameFQDN is the name of the FQDN check.
+    nameFQDN = "fqdn"
+)
 
-// ErrNotFqdn indicates that the given string is not a valid FQDN.
-var ErrNotFqdn = errors.New("please enter a valid domain name")
+var (
+    // ErrNotFQDN indicates that the given value is not a valid FQDN.
+    ErrNotFQDN = NewCheckError("FQDN")
 
-// Valid characters excluding full-width characters.
-var fqdnValidChars = regexp.MustCompile("^[a-z0-9\u00a1-\uff00\uff06-\uffff\\-]+$")
+    // fqdnRegex is the regular expression for validating FQDN.
+    fqdnRegex = regexp.MustCompile(`^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$`)
+)
 
-// IsFqdn checks if the given string is a fully qualified domain name.
-func IsFqdn(domain string) error {
-	parts := strings.Split(domain, ".")
-
-	// Require TLD
-	if len(parts) < 2 {
-		return ErrNotFqdn
-	}
-
-	tld := parts[len(parts)-1]
-
-	// Should be all numeric TLD
-	if IsDigits(tld) == nil {
-		return ErrNotFqdn
-	}
-
-	// Short TLD
-	if len(tld) < 2 {
-		return ErrNotFqdn
-	}
-
-	for _, part := range parts {
-		// Cannot be more than 63 characters
-		if len(part) > 63 {
-			return ErrNotFqdn
-		}
-
-		// Check for valid characters
-		if !fqdnValidChars.MatchString(part) {
-			return ErrNotFqdn
-		}
-
-		// Should not start or end with a hyphen (-) character.
-		if part[0] == '-' || part[len(part)-1] == '-' {
-			return ErrNotFqdn
-		}
-	}
-
-	return nil
+// IsFQDN checks if the value is a valid fully qualified domain name (FQDN).
+func IsFQDN(value string) (string, error) {
+    if !fqdnRegex.MatchString(value) {
+        return value, ErrNotFQDN
+    }
+    return value, nil
 }
 
-// makeFqdn makes a checker function for the fqdn checker.
-func makeFqdn(_ string) CheckFunc {
-	return checkFqdn
+// checkFQDN checks if the value is a valid fully qualified domain name (FQDN).
+func checkFQDN(value reflect.Value) (reflect.Value, error) {
+    _, err := IsFQDN(value.Interface().(string))
+    return value, err
 }
 
-// checkFqdn checks if the given string is a fully qualified domain name.
-func checkFqdn(value, _ reflect.Value) error {
-	if value.Kind() != reflect.String {
-		panic("string expected")
-	}
-
-	return IsFqdn(value.String())
+// makeFQDN makes a checker function for the FQDN checker.
+func makeFQDN(_ string) CheckFunc[reflect.Value] {
+    return checkFQDN
 }

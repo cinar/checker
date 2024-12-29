@@ -3,29 +3,28 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker
+package v2
 
 import (
 	"net/url"
 	"reflect"
 )
 
-// tagURLEscape is the tag of the normalizer.
-const tagURLEscape = "url-escape"
+// nameURLEscape is the name of the URL escape normalizer.
+const nameURLEscape = "url-escape"
 
-// makeURLEscape makes a normalizer function for the URL escape normalizer.
-func makeURLEscape(_ string) CheckFunc {
-	return normalizeURLEscape
+// URLEscape applies URL escaping to special characters.
+func URLEscape(value string) (string, error) {
+	return url.QueryEscape(value), nil
 }
 
-// normalizeURLEscape applies URL escaping to special characters.
-// Uses net.url.QueryEscape for the actual escape operation.
-func normalizeURLEscape(value, _ reflect.Value) error {
-	if value.Kind() != reflect.String {
-		panic("string expected")
-	}
+// reflectURLEscape applies URL escaping to special characters.
+func reflectURLEscape(value reflect.Value) (reflect.Value, error) {
+	newValue, err := URLEscape(value.Interface().(string))
+	return reflect.ValueOf(newValue), err
+}
 
-	value.SetString(url.QueryEscape(value.String()))
-
-	return nil
+// makeURLEscape returns the URL escape normalizer function.
+func makeURLEscape(_ string) CheckFunc[reflect.Value] {
+	return reflectURLEscape
 }

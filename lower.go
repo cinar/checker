@@ -3,28 +3,30 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker
+package v2
 
 import (
 	"reflect"
 	"strings"
 )
 
-// tagLower is the tag of the normalizer.
-const tagLower = "lower"
+const (
+	// nameLower is the name of the lower normalizer.
+	nameLower = "lower"
+)
 
-// makeLower makes a normalizer function for the lower normalizer.
-func makeLower(_ string) CheckFunc {
-	return normalizeLower
+// Lower maps all Unicode letters in the given value to their lower case.
+func Lower(value string) (string, error) {
+	return strings.ToLower(value), nil
 }
 
-// normalizeLower maps all Unicode letters in the given value to their lower case.
-func normalizeLower(value, _ reflect.Value) error {
-	if value.Kind() != reflect.String {
-		panic("string expected")
-	}
+// reflectLower maps all Unicode letters in the given value to their lower case.
+func reflectLower(value reflect.Value) (reflect.Value, error) {
+	newValue, err := Lower(value.Interface().(string))
+	return reflect.ValueOf(newValue), err
+}
 
-	value.SetString(strings.ToLower(value.String()))
-
-	return nil
+// makeLower returns the lower normalizer function.
+func makeLower(_ string) CheckFunc[reflect.Value] {
+	return reflectLower
 }

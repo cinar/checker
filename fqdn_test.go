@@ -3,98 +3,74 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker_test
+package v2_test
 
 import (
+	"fmt"
 	"testing"
 
-	"github.com/cinar/checker"
+	v2 "github.com/cinar/checker/v2"
 )
 
-func ExampleIsFqdn() {
-	err := checker.IsFqdn("zdo.com")
+func ExampleIsFQDN() {
+	_, err := v2.IsFQDN("example.com")
 	if err != nil {
-		// Send the errors back to the user
+		fmt.Println(err)
 	}
 }
 
-func TestCheckFdqnWithoutTld(t *testing.T) {
-	if checker.IsFqdn("abcd") == nil {
-		t.Fail()
+func TestIsFQDNInvalid(t *testing.T) {
+	_, err := v2.IsFQDN("invalid_fqdn")
+	if err == nil {
+		t.Fatal("expected error")
 	}
 }
 
-func TestCheckFdqnShortTld(t *testing.T) {
-	if checker.IsFqdn("abcd.c") == nil {
-		t.Fail()
+func TestIsFQDNValid(t *testing.T) {
+	_, err := v2.IsFQDN("example.com")
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 
-func TestCheckFdqnNumericTld(t *testing.T) {
-	if checker.IsFqdn("abcd.1234") == nil {
-		t.Fail()
+func TestCheckFQDNNonString(t *testing.T) {
+	defer FailIfNoPanic(t, "expected panic")
+
+	type Domain struct {
+		Name int `checkers:"fqdn"`
+	}
+
+	domain := &Domain{}
+
+	v2.CheckStruct(domain)
+}
+
+func TestCheckFQDNInvalid(t *testing.T) {
+	type Domain struct {
+		Name string `checkers:"fqdn"`
+	}
+
+	domain := &Domain{
+		Name: "invalid_fqdn",
+	}
+
+	_, ok := v2.CheckStruct(domain)
+	if ok {
+		t.Fatal("expected error")
 	}
 }
 
-func TestCheckFdqnLong(t *testing.T) {
-	if checker.IsFqdn("abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd.com") == nil {
-		t.Fail()
-	}
-}
-
-func TestCheckFdqnInvalidCharacters(t *testing.T) {
-	if checker.IsFqdn("ab_cd.com") == nil {
-		t.Fail()
-	}
-}
-
-func TestCheckFdqnStaringWithHyphen(t *testing.T) {
-	if checker.IsFqdn("-abcd.com") == nil {
-		t.Fail()
-	}
-}
-
-func TestCheckFdqnStaringEndingWithHyphen(t *testing.T) {
-	if checker.IsFqdn("abcd-.com") == nil {
-		t.Fail()
-	}
-}
-
-func TestCheckFdqnStartingWithDot(t *testing.T) {
-	if checker.IsFqdn(".abcd.com") == nil {
-		t.Fail()
-	}
-}
-
-func TestCheckFdqnEndingWithDot(t *testing.T) {
-	if checker.IsFqdn("abcd.com.") == nil {
-		t.Fail()
-	}
-}
-
-func TestCheckFqdnNonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
-
-	type Request struct {
-		Domain int `checkers:"fqdn"`
+func TestCheckFQDNValid(t *testing.T) {
+	type Domain struct {
+		Name string `checkers:"fqdn"`
 	}
 
-	request := &Request{}
-
-	checker.Check(request)
-}
-
-func TestCheckFqdnValid(t *testing.T) {
-	type Request struct {
-		Domain string `checkers:"fqdn"`
+	domain := &Domain{
+		Name: "example.com",
 	}
 
-	request := &Request{
-		Domain: "zdo.com",
-	}
-
-	_, valid := checker.Check(request)
-	if !valid {
-		t.Fail()
+	_, ok := v2.CheckStruct(domain)
+	if !ok {
+		t.Fatal("expected valid")
 	}
 }

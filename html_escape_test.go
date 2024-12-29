@@ -3,26 +3,29 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker_test
+package v2_test
 
 import (
 	"testing"
 
-	"github.com/cinar/checker"
+	v2 "github.com/cinar/checker/v2"
 )
 
-func TestNormalizeHTMLEscapeNonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
-	type Comment struct {
-		Body int `checkers:"html-escape"`
+func TestHTMLEscape(t *testing.T) {
+	input := "<tag> \"Checker\" & 'Library' </tag>"
+	expected := "&lt;tag&gt; &#34;Checker&#34; &amp; &#39;Library&#39; &lt;/tag&gt;"
+
+	actual, err := v2.HTMLEscape(input)
+	if err != nil {
+		t.Fatal(err)
 	}
 
-	comment := &Comment{}
-
-	checker.Check(comment)
+	if actual != expected {
+		t.Fatalf("actual %s expected %s", actual, expected)
+	}
 }
 
-func TestNormalizeHTMLEscape(t *testing.T) {
+func TestReflectHTMLEscape(t *testing.T) {
 	type Comment struct {
 		Body string `checkers:"html-escape"`
 	}
@@ -31,12 +34,14 @@ func TestNormalizeHTMLEscape(t *testing.T) {
 		Body: "<tag> \"Checker\" & 'Library' </tag>",
 	}
 
-	_, valid := checker.Check(comment)
-	if !valid {
-		t.Fail()
+	expected := "&lt;tag&gt; &#34;Checker&#34; &amp; &#39;Library&#39; &lt;/tag&gt;"
+
+	errs, ok := v2.CheckStruct(comment)
+	if !ok {
+		t.Fatalf("got unexpected errors %v", errs)
 	}
 
-	if comment.Body != "&lt;tag&gt; &#34;Checker&#34; &amp; &#39;Library&#39; &lt;/tag&gt;" {
-		t.Fail()
+	if comment.Body != expected {
+		t.Fatalf("actual %s expected %s", comment.Body, expected)
 	}
 }

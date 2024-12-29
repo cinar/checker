@@ -3,178 +3,196 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker
+package v2_test
 
 import (
-	"reflect"
-	"strings"
+	"errors"
+	"fmt"
 	"testing"
+
+	v2 "github.com/cinar/checker/v2"
 )
 
-func TestInitCheckersUnknown(t *testing.T) {
-	defer FailIfNoPanic(t)
+func ExampleCheck() {
+	name := "    Onur Cinar    "
 
-	initCheckers("unknown")
+	name, err := v2.Check(name, v2.TrimSpace, v2.Required)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(name)
+	// Output: Onur Cinar
 }
 
-func TestInitCheckersKnwon(t *testing.T) {
-	checkers := initCheckers("required")
-
-	if len(checkers) != 1 {
-		t.Fail()
-	}
-
-	if reflect.ValueOf(checkers[0]).Pointer() != reflect.ValueOf(checkRequired).Pointer() {
-		t.Fail()
-	}
-}
-
-func TestRegister(t *testing.T) {
-	var checker CheckFunc = func(_, _ reflect.Value) error {
-		return nil
-	}
-
-	var maker MakeFunc = func(_ string) CheckFunc {
-		return checker
-	}
-
-	name := "test"
-
-	Register(name, maker)
-
-	checkers := initCheckers(name)
-
-	if len(checkers) != 1 {
-		t.Fail()
-	}
-
-	if reflect.ValueOf(checkers[0]).Pointer() != reflect.ValueOf(checker).Pointer() {
-		t.Fail()
-	}
-}
-
-func TestCheckInvalid(t *testing.T) {
+func ExampleCheckStruct() {
 	type Person struct {
-		Name string `checkers:"required"`
-	}
-
-	person := &Person{}
-
-	errors, valid := Check(person)
-	if valid {
-		t.Fail()
-	}
-
-	if len(errors) != 1 {
-		t.Fail()
-	}
-
-	if errors["Name"] != ErrRequired {
-		t.Fail()
-	}
-}
-
-func TestCheckValid(t *testing.T) {
-	type Person struct {
-		Name string `checkers:"required"`
+		Name string `checkers:"trim required"`
 	}
 
 	person := &Person{
-		Name: "Onur",
+		Name: "    Onur Cinar    ",
 	}
 
-	errors, valid := Check(person)
-	if !valid {
-		t.Fail()
+	errs, ok := v2.CheckStruct(person)
+	if !ok {
+		fmt.Println(errs)
+		return
 	}
 
-	if len(errors) != 0 {
-		t.Fail()
+	fmt.Println(person.Name)
+	// Output: Onur Cinar
+}
+
+func TestCheckTrimSpaceRequiredSuccess(t *testing.T) {
+	input := "    test    "
+	expected := "test"
+
+	actual, err := v2.Check(input, v2.TrimSpace, v2.Required)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if actual != expected {
+		t.Fatalf("actual %s expected %s", actual, expected)
 	}
 }
 
-func TestCheckNoStruct(t *testing.T) {
-	defer FailIfNoPanic(t)
+func TestCheckTrimSpaceRequiredMissing(t *testing.T) {
+	input := "    "
+	expected := ""
 
-	s := "unknown"
-	Check(s)
+	actual, err := v2.Check(input, v2.TrimSpace, v2.Required)
+	if !errors.Is(err, v2.ErrRequired) {
+		t.Fatalf("got unexpected error %v", err)
+	}
+
+	if actual != expected {
+		t.Fatalf("actual %s expected %s", actual, expected)
+	}
 }
 
-func TestCheckNestedStruct(t *testing.T) {
+func TestCheckWithConfigSuccess(t *testing.T) {
+	input := "    test    "
+	expected := "test"
+
+	actual, err := v2.CheckWithConfig(input, "trim required")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if actual != expected {
+		t.Fatalf("actual %s expected %s", actual, expected)
+	}
+}
+
+func TestCheckWithConfigRequiredMissing(t *testing.T) {
+	input := "    "
+	expected := ""
+
+	actual, err := v2.CheckWithConfig(input, "trim required")
+	if !errors.Is(err, v2.ErrRequired) {
+		t.Fatalf("got unexpected error %v", err)
+	}
+
+	if actual != expected {
+		t.Fatalf("actual %s expected %s", actual, expected)
+	}
+}
+
+func TestCheckStructSuccess(t *testing.T) {
 	type Address struct {
 		Street string `checkers:"required"`
 	}
 
 	type Person struct {
-		Name string `checkers:"required"`
-		Home Address
+		Name    string `checkers:"required"`
+		Address *Address
 	}
 
-	person := &Person{}
-
-	errors, valid := Check(person)
-	if valid {
-		t.Fail()
+	person := &Person{
+		Name: "Onur Cinar",
+		Address: &Address{
+			Street: "1234 Main",
+		},
 	}
 
-	if len(errors) != 2 {
-		t.Fail()
-	}
-
-	if errors["Name"] != ErrRequired {
-		t.Fail()
-	}
-
-	if errors["Home.Street"] != ErrRequired {
-		t.Fail()
+	errors, ok := v2.CheckStruct(person)
+	if !ok {
+		t.Fatalf("got unexpected errors %v", errors)
 	}
 }
 
-func TestNumberOfInvalid(t *testing.T) {
-	defer FailIfNoPanic(t)
-
-	s := "invalid"
-
-	numberOf(reflect.ValueOf(s))
-}
-
-func TestNumberOfInt(t *testing.T) {
-	n := 10
-
-	if numberOf(reflect.ValueOf(n)) != float64(n) {
-		t.Fail()
-	}
-}
-
-func TestNumberOfFloat(t *testing.T) {
-	n := float64(10.10)
-
-	if numberOf(reflect.ValueOf(n)) != n {
-		t.Fail()
-	}
-}
-
-func TestCheckerNamesAreLowerCase(t *testing.T) {
-	for checker := range makers {
-		if strings.ToLower(checker) != checker {
-			t.Fail()
-		}
-	}
-}
-
-func BenchmarkCheck(b *testing.B) {
+func TestCheckStructRequiredMissing(t *testing.T) {
 	type Address struct {
 		Street string `checkers:"required"`
 	}
 
 	type Person struct {
-		Name string `checkers:"required"`
-		Home Address
+		Name    string `checkers:"required"`
+		Address *Address
 	}
 
-	person := &Person{}
+	person := &Person{
+		Name: "",
+		Address: &Address{
+			Street: "",
+		},
+	}
 
-	for n := 0; n < b.N; n++ {
-		Check(person)
+	errs, ok := v2.CheckStruct(person)
+	if ok {
+		t.Fatal("expected errors")
+	}
+
+	if !errors.Is(errs["Name"], v2.ErrRequired) {
+		t.Fatalf("expected name required %v", errs)
+	}
+
+	if !errors.Is(errs["Address.Street"], v2.ErrRequired) {
+		t.Fatalf("expected streed required %v", errs)
+	}
+}
+
+func TestCheckStructCustomName(t *testing.T) {
+	type Person struct {
+		Name string `json:"name" checkers:"required"`
+	}
+
+	person := &Person{
+		Name: "",
+	}
+
+	errs, ok := v2.CheckStruct(person)
+	if ok {
+		t.Fatal("expected errors")
+	}
+
+	if !errors.Is(errs["name"], v2.ErrRequired) {
+		t.Fatalf("expected name required %v", errs)
+	}
+}
+
+func TestCheckStructSlice(t *testing.T) {
+	type Person struct {
+		Name   string   `checkers:"required"`
+		Emails []string `checkers:"@max-len:1 max-len:4"`
+	}
+
+	person := &Person{
+		Name: "Onur Cinar",
+		Emails: []string{
+			"onur.cinar",
+		},
+	}
+
+	errs, ok := v2.CheckStruct(person)
+	if ok {
+		t.Fatal("expected errors")
+	}
+
+	if !errors.Is(errs["Emails[0]"], v2.ErrMaxLen) {
+		t.Fatalf("expected email max len")
 	}
 }

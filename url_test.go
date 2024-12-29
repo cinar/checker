@@ -3,103 +3,74 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker_test
+package v2_test
 
 import (
+	"fmt"
 	"testing"
 
-	"github.com/cinar/checker"
+	v2 "github.com/cinar/checker/v2"
 )
 
 func ExampleIsURL() {
-	err := checker.IsURL("https://zdo.com")
+	_, err := v2.IsURL("https://example.com")
 	if err != nil {
-		// Send the errors back to the user
-	}
-}
-
-func TestIsURLValid(t *testing.T) {
-	err := checker.IsURL("https://zdo.com")
-	if err != nil {
-		t.Fail()
+		fmt.Println(err)
 	}
 }
 
 func TestIsURLInvalid(t *testing.T) {
-	err := checker.IsURL("https:://index.html")
+	_, err := v2.IsURL("invalid-url")
 	if err == nil {
-		t.Fail()
+		t.Fatal("expected error")
+	}
+}
+
+func TestIsURLValid(t *testing.T) {
+	_, err := v2.IsURL("https://example.com")
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 
 func TestCheckURLNonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
+	defer FailIfNoPanic(t, "expected panic")
 
-	type Bookmark struct {
-		URL int `checkers:"url"`
+	type Website struct {
+		Link int `checkers:"url"`
 	}
 
-	bookmark := &Bookmark{}
+	website := &Website{}
 
-	checker.Check(bookmark)
-}
-
-func TestCheckURLValid(t *testing.T) {
-	type Bookmark struct {
-		URL string `checkers:"url"`
-	}
-
-	bookmark := &Bookmark{
-		URL: "https://zdo.com",
-	}
-
-	_, valid := checker.Check(bookmark)
-	if !valid {
-		t.Fail()
-	}
+	v2.CheckStruct(website)
 }
 
 func TestCheckURLInvalid(t *testing.T) {
-	type Bookmark struct {
-		URL string `checkers:"url"`
+	type Website struct {
+		Link string `checkers:"url"`
 	}
 
-	bookmark := &Bookmark{
-		URL: "zdo.com/index.html",
+	website := &Website{
+		Link: "invalid-url",
 	}
 
-	_, valid := checker.Check(bookmark)
-	if valid {
-		t.Fail()
-	}
-}
-
-func TestCheckURLWithoutSchema(t *testing.T) {
-	type Bookmark struct {
-		URL string `checkers:"url"`
-	}
-
-	bookmark := &Bookmark{
-		URL: "//zdo.com/index.html",
-	}
-
-	_, valid := checker.Check(bookmark)
-	if valid {
-		t.Fail()
+	_, ok := v2.CheckStruct(website)
+	if ok {
+		t.Fatal("expected error")
 	}
 }
 
-func TestCheckURLWithoutHost(t *testing.T) {
-	type Bookmark struct {
-		URL string `checkers:"url"`
+func TestCheckURLValid(t *testing.T) {
+	type Website struct {
+		Link string `checkers:"url"`
 	}
 
-	bookmark := &Bookmark{
-		URL: "https:://index.html",
+	website := &Website{
+		Link: "https://example.com",
 	}
 
-	_, valid := checker.Check(bookmark)
-	if valid {
-		t.Fail()
+	_, ok := v2.CheckStruct(website)
+	if !ok {
+		t.Fatal("expected valid")
 	}
 }

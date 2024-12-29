@@ -1,4 +1,3 @@
-output: "{{.Dir}}/README.md"
+output: "{{.Dir}}/DOC.md"
 repository:
   url: https://github.com/cinar/checker
-exclude-dirs: "./v2/..."

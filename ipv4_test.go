@@ -3,77 +3,74 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker_test
+package v2_test
 
 import (
+	"fmt"
 	"testing"
 
-	"github.com/cinar/checker"
+	v2 "github.com/cinar/checker/v2"
 )
 
-func ExampleIsIPV4() {
-	err := checker.IsIPV4("192.168.1.1")
+func ExampleIsIPv4() {
+	_, err := v2.IsIPv4("192.168.1.1")
 	if err != nil {
-		// Send the errors back to the user
+		fmt.Println(err)
 	}
 }
 
-func TestIsIPV4Invalid(t *testing.T) {
-	if checker.IsIPV4("900.800.200.100") == nil {
-		t.Fail()
+func TestIsIPv4Invalid(t *testing.T) {
+	_, err := v2.IsIPv4("2001:db8::1")
+	if err == nil {
+		t.Fatal("expected error")
 	}
 }
 
-func TestIsIPV4InvalidV6(t *testing.T) {
-	if checker.IsIPV4("2001:db8::68") == nil {
-		t.Fail()
+func TestIsIPv4Valid(t *testing.T) {
+	_, err := v2.IsIPv4("192.168.1.1")
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 
-func TestIsIPV4Valid(t *testing.T) {
-	if checker.IsIPV4("192.168.1.1") != nil {
-		t.Fail()
+func TestCheckIPv4NonString(t *testing.T) {
+	defer FailIfNoPanic(t, "expected panic")
+
+	type Network struct {
+		Address int `checkers:"ipv4"`
+	}
+
+	network := &Network{}
+
+	v2.CheckStruct(network)
+}
+
+func TestCheckIPv4Invalid(t *testing.T) {
+	type Network struct {
+		Address string `checkers:"ipv4"`
+	}
+
+	network := &Network{
+		Address: "2001:db8::1",
+	}
+
+	_, ok := v2.CheckStruct(network)
+	if ok {
+		t.Fatal("expected error")
 	}
 }
 
-func TestCheckIPV4NonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
-
-	type Request struct {
-		RemoteIP int `checkers:"ipv4"`
+func TestCheckIPv4Valid(t *testing.T) {
+	type Network struct {
+		Address string `checkers:"ipv4"`
 	}
 
-	request := &Request{}
-
-	checker.Check(request)
-}
-
-func TestCheckIPV4Invalid(t *testing.T) {
-	type Request struct {
-		RemoteIP string `checkers:"ipv4"`
+	network := &Network{
+		Address: "192.168.1.1",
 	}
 
-	request := &Request{
-		RemoteIP: "900.800.200.100",
-	}
-
-	_, valid := checker.Check(request)
-	if valid {
-		t.Fail()
-	}
-}
-
-func TestCheckIPV4Valid(t *testing.T) {
-	type Request struct {
-		RemoteIP string `checkers:"ipv4"`
-	}
-
-	request := &Request{
-		RemoteIP: "192.168.1.1",
-	}
-
-	_, valid := checker.Check(request)
-	if !valid {
-		t.Fail()
+	_, ok := v2.CheckStruct(network)
+	if !ok {
+		t.Fatal("expected valid")
 	}
 }

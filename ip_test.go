@@ -3,71 +3,74 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker_test
+package v2_test
 
 import (
+	"fmt"
 	"testing"
 
-	"github.com/cinar/checker"
+	v2 "github.com/cinar/checker/v2"
 )
 
 func ExampleIsIP() {
-	err := checker.IsIP("2001:db8::68")
+	_, err := v2.IsIP("192.168.1.1")
 	if err != nil {
-		// Send the errors back to the user
+		fmt.Println(err)
 	}
 }
 
 func TestIsIPInvalid(t *testing.T) {
-	if checker.IsIP("900.800.200.100") == nil {
-		t.Fail()
+	_, err := v2.IsIP("invalid-ip")
+	if err == nil {
+		t.Fatal("expected error")
 	}
 }
 
 func TestIsIPValid(t *testing.T) {
-	if checker.IsIP("2001:db8::68") != nil {
-		t.Fail()
+	_, err := v2.IsIP("192.168.1.1")
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 
-func TestCheckIpNonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
+func TestCheckIPNonString(t *testing.T) {
+	defer FailIfNoPanic(t, "expected panic")
 
-	type Request struct {
-		RemoteIP int `checkers:"ip"`
+	type Network struct {
+		Address int `checkers:"ip"`
 	}
 
-	request := &Request{}
+	network := &Network{}
 
-	checker.Check(request)
+	v2.CheckStruct(network)
 }
 
-func TestCheckIpInvalid(t *testing.T) {
-	type Request struct {
-		RemoteIP string `checkers:"ip"`
+func TestCheckIPInvalid(t *testing.T) {
+	type Network struct {
+		Address string `checkers:"ip"`
 	}
 
-	request := &Request{
-		RemoteIP: "900.800.200.100",
+	network := &Network{
+		Address: "invalid-ip",
 	}
 
-	_, valid := checker.Check(request)
-	if valid {
-		t.Fail()
+	_, ok := v2.CheckStruct(network)
+	if ok {
+		t.Fatal("expected error")
 	}
 }
 
 func TestCheckIPValid(t *testing.T) {
-	type Request struct {
-		RemoteIP string `checkers:"ip"`
+	type Network struct {
+		Address string `checkers:"ip"`
 	}
 
-	request := &Request{
-		RemoteIP: "192.168.1.1",
+	network := &Network{
+		Address: "192.168.1.1",
 	}
 
-	_, valid := checker.Check(request)
-	if !valid {
-		t.Fail()
+	_, ok := v2.CheckStruct(network)
+	if !ok {
+		t.Fatal("expected valid")
 	}
 }

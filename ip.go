@@ -3,40 +3,38 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker
+package v2
 
 import (
-	"errors"
 	"net"
 	"reflect"
 )
 
-// tagIP is the tag of the checker.
-const tagIP = "ip"
+const (
+	// nameIP is the name of the IP check.
+	nameIP = "ip"
+)
 
-// ErrNotIP indicates that the given value is not an IP address.
-var ErrNotIP = errors.New("please enter a valid IP address")
+var (
+	// ErrNotIP indicates that the given value is not a valid IP address.
+	ErrNotIP = NewCheckError("NOT_IP")
+)
 
-// IsIP checks if the given value is an IP address.
-func IsIP(value string) error {
-	ip := net.ParseIP(value)
-	if ip == nil {
-		return ErrNotIP
+// IsIP checks if the value is a valid IP address.
+func IsIP(value string) (string, error) {
+	if net.ParseIP(value) == nil {
+		return value, ErrNotIP
 	}
-
-	return nil
+	return value, nil
 }
 
-// makeIP makes a checker function for the ip checker.
-func makeIP(_ string) CheckFunc {
+// checkIP checks if the value is a valid IP address.
+func checkIP(value reflect.Value) (reflect.Value, error) {
+	_, err := IsIP(value.Interface().(string))
+	return value, err
+}
+
+// makeIP makes a checker function for the IP checker.
+func makeIP(_ string) CheckFunc[reflect.Value] {
 	return checkIP
-}
-
-// checkIP checks if the given value is an IP address.
-func checkIP(value, _ reflect.Value) error {
-	if value.Kind() != reflect.String {
-		panic("string expected")
-	}
-
-	return IsIP(value.String())
 }

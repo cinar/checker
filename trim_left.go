@@ -3,28 +3,30 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker
+package v2
 
 import (
 	"reflect"
 	"strings"
 )
 
-// tagTrimLeft is the tag of the normalizer.
-const tagTrimLeft = "trim-left"
+const (
+	// nameTrimLeft is the name of the trim left normalizer.
+	nameTrimLeft = "trim-left"
+)
 
-// makeTrimLeft makes a normalizer function for the trim left normalizer.
-func makeTrimLeft(_ string) CheckFunc {
-	return normalizeTrimLeft
+// TrimLeft returns the value of the string with whitespace removed from the beginning.
+func TrimLeft(value string) (string, error) {
+	return strings.TrimLeft(value, " \t"), nil
 }
 
-// normalizeTrim removes the whitespaces at the beginning of the given value.
-func normalizeTrimLeft(value, _ reflect.Value) error {
-	if value.Kind() != reflect.String {
-		panic("string expected")
-	}
+// reflectTrimLeft returns the value of the string with whitespace removed from the beginning.
+func reflectTrimLeft(value reflect.Value) (reflect.Value, error) {
+	newValue, err := TrimLeft(value.Interface().(string))
+	return reflect.ValueOf(newValue), err
+}
 
-	value.SetString(strings.TrimLeft(value.String(), " \t"))
-
-	return nil
+// makeTrimLeft returns the trim left normalizer function.
+func makeTrimLeft(_ string) CheckFunc[reflect.Value] {
+	return reflectTrimLeft
 }

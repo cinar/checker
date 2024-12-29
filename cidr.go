@@ -3,40 +3,40 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker
+package v2
 
 import (
-	"errors"
 	"net"
 	"reflect"
 )
 
-// tagCidr is the tag of the checker.
-const tagCidr = "cidr"
+const (
+	// nameCIDR is the name of the CIDR check.
+	nameCIDR = "cidr"
+)
 
-// ErrNotCidr indicates that the given value is not a valid CIDR.
-var ErrNotCidr = errors.New("please enter a valid CIDR")
+var (
+	// ErrNotCIDR indicates that the given value is not a valid CIDR.
+	ErrNotCIDR = NewCheckError("NOT_CIDR")
+)
 
-// IsCidr checker checks if the value is a valid CIDR notation IP address and prefix length.
-func IsCidr(value string) error {
+// IsCIDR checks if the value is a valid CIDR notation IP address and prefix length.
+func IsCIDR(value string) (string, error) {
 	_, _, err := net.ParseCIDR(value)
 	if err != nil {
-		return ErrNotCidr
+		return value, ErrNotCIDR
 	}
 
-	return nil
+	return value, nil
 }
 
-// makeCidr makes a checker function for the ip checker.
-func makeCidr(_ string) CheckFunc {
-	return checkCidr
+// checkCIDR checks if the value is a valid CIDR notation IP address and prefix length.
+func checkCIDR(value reflect.Value) (reflect.Value, error) {
+	_, err := IsCIDR(value.Interface().(string))
+	return value, err
 }
 
-// checkCidr checker checks if the value is a valid CIDR notation IP address and prefix length.
-func checkCidr(value, _ reflect.Value) error {
-	if value.Kind() != reflect.String {
-		panic("string expected")
-	}
-
-	return IsCidr(value.String())
+// makeCIDR makes a checker function for the CIDR checker.
+func makeCIDR(_ string) CheckFunc[reflect.Value] {
+	return checkCIDR
 }

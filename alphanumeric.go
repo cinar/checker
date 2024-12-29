@@ -3,41 +3,41 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker
+package v2
 
 import (
-	"errors"
 	"reflect"
 	"unicode"
 )
 
-// tagAlphanumeric is the tag of the checker.
-const tagAlphanumeric = "alphanumeric"
+const (
+	// nameAlphanumeric is the name of the alphanumeric check.
+	nameAlphanumeric = "alphanumeric"
+)
 
-// ErrNotAlphanumeric indicates that the given string contains non-alphanumeric characters.
-var ErrNotAlphanumeric = errors.New("please use only letters and numbers")
+var (
+	// ErrNotAlphanumeric indicates that the given string contains non-alphanumeric characters.
+	ErrNotAlphanumeric = NewCheckError("NOT_ALPHANUMERIC")
+)
 
 // IsAlphanumeric checks if the given string consists of only alphanumeric characters.
-func IsAlphanumeric(value string) error {
+func IsAlphanumeric(value string) (string, error) {
 	for _, c := range value {
 		if !unicode.IsDigit(c) && !unicode.IsLetter(c) {
-			return ErrNotAlphanumeric
+			return value, ErrNotAlphanumeric
 		}
 	}
 
-	return nil
-}
-
-// makeAlphanumeric makes a checker function for the alphanumeric checker.
-func makeAlphanumeric(_ string) CheckFunc {
-	return checkAlphanumeric
+	return value, nil
 }
 
 // checkAlphanumeric checks if the given string consists of only alphanumeric characters.
-func checkAlphanumeric(value, _ reflect.Value) error {
-	if value.Kind() != reflect.String {
-		panic("string expected")
-	}
+func isAlphanumeric(value reflect.Value) (reflect.Value, error) {
+	_, err := IsAlphanumeric(value.Interface().(string))
+	return value, err
+}
 
-	return IsAlphanumeric(value.String())
+// makeAlphanumeric makes a checker function for the alphanumeric checker.
+func makeAlphanumeric(_ string) CheckFunc[reflect.Value] {
+	return isAlphanumeric
 }

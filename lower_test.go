@@ -3,53 +3,45 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker_test
+package v2_test
 
 import (
 	"testing"
 
-	"github.com/cinar/checker"
+	v2 "github.com/cinar/checker/v2"
 )
 
-func TestNormalizeLowerNonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
+func TestLower(t *testing.T) {
+	input := "CHECKER"
+	expected := "checker"
 
-	type User struct {
-		Username int `checkers:"lower"`
+	actual, err := v2.Lower(input)
+	if err != nil {
+		t.Fatal(err)
 	}
 
-	user := &User{}
-
-	checker.Check(user)
-}
-
-func TestNormalizeLowerErrValid(t *testing.T) {
-	type User struct {
-		Username string `checkers:"lower"`
-	}
-
-	user := &User{
-		Username: "chECker",
-	}
-
-	_, valid := checker.Check(user)
-	if !valid {
-		t.Fail()
+	if actual != expected {
+		t.Fatalf("actual %s expected %s", actual, expected)
 	}
 }
 
-func TestNormalizeLower(t *testing.T) {
-	type User struct {
-		Username string `checkers:"lower"`
+func TestReflectLower(t *testing.T) {
+	type Person struct {
+		Name string `checkers:"lower"`
 	}
 
-	user := &User{
-		Username: "chECker",
+	person := &Person{
+		Name: "CHECKER",
 	}
 
-	checker.Check(user)
+	expected := "checker"
 
-	if user.Username != "checker" {
-		t.Fail()
+	errs, ok := v2.CheckStruct(person)
+	if !ok {
+		t.Fatalf("got unexpected errors %v", errs)
+	}
+
+	if person.Name != expected {
+		t.Fatalf("actual %s expected %s", person.Name, expected)
 	}
 }

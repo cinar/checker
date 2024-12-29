@@ -3,28 +3,30 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker
+package v2
 
 import (
 	"reflect"
 	"strings"
 )
 
-// tagUpper is the tag of the normalizer.
-const tagUpper = "upper"
+const (
+	// nameUpper is the name of the upper normalizer.
+	nameUpper = "upper"
+)
 
-// makeUpper makes a normalizer function for the upper normalizer.
-func makeUpper(_ string) CheckFunc {
-	return normalizeUpper
+// Upper maps all Unicode letters in the given value to their upper case.
+func Upper(value string) (string, error) {
+	return strings.ToUpper(value), nil
 }
 
-// normalizeUpper maps all Unicode letters in the given value to their upper case.
-func normalizeUpper(value, _ reflect.Value) error {
-	if value.Kind() != reflect.String {
-		panic("string expected")
-	}
+// reflectUpper maps all Unicode letters in the given value to their upper case.
+func reflectUpper(value reflect.Value) (reflect.Value, error) {
+	newValue, err := Upper(value.Interface().(string))
+	return reflect.ValueOf(newValue), err
+}
 
-	value.SetString(strings.ToUpper(value.String()))
-
-	return nil
+// makeUpper returns the upper normalizer function.
+func makeUpper(_ string) CheckFunc[reflect.Value] {
+	return reflectUpper
 }

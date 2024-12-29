@@ -3,48 +3,39 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker
+package v2
 
 import (
-	"errors"
 	"net/url"
 	"reflect"
 )
 
-// tagURL is the tag of the checker.
-const tagURL = "url"
+const (
+	// nameURL is the name of the URL check.
+	nameURL = "url"
+)
 
-// ErrNotURL indicates that the given value is not a valid URL.
-var ErrNotURL = errors.New("please enter a valid URL")
+var (
+	// ErrNotURL indicates that the given value is not a valid URL.
+	ErrNotURL = NewCheckError("NOT_URL")
+)
 
-// IsURL checks if the given value is a valid URL.
-func IsURL(value string) error {
-	url, err := url.ParseRequestURI(value)
+// IsURL checks if the value is a valid URL.
+func IsURL(value string) (string, error) {
+	_, err := url.ParseRequestURI(value)
 	if err != nil {
-		return ErrNotURL
+		return value, ErrNotURL
 	}
+	return value, nil
+}
 
-	if url.Scheme == "" {
-		return ErrNotURL
-	}
-
-	if url.Host == "" {
-		return ErrNotURL
-	}
-
-	return nil
+// checkURL checks if the value is a valid URL.
+func checkURL(value reflect.Value) (reflect.Value, error) {
+	_, err := IsURL(value.Interface().(string))
+	return value, err
 }
 
 // makeURL makes a checker function for the URL checker.
-func makeURL(_ string) CheckFunc {
+func makeURL(_ string) CheckFunc[reflect.Value] {
 	return checkURL
-}
-
-// checkURL checks if the given value is a valid URL.
-func checkURL(value, _ reflect.Value) error {
-	if value.Kind() != reflect.String {
-		panic("string expected")
-	}
-
-	return IsURL(value.String())
 }

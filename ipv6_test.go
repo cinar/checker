@@ -3,78 +3,74 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker_test
+package v2_test
 
 import (
+	"fmt"
 	"testing"
 
-	"github.com/cinar/checker"
+	v2 "github.com/cinar/checker/v2"
 )
 
-func ExampleIsIPV6() {
-	err := checker.IsIPV6("2001:db8::68")
-
+func ExampleIsIPv6() {
+	_, err := v2.IsIPv6("2001:db8::1")
 	if err != nil {
-		// Send the errors back to the user
+		fmt.Println(err)
 	}
 }
 
-func TestIsIPV6Invalid(t *testing.T) {
-	if checker.IsIPV6("900.800.200.100") == nil {
-		t.Fail()
+func TestIsIPv6Invalid(t *testing.T) {
+	_, err := v2.IsIPv6("192.168.1.1")
+	if err == nil {
+		t.Fatal("expected error")
 	}
 }
 
-func TestIsIPV6InvalidV4(t *testing.T) {
-	if checker.IsIPV6("192.168.1.1") == nil {
-		t.Fail()
+func TestIsIPv6Valid(t *testing.T) {
+	_, err := v2.IsIPv6("2001:db8::1")
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 
-func TestIsIPV6Valid(t *testing.T) {
-	if checker.IsIPV6("2001:db8::68") != nil {
-		t.Fail()
+func TestCheckIPv6NonString(t *testing.T) {
+	defer FailIfNoPanic(t, "expected panic")
+
+	type Network struct {
+		Address int `checkers:"ipv6"`
+	}
+
+	network := &Network{}
+
+	v2.CheckStruct(network)
+}
+
+func TestCheckIPv6Invalid(t *testing.T) {
+	type Network struct {
+		Address string `checkers:"ipv6"`
+	}
+
+	network := &Network{
+		Address: "192.168.1.1",
+	}
+
+	_, ok := v2.CheckStruct(network)
+	if ok {
+		t.Fatal("expected error")
 	}
 }
 
-func TestCheckIPV6NonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
-
-	type Request struct {
-		RemoteIP int `checkers:"ipv6"`
+func TestCheckIPv6Valid(t *testing.T) {
+	type Network struct {
+		Address string `checkers:"ipv6"`
 	}
 
-	request := &Request{}
-
-	checker.Check(request)
-}
-
-func TestCheckIPV6Invalid(t *testing.T) {
-	type Request struct {
-		RemoteIP string `checkers:"ipv6"`
+	network := &Network{
+		Address: "2001:db8::1",
 	}
 
-	request := &Request{
-		RemoteIP: "900.800.200.100",
-	}
-
-	_, valid := checker.Check(request)
-	if valid {
-		t.Fail()
-	}
-}
-
-func TestCheckIPV6Valid(t *testing.T) {
-	type Request struct {
-		RemoteIP string `checkers:"ipv6"`
-	}
-
-	request := &Request{
-		RemoteIP: "2001:db8::68",
-	}
-
-	_, valid := checker.Check(request)
-	if !valid {
-		t.Fail()
+	_, ok := v2.CheckStruct(network)
+	if !ok {
+		t.Fatal("expected valid")
 	}
 }

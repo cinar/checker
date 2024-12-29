@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker
+package v2
 
 import (
 	"reflect"
@@ -11,24 +11,17 @@ import (
 	"unicode"
 )
 
-// tagTitle is the tag of the normalizer.
-const tagTitle = "title"
+const (
+	// nameTitle is the name of the title normalizer.
+	nameTitle = "title"
+)
 
-// makeTitle makes a normalizer function for the title normalizer.
-func makeTitle(_ string) CheckFunc {
-	return normalizeTitle
-}
-
-// normalizeTitle maps the first letter of each word to their upper case.
-func normalizeTitle(value, _ reflect.Value) error {
-	if value.Kind() != reflect.String {
-		panic("string expected")
-	}
-
+// Title returns the value of the string with the first letter of each word in upper case.
+func Title(value string) (string, error) {
 	var sb strings.Builder
 	begin := true
 
-	for _, c := range value.String() {
+	for _, c := range value {
 		if unicode.IsLetter(c) {
 			if begin {
 				c = unicode.ToUpper(c)
@@ -43,7 +36,16 @@ func normalizeTitle(value, _ reflect.Value) error {
 		sb.WriteRune(c)
 	}
 
-	value.SetString(sb.String())
+	return sb.String(), nil
+}
 
-	return nil
+// reflectTitle returns the value of the string with the first letter of each word in upper case.
+func reflectTitle(value reflect.Value) (reflect.Value, error) {
+	newValue, err := Title(value.Interface().(string))
+	return reflect.ValueOf(newValue), err
+}
+
+// makeTitle returns the title normalizer function.
+func makeTitle(_ string) CheckFunc[reflect.Value] {
+	return reflectTitle
 }

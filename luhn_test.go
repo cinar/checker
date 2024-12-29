@@ -3,74 +3,81 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker_test
+package v2_test
 
 import (
+	"fmt"
 	"testing"
 
-	"github.com/cinar/checker"
+	v2 "github.com/cinar/checker/v2"
 )
 
-func ExampleIsLuhn() {
-	err := checker.IsLuhn("4012888888881881")
+func ExampleIsLUHN() {
+	_, err := v2.IsLUHN("4012888888881881")
 	if err != nil {
-		// Send the errors back to the user
+		fmt.Println(err)
 	}
 }
 
-func TestIsLuhnValid(t *testing.T) {
-	numbers := []string{
-		"4012888888881881",
-		"4222222222222",
-		"5555555555554444",
-		"5105105105105100",
-	}
-
-	for _, number := range numbers {
-		if checker.IsLuhn(number) != nil {
-			t.Fail()
-		}
+func TestIsLUHNInvalid(t *testing.T) {
+	_, err := v2.IsLUHN("123456789")
+	if err == nil {
+		t.Fatal("expected error")
 	}
 }
 
-func TestCheckLuhnNonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
-
-	type Order struct {
-		CreditCard int `checkers:"luhn"`
-	}
-
-	order := &Order{}
-
-	checker.Check(order)
-}
-
-func TestCheckLuhnInvalid(t *testing.T) {
-	type Order struct {
-		CreditCard string `checkers:"luhn"`
-	}
-
-	order := &Order{
-		CreditCard: "4012888888881884",
-	}
-
-	_, valid := checker.Check(order)
-	if valid {
-		t.Fail()
+func TestIsLUHNInvalidDigits(t *testing.T) {
+	_, err := v2.IsLUHN("ABCD")
+	if err == nil {
+		t.Fatal("expected error")
 	}
 }
 
-func TestCheckLuhnValid(t *testing.T) {
-	type Order struct {
-		CreditCard string `checkers:"luhn"`
+func TestIsLUHNValid(t *testing.T) {
+	_, err := v2.IsLUHN("4012888888881881")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckLUHNNonString(t *testing.T) {
+	defer FailIfNoPanic(t, "expected panic")
+
+	type Card struct {
+		Number int `checkers:"luhn"`
 	}
 
-	order := &Order{
-		CreditCard: "4012888888881881",
+	card := &Card{}
+
+	v2.CheckStruct(card)
+}
+
+func TestCheckLUHNInvalid(t *testing.T) {
+	type Card struct {
+		Number string `checkers:"luhn"`
 	}
 
-	_, valid := checker.Check(order)
-	if !valid {
-		t.Fail()
+	card := &Card{
+		Number: "123456789",
+	}
+
+	_, ok := v2.CheckStruct(card)
+	if ok {
+		t.Fatal("expected error")
+	}
+}
+
+func TestCheckLUHNValid(t *testing.T) {
+	type Card struct {
+		Number string `checkers:"luhn"`
+	}
+
+	card := &Card{
+		Number: "79927398713",
+	}
+
+	_, ok := v2.CheckStruct(card)
+	if !ok {
+		t.Fatal("expected valid")
 	}
 }
