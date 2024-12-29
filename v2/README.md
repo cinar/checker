@@ -161,7 +161,7 @@ In this example, the `is-fruit` checker is used to validate that the `Name` fiel
 
 When validation fails, Checker returns an error. By default, the [Error()](DOC.md#CheckError.Error) function provides a human-readable error message in `en-US` locale.
 
-To get error messages in other languages, use the [ErrorWithLocale()](DOC.md#CheckError.ErrorWithLocale) function. By default, only `en-US` is registered. You can register additional languages by calling [RegisterLocale](DOC.md##RegisterLocale).
+To get error messages in other languages, use the [ErrorWithLocale()](DOC.md#CheckError.ErrorWithLocale) function. By default, only `en-US` is registered. You can register additional languages by calling [RegisterLocale](DOC.md#RegisterLocale).
 
 You can also customize existing error messages or add new ones to `locales.EnUSMessages` and other locale maps.
 
