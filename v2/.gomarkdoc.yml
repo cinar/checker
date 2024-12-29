@@ -1,3 +1,0 @@
-output: "{{.Dir}}/DOC.md"
-repository:
-  url: https://github.com/cinar/checker

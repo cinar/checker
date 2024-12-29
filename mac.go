@@ -3,40 +3,39 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker
+package v2
 
 import (
-	"errors"
 	"net"
 	"reflect"
 )
 
-// tagMac is the tag of the checker.
-const tagMac = "mac"
+const (
+	// nameMAC is the name of the MAC check.
+	nameMAC = "mac"
+)
 
-// ErrNotMac indicates that the given value is not an MAC address.
-var ErrNotMac = errors.New("please enter a valid MAC address")
+var (
+	// ErrNotMAC indicates that the given value is not a valid MAC address.
+	ErrNotMAC = NewCheckError("NOT_MAC")
+)
 
-// IsMac checks if the given value is a valid an IEEE 802 MAC-48, EUI-48, EUI-64, or a 20-octet IP over InfiniBand link-layer address.
-func IsMac(value string) error {
+// IsMAC checks if the value is a valid MAC address.
+func IsMAC(value string) (string, error) {
 	_, err := net.ParseMAC(value)
 	if err != nil {
-		return ErrNotMac
+		return value, ErrNotMAC
 	}
-
-	return nil
+	return value, nil
 }
 
-// makeMac makes a checker function for the ip checker.
-func makeMac(_ string) CheckFunc {
-	return checkMac
+// checkMAC checks if the value is a valid MAC address.
+func checkMAC(value reflect.Value) (reflect.Value, error) {
+	_, err := IsMAC(value.Interface().(string))
+	return value, err
 }
 
-// checkMac checks if the given value is a valid an IEEE 802 MAC-48, EUI-48, EUI-64, or a 20-octet IP over InfiniBand link-layer address.
-func checkMac(value, _ reflect.Value) error {
-	if value.Kind() != reflect.String {
-		panic("string expected")
-	}
-
-	return IsMac(value.String())
+// makeMAC makes a checker function for the MAC checker.
+func makeMAC(_ string) CheckFunc[reflect.Value] {
+	return checkMAC
 }

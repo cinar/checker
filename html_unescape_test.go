@@ -3,27 +3,29 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker_test
+package v2_test
 
 import (
 	"testing"
 
-	"github.com/cinar/checker"
+	v2 "github.com/cinar/checker/v2"
 )
 
-func TestNormalizeHTMLUnescapeNonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
+func TestHTMLUnescape(t *testing.T) {
+	input := "&lt;tag&gt; &#34;Checker&#34; &amp; &#39;Library&#39; &lt;/tag&gt;"
+	expected := "<tag> \"Checker\" & 'Library' </tag>"
 
-	type Comment struct {
-		Body int `checkers:"html-unescape"`
+	actual, err := v2.HTMLUnescape(input)
+	if err != nil {
+		t.Fatal(err)
 	}
 
-	comment := &Comment{}
-
-	checker.Check(comment)
+	if actual != expected {
+		t.Fatalf("actual %s expected %s", actual, expected)
+	}
 }
 
-func TestNormalizeHTMLUnescape(t *testing.T) {
+func TestReflectHTMLUnescape(t *testing.T) {
 	type Comment struct {
 		Body string `checkers:"html-unescape"`
 	}
@@ -32,12 +34,14 @@ func TestNormalizeHTMLUnescape(t *testing.T) {
 		Body: "&lt;tag&gt; &#34;Checker&#34; &amp; &#39;Library&#39; &lt;/tag&gt;",
 	}
 
-	_, valid := checker.Check(comment)
-	if !valid {
-		t.Fail()
+	expected := "<tag> \"Checker\" & 'Library' </tag>"
+
+	errs, ok := v2.CheckStruct(comment)
+	if !ok {
+		t.Fatalf("got unexpected errors %v", errs)
 	}
 
-	if comment.Body != "<tag> \"Checker\" & 'Library' </tag>" {
-		t.Fail()
+	if comment.Body != expected {
+		t.Fatalf("actual %s expected %s", comment.Body, expected)
 	}
 }

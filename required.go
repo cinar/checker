@@ -3,40 +3,40 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker
+package v2
 
-import (
-	"errors"
-	"reflect"
+import "reflect"
+
+const (
+	// nameRequired is the name of the required check.
+	nameRequired = "required"
 )
 
-// tagRequired is the tag of the checker.
-const tagRequired = "required"
+var (
+	// ErrRequired indicates that a required value was missing.
+	ErrRequired = NewCheckError("REQUIRED")
+)
 
-// ErrRequired indicates that the required value is missing.
-var ErrRequired = errors.New("is required")
-
-// IsRequired checks if the given required value is present.
-func IsRequired(v interface{}) error {
-	return checkRequired(reflect.ValueOf(v), reflect.ValueOf(nil))
+// Required checks if the given value of type T is its zero value. It
+// returns an error if the value is zero.
+func Required[T any](value T) (T, error) {
+	_, err := reflectRequired(reflect.ValueOf(value))
+	return value, err
 }
 
-// makeRequired makes a checker function for required.
-func makeRequired(_ string) CheckFunc {
-	return checkRequired
-}
+// reflectRequired checks if the given value is its zero value. It
+// returns an error if the value is zero.
+func reflectRequired(value reflect.Value) (reflect.Value, error) {
+	var err error
 
-// checkRequired checks if the required value is present.
-func checkRequired(value, _ reflect.Value) error {
 	if value.IsZero() {
-		return ErrRequired
+		err = ErrRequired
 	}
 
-	k := value.Kind()
+	return value, err
+}
 
-	if (k == reflect.Array || k == reflect.Map || k == reflect.Slice) && value.Len() == 0 {
-		return ErrRequired
-	}
-
-	return nil
+// makeRequired returns the required check function.
+func makeRequired(_ string) CheckFunc[reflect.Value] {
+	return reflectRequired
 }

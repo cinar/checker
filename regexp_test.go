@@ -3,18 +3,38 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker_test
+package v2_test
 
 import (
-	"errors"
-	"reflect"
+	"fmt"
 	"testing"
 
-	"github.com/cinar/checker"
+	v2 "github.com/cinar/checker/v2"
 )
 
+func ExampleIsRegexp() {
+	_, err := v2.IsRegexp("^[0-9a-fA-F]+$", "ABcd1234")
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func TestIsRegexpInvalid(t *testing.T) {
+	_, err := v2.IsRegexp("^[0-9a-fA-F]+$", "Onur")
+	if err == nil {
+		t.Fatal("expected error")
+	}
+}
+
+func TestIsRegexpValid(t *testing.T) {
+	_, err := v2.IsRegexp("^[0-9a-fA-F]+$", "ABcd1234")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckRegexpNonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
+	defer FailIfNoPanic(t, "expected panic")
 
 	type User struct {
 		Username int `checkers:"regexp:^[A-Za-z]$"`
@@ -22,7 +42,7 @@ func TestCheckRegexpNonString(t *testing.T) {
 
 	user := &User{}
 
-	checker.Check(user)
+	v2.CheckStruct(user)
 }
 
 func TestCheckRegexpInvalid(t *testing.T) {
@@ -34,9 +54,9 @@ func TestCheckRegexpInvalid(t *testing.T) {
 		Username: "abcd1234",
 	}
 
-	_, valid := checker.Check(user)
-	if valid {
-		t.Fail()
+	_, ok := v2.CheckStruct(user)
+	if ok {
+		t.Fatal("expected error")
 	}
 }
 
@@ -49,34 +69,8 @@ func TestCheckRegexpValid(t *testing.T) {
 		Username: "abcd",
 	}
 
-	_, valid := checker.Check(user)
-	if !valid {
-		t.Fail()
-	}
-}
-
-func TestMakeRegexpChecker(t *testing.T) {
-	checkHex := checker.MakeRegexpChecker("^[A-Fa-f0-9]+$", errors.New("Not Hex"))
-
-	err := checkHex(reflect.ValueOf("f0f0f0"), reflect.ValueOf(nil))
-	if err != nil {
-		t.Fail()
-	}
-}
-
-func TestMakeRegexpMaker(t *testing.T) {
-	checker.Register("hex", checker.MakeRegexpMaker("^[A-Fa-f0-9]+$", errors.New("Not Hex")))
-
-	type Theme struct {
-		Color string `checkers:"hex"`
-	}
-
-	theme := &Theme{
-		Color: "f0f0f0",
-	}
-
-	_, valid := checker.Check(theme)
-	if !valid {
-		t.Fail()
+	_, ok := v2.CheckStruct(user)
+	if !ok {
+		t.Fatal("expected valid")
 	}
 }

@@ -3,13 +3,13 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker_test
+package v2_test
 
 import (
 	"strconv"
 	"testing"
 
-	"github.com/cinar/checker"
+	v2 "github.com/cinar/checker/v2"
 )
 
 // Test numbers from https://stripe.com/docs/testing
@@ -35,7 +35,7 @@ func changeToInvalidLuhn(number string) string {
 }
 
 func ExampleIsAnyCreditCard() {
-	err := checker.IsAnyCreditCard("6011111111111117")
+	_, err := v2.IsAnyCreditCard("6011111111111117")
 
 	if err != nil {
 		// Send the errors back to the user
@@ -43,25 +43,26 @@ func ExampleIsAnyCreditCard() {
 }
 
 func TestIsAnyCreditCardValid(t *testing.T) {
-	if checker.IsAnyCreditCard(amexCard) != nil {
-		t.Fail()
+	_, err := v2.IsAnyCreditCard(amexCard)
+	if err != nil {
+		t.Error(err)
 	}
 }
 
 func TestIsAnyCreditCardInvalidPattern(t *testing.T) {
-	if checker.IsAnyCreditCard(invalidCard) == nil {
-		t.Fail()
+	if _, err := v2.IsAnyCreditCard(invalidCard); err == nil {
+		t.Error("expected error for invalid card pattern")
 	}
 }
 
 func TestIsAnyCreditCardInvalidLuhn(t *testing.T) {
-	if checker.IsAnyCreditCard(changeToInvalidLuhn(amexCard)) == nil {
-		t.Fail()
+	if _, err := v2.IsAnyCreditCard(changeToInvalidLuhn(amexCard)); err == nil {
+		t.Error("expected error for invalid Luhn")
 	}
 }
 
 func ExampleIsAmexCreditCard() {
-	err := checker.IsAmexCreditCard("378282246310005")
+	_, err := v2.IsAmexCreditCard("378282246310005")
 
 	if err != nil {
 		// Send the errors back to the user
@@ -69,75 +70,75 @@ func ExampleIsAmexCreditCard() {
 }
 
 func TestIsAmexCreditCardValid(t *testing.T) {
-	if checker.IsAmexCreditCard(amexCard) != nil {
-		t.Fail()
+	if _, err := v2.IsAmexCreditCard(amexCard); err != nil {
+		t.Error(err)
 	}
 }
 
 func TestIsAmexCreditCardInvalidPattern(t *testing.T) {
-	if checker.IsAmexCreditCard(invalidCard) == nil {
-		t.Fail()
+	if _, err := v2.IsAmexCreditCard(invalidCard); err == nil {
+		t.Error("expected error for invalid card pattern")
 	}
 }
 
 func TestIsAmexCreditCardInvalidLuhn(t *testing.T) {
-	if checker.IsAmexCreditCard(changeToInvalidLuhn(amexCard)) == nil {
-		t.Fail()
+	if _, err := v2.IsAmexCreditCard(changeToInvalidLuhn(amexCard)); err == nil {
+		t.Error("expected error for invalid Luhn")
 	}
 }
 
 func ExampleIsDinersCreditCard() {
-	err := checker.IsDinersCreditCard("36227206271667")
+	_, err := v2.IsDinersCreditCard("36227206271667")
 
 	if err != nil {
 		// Send the errors back to the user
 	}
 }
 func TestIsDinersCreditCardValid(t *testing.T) {
-	if checker.IsDinersCreditCard(dinersCard) != nil {
-		t.Fail()
+	if _, err := v2.IsDinersCreditCard(dinersCard); err != nil {
+		t.Error(err)
 	}
 }
 
 func TestIsDinersCreditCardInvalidPattern(t *testing.T) {
-	if checker.IsDinersCreditCard(invalidCard) == nil {
-		t.Fail()
+	if _, err := v2.IsDinersCreditCard(invalidCard); err == nil {
+		t.Error("expected error for invalid card pattern")
 	}
 }
 
 func TestIsDinersCreditCardInvalidLuhn(t *testing.T) {
-	if checker.IsDinersCreditCard(changeToInvalidLuhn(dinersCard)) == nil {
-		t.Fail()
+	if _, err := v2.IsDinersCreditCard(changeToInvalidLuhn(dinersCard)); err == nil {
+		t.Error("expected error for invalid Luhn")
 	}
 }
 
 func ExampleIsDiscoverCreditCard() {
-	err := checker.IsDiscoverCreditCard("6011111111111117")
+	_, err := v2.IsDiscoverCreditCard("6011111111111117")
 
 	if err != nil {
 		// Send the errors back to the user
 	}
 }
 func TestIsDiscoverCreditCardValid(t *testing.T) {
-	if checker.IsDiscoverCreditCard(discoverCard) != nil {
-		t.Fail()
+	if _, err := v2.IsDiscoverCreditCard(discoverCard); err != nil {
+		t.Error(err)
 	}
 }
 
 func TestIsDiscoverCreditCardInvalidPattern(t *testing.T) {
-	if checker.IsDiscoverCreditCard(invalidCard) == nil {
-		t.Fail()
+	if _, err := v2.IsDiscoverCreditCard(invalidCard); err == nil {
+		t.Error("expected error for invalid card pattern")
 	}
 }
 
 func TestIsDiscoverCreditCardInvalidLuhn(t *testing.T) {
-	if checker.IsDiscoverCreditCard(changeToInvalidLuhn(discoverCard)) == nil {
-		t.Fail()
+	if _, err := v2.IsDiscoverCreditCard(changeToInvalidLuhn(discoverCard)); err == nil {
+		t.Error("expected error for invalid Luhn")
 	}
 }
 
 func ExampleIsJcbCreditCard() {
-	err := checker.IsJcbCreditCard("3530111333300000")
+	_, err := v2.IsJcbCreditCard("3530111333300000")
 
 	if err != nil {
 		// Send the errors back to the user
@@ -145,25 +146,25 @@ func ExampleIsJcbCreditCard() {
 }
 
 func TestIsJcbCreditCardValid(t *testing.T) {
-	if checker.IsJcbCreditCard(jcbCard) != nil {
-		t.Fail()
+	if _, err := v2.IsJcbCreditCard(jcbCard); err != nil {
+		t.Error(err)
 	}
 }
 
 func TestIsJcbCreditCardInvalidPattern(t *testing.T) {
-	if checker.IsJcbCreditCard(invalidCard) == nil {
-		t.Fail()
+	if _, err := v2.IsJcbCreditCard(invalidCard); err == nil {
+		t.Error("expected error for invalid card pattern")
 	}
 }
 
 func TestIsJcbCreditCardInvalidLuhn(t *testing.T) {
-	if checker.IsJcbCreditCard(changeToInvalidLuhn(jcbCard)) == nil {
-		t.Fail()
+	if _, err := v2.IsJcbCreditCard(changeToInvalidLuhn(jcbCard)); err == nil {
+		t.Error("expected error for invalid Luhn")
 	}
 }
 
 func ExampleIsMasterCardCreditCard() {
-	err := checker.IsMasterCardCreditCard("5555555555554444")
+	_, err := v2.IsMasterCardCreditCard("5555555555554444")
 
 	if err != nil {
 		// Send the errors back to the user
@@ -171,25 +172,25 @@ func ExampleIsMasterCardCreditCard() {
 }
 
 func TestIsMasterCardCreditCardValid(t *testing.T) {
-	if checker.IsMasterCardCreditCard(masterCard) != nil {
-		t.Fail()
+	if _, err := v2.IsMasterCardCreditCard(masterCard); err != nil {
+		t.Error(err)
 	}
 }
 
 func TestIsMasterCardCreditCardInvalidPattern(t *testing.T) {
-	if checker.IsMasterCardCreditCard(invalidCard) == nil {
-		t.Fail()
+	if _, err := v2.IsMasterCardCreditCard(invalidCard); err == nil {
+		t.Error("expected error for invalid card pattern")
 	}
 }
 
 func TestIsMasterCardCreditCardInvalidLuhn(t *testing.T) {
-	if checker.IsMasterCardCreditCard(changeToInvalidLuhn(masterCard)) == nil {
-		t.Fail()
+	if _, err := v2.IsMasterCardCreditCard(changeToInvalidLuhn(masterCard)); err == nil {
+		t.Error("expected error for invalid Luhn")
 	}
 }
 
 func ExampleIsUnionPayCreditCard() {
-	err := checker.IsUnionPayCreditCard("6200000000000005")
+	_, err := v2.IsUnionPayCreditCard("6200000000000005")
 
 	if err != nil {
 		// Send the errors back to the user
@@ -197,50 +198,50 @@ func ExampleIsUnionPayCreditCard() {
 }
 
 func TestIsUnionPayCreditCardValid(t *testing.T) {
-	if checker.IsUnionPayCreditCard(unionPayCard) != nil {
-		t.Fail()
+	if _, err := v2.IsUnionPayCreditCard(unionPayCard); err != nil {
+		t.Error(err)
 	}
 }
 
 func TestIsUnionPayCreditCardInvalidPattern(t *testing.T) {
-	if checker.IsUnionPayCreditCard(invalidCard) == nil {
-		t.Fail()
+	if _, err := v2.IsUnionPayCreditCard(invalidCard); err == nil {
+		t.Error("expected error for invalid card pattern")
 	}
 }
 
 func TestIsUnionPayCreditCardInvalidLuhn(t *testing.T) {
-	if checker.IsUnionPayCreditCard(changeToInvalidLuhn(unionPayCard)) == nil {
-		t.Fail()
+	if _, err := v2.IsUnionPayCreditCard(changeToInvalidLuhn(unionPayCard)); err == nil {
+		t.Error("expected error for invalid Luhn")
 	}
 }
 
 func ExampleIsVisaCreditCard() {
-	err := checker.IsVisaCreditCard("4111111111111111")
+	_, err := v2.IsVisaCreditCard("4111111111111111")
 
 	if err != nil {
 		// Send the errors back to the user
 	}
 }
 func TestIsVisaCreditCardValid(t *testing.T) {
-	if checker.IsVisaCreditCard(visaCard) != nil {
-		t.Fail()
+	if _, err := v2.IsVisaCreditCard(visaCard); err != nil {
+		t.Error(err)
 	}
 }
 
 func TestIsVisaCreditCardInvalidPattern(t *testing.T) {
-	if checker.IsVisaCreditCard(invalidCard) == nil {
-		t.Fail()
+	if _, err := v2.IsVisaCreditCard(invalidCard); err == nil {
+		t.Error("expected error for invalid card pattern")
 	}
 }
 
 func TestIsVisaCreditCardInvalidLuhn(t *testing.T) {
-	if checker.IsVisaCreditCard(changeToInvalidLuhn(visaCard)) == nil {
-		t.Fail()
+	if _, err := v2.IsVisaCreditCard(changeToInvalidLuhn(visaCard)); err == nil {
+		t.Error("expected error for invalid Luhn")
 	}
 }
 
 func TestCheckCreditCardNonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
+	defer FailIfNoPanic(t, "expected panic for non-string credit card")
 
 	type Order struct {
 		CreditCard int `checkers:"credit-card"`
@@ -248,7 +249,7 @@ func TestCheckCreditCardNonString(t *testing.T) {
 
 	order := &Order{}
 
-	checker.Check(order)
+	v2.CheckStruct(order)
 }
 
 func TestCheckCreditCardValid(t *testing.T) {
@@ -260,7 +261,7 @@ func TestCheckCreditCardValid(t *testing.T) {
 		CreditCard: amexCard,
 	}
 
-	_, valid := checker.Check(order)
+	_, valid := v2.CheckStruct(order)
 	if !valid {
 		t.Fail()
 	}
@@ -275,14 +276,14 @@ func TestCheckCreditCardInvalid(t *testing.T) {
 		CreditCard: invalidCard,
 	}
 
-	_, valid := checker.Check(order)
+	_, valid := v2.CheckStruct(order)
 	if valid {
 		t.Fail()
 	}
 }
 
 func TestCheckCreditCardMultipleUnknown(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
+	defer FailIfNoPanic(t, "expected panic for unknown credit card")
 
 	type Order struct {
 		CreditCard string `checkers:"credit-card:amex,unknown"`
@@ -292,7 +293,7 @@ func TestCheckCreditCardMultipleUnknown(t *testing.T) {
 		CreditCard: amexCard,
 	}
 
-	checker.Check(order)
+	v2.CheckStruct(order)
 }
 
 func TestCheckCreditCardMultipleInvalid(t *testing.T) {
@@ -304,7 +305,7 @@ func TestCheckCreditCardMultipleInvalid(t *testing.T) {
 		CreditCard: discoverCard,
 	}
 
-	_, valid := checker.Check(order)
+	_, valid := v2.CheckStruct(order)
 	if valid {
 		t.Fail()
 	}

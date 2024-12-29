@@ -3,29 +3,30 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker
+package v2
 
 import (
 	"html"
 	"reflect"
 )
 
-// tagHTMLEscape is the tag of the normalizer.
-const tagHTMLEscape = "html-escape"
+const (
+	// nameHTMLEscape is the name of the HTML escape normalizer.
+	nameHTMLEscape = "html-escape"
+)
 
-// makeHTMLEscape makes a normalizer function for the HTML escape normalizer.
-func makeHTMLEscape(_ string) CheckFunc {
-	return normalizeHTMLEscape
+// HTMLEscape applies HTML escaping to special characters.
+func HTMLEscape(value string) (string, error) {
+	return html.EscapeString(value), nil
 }
 
-// normalizeHTMLEscape applies HTML escaping to special characters.
-// Uses html.EscapeString for the actual escape operation.
-func normalizeHTMLEscape(value, _ reflect.Value) error {
-	if value.Kind() != reflect.String {
-		panic("string expected")
-	}
+// reflectHTMLEscape applies HTML escaping to special characters.
+func reflectHTMLEscape(value reflect.Value) (reflect.Value, error) {
+	newValue, err := HTMLEscape(value.Interface().(string))
+	return reflect.ValueOf(newValue), err
+}
 
-	value.SetString(html.EscapeString(value.String()))
-
-	return nil
+// makeHTMLEscape returns the HTML escape normalizer function.
+func makeHTMLEscape(_ string) CheckFunc[reflect.Value] {
+	return reflectHTMLEscape
 }

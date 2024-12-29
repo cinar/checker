@@ -3,64 +3,59 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker
+package v2
 
 import (
-	"errors"
 	"reflect"
+	"unicode"
 )
 
-// tagLuhn is the tag of the checker.
-const tagLuhn = "luhn"
+const (
+	// nameLUHN is the name of the LUHN check.
+	nameLUHN = "luhn"
+)
 
-// ErrNotLuhn indicates that the given number is not valid based on the Luhn algorithm.
-var ErrNotLuhn = errors.New("please enter a valid LUHN")
+var (
+	// ErrNotLUHN indicates that the given value is not a valid LUHN number.
+	ErrNotLUHN = NewCheckError("NOT_LUHN")
+)
 
-// doubleTable is the values for the last digits of doubled digits added.
-var doubleTable = [10]int{0, 2, 4, 6, 8, 1, 3, 5, 7, 9}
+// IsLUHN checks if the value is a valid LUHN number.
+func IsLUHN(value string) (string, error) {
+	var sum int
+	var alt bool
 
-// IsLuhn checks if the given number is valid based on the Luhn algorithm.
-func IsLuhn(number string) error {
-	digits := number[:len(number)-1]
-	check := rune(number[len(number)-1])
-
-	if calculateLuhnCheckDigit(digits) != check {
-		return ErrNotLuhn
-	}
-
-	return nil
-}
-
-// makeLuhn makes a checker function for the Luhn algorithm.
-func makeLuhn(_ string) CheckFunc {
-	return checkLuhn
-}
-
-// checkLuhn checks if the given number is valid based on the Luhn algorithm.
-func checkLuhn(value, _ reflect.Value) error {
-	if value.Kind() != reflect.String {
-		panic("string expected")
-	}
-
-	return IsLuhn(value.String())
-}
-
-// Calculates the Luhn algorighm check digit for the given number.
-func calculateLuhnCheckDigit(number string) rune {
-	digits := []rune(number)
-	check := 0
-
-	for i, j := 0, len(digits)-1; i <= j; i++ {
-		d := int(digits[j-i] - '0')
-		if i%2 == 0 {
-			d = doubleTable[d]
+	for i := len(value) - 1; i >= 0; i-- {
+		r := rune(value[i])
+		if !unicode.IsDigit(r) {
+			return value, ErrNotLUHN
 		}
 
-		check += d
+		n := int(r - '0')
+		if alt {
+			n *= 2
+			if n > 9 {
+				n -= 9
+			}
+		}
+		sum += n
+		alt = !alt
 	}
 
-	check *= 9
-	check %= 10
+	if sum%10 != 0 {
+		return value, ErrNotLUHN
+	}
 
-	return rune('0' + check)
+	return value, nil
+}
+
+// checkLUHN checks if the value is a valid LUHN number.
+func checkLUHN(value reflect.Value) (reflect.Value, error) {
+	_, err := IsLUHN(value.Interface().(string))
+	return value, err
+}
+
+// makeLUHN makes a checker function for the LUHN checker.
+func makeLUHN(_ string) CheckFunc[reflect.Value] {
+	return checkLUHN
 }

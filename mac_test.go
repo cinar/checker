@@ -3,71 +3,74 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker_test
+package v2_test
 
 import (
+	"fmt"
 	"testing"
 
-	"github.com/cinar/checker"
+	v2 "github.com/cinar/checker/v2"
 )
 
-func ExampleIsMac() {
-	err := checker.IsMac("00:00:5e:00:53:01")
+func ExampleIsMAC() {
+	_, err := v2.IsMAC("00:1A:2B:3C:4D:5E")
 	if err != nil {
-		// Send the errors back to the user
+		fmt.Println(err)
 	}
 }
 
-func TestIsMacInvalid(t *testing.T) {
-	if checker.IsMac("1234") == nil {
-		t.Fail()
+func TestIsMACInvalid(t *testing.T) {
+	_, err := v2.IsMAC("invalid-mac")
+	if err == nil {
+		t.Fatal("expected error")
 	}
 }
 
-func TestIsMacValid(t *testing.T) {
-	if checker.IsMac("00:00:5e:00:53:01") != nil {
-		t.Fail()
+func TestIsMACValid(t *testing.T) {
+	_, err := v2.IsMAC("00:1A:2B:3C:4D:5E")
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 
-func TestCheckMacNonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
+func TestCheckMACNonString(t *testing.T) {
+	defer FailIfNoPanic(t, "expected panic")
 
-	type Network struct {
-		HardwareAddress int `checkers:"mac"`
+	type Device struct {
+		MAC int `checkers:"mac"`
 	}
 
-	network := &Network{}
+	device := &Device{}
 
-	checker.Check(network)
+	v2.CheckStruct(device)
 }
 
-func TestCheckMacInvalid(t *testing.T) {
-	type Network struct {
-		HardwareAddress string `checkers:"mac"`
+func TestCheckMACInvalid(t *testing.T) {
+	type Device struct {
+		MAC string `checkers:"mac"`
 	}
 
-	network := &Network{
-		HardwareAddress: "1234",
+	device := &Device{
+		MAC: "invalid-mac",
 	}
 
-	_, valid := checker.Check(network)
-	if valid {
-		t.Fail()
+	_, ok := v2.CheckStruct(device)
+	if ok {
+		t.Fatal("expected error")
 	}
 }
 
-func TestCheckMacValid(t *testing.T) {
-	type Network struct {
-		HardwareAddress string `checkers:"mac"`
+func TestCheckMACValid(t *testing.T) {
+	type Device struct {
+		MAC string `checkers:"mac"`
 	}
 
-	network := &Network{
-		HardwareAddress: "00:00:5e:00:53:01",
+	device := &Device{
+		MAC: "00:1A:2B:3C:4D:5E",
 	}
 
-	_, valid := checker.Check(network)
-	if !valid {
-		t.Fail()
+	_, ok := v2.CheckStruct(device)
+	if !ok {
+		t.Fatal("expected valid")
 	}
 }

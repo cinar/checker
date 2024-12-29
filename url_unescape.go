@@ -3,32 +3,29 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker
+package v2
 
 import (
 	"net/url"
 	"reflect"
 )
 
-// tagURLUnescape is the tag of the normalizer.
-const tagURLUnescape = "url-unescape"
+// nameURLUnescape is the name of the URL unescape normalizer.
+const nameURLUnescape = "url-unescape"
 
-// makeURLUnescape makes a normalizer function for the URL unscape normalizer.
-func makeURLUnescape(_ string) CheckFunc {
-	return normalizeURLUnescape
+// URLUnescape applies URL unescaping to special characters.
+func URLUnescape(value string) (string, error) {
+	unescaped, err := url.QueryUnescape(value)
+	return unescaped, err
 }
 
-// normalizeURLUnescape applies URL unescaping to special characters.
-// Uses url.QueryUnescape for the actual unescape operation.
-func normalizeURLUnescape(value, _ reflect.Value) error {
-	if value.Kind() != reflect.String {
-		panic("string expected")
-	}
+// reflectURLUnescape applies URL unescaping to special characters.
+func reflectURLUnescape(value reflect.Value) (reflect.Value, error) {
+	newValue, err := URLUnescape(value.Interface().(string))
+	return reflect.ValueOf(newValue), err
+}
 
-	unescaped, err := url.QueryUnescape(value.String())
-	if err == nil {
-		value.SetString(unescaped)
-	}
-
-	return nil
+// makeURLUnescape returns the URL unescape normalizer function.
+func makeURLUnescape(_ string) CheckFunc[reflect.Value] {
+	return reflectURLUnescape
 }

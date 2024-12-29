@@ -3,53 +3,45 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker_test
+package v2_test
 
 import (
 	"testing"
 
-	"github.com/cinar/checker"
+	v2 "github.com/cinar/checker/v2"
 )
 
-func TestNormalizeTitleNonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
+func TestTitle(t *testing.T) {
+	input := "the checker"
+	expected := "The Checker"
 
-	type Book struct {
-		Chapter int `checkers:"title"`
+	actual, err := v2.Title(input)
+	if err != nil {
+		t.Fatal(err)
 	}
 
-	book := &Book{}
-
-	checker.Check(book)
+	if actual != expected {
+		t.Fatalf("actual %s expected %s", actual, expected)
+	}
 }
 
-func TestNormalizeTitleErrValid(t *testing.T) {
+func TestReflectTitle(t *testing.T) {
 	type Book struct {
 		Chapter string `checkers:"title"`
 	}
 
 	book := &Book{
-		Chapter: "THE checker",
+		Chapter: "the checker",
 	}
 
-	_, valid := checker.Check(book)
-	if !valid {
-		t.Fail()
-	}
-}
+	expected := "The Checker"
 
-func TestNormalizeTitle(t *testing.T) {
-	type Book struct {
-		Chapter string `checkers:"title"`
+	errs, ok := v2.CheckStruct(book)
+	if !ok {
+		t.Fatalf("got unexpected errors %v", errs)
 	}
 
-	book := &Book{
-		Chapter: "THE checker",
-	}
-
-	checker.Check(book)
-
-	if book.Chapter != "The Checker" {
-		t.Fail()
+	if book.Chapter != expected {
+		t.Fatalf("actual %s expected %s", book.Chapter, expected)
 	}
 }

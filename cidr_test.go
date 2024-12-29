@@ -3,35 +3,38 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker_test
+package v2_test
 
 import (
+	"fmt"
 	"testing"
 
-	"github.com/cinar/checker"
+	v2 "github.com/cinar/checker/v2"
 )
 
-func ExampleIsCidr() {
-	err := checker.IsCidr("2001:db8::/32")
+func ExampleIsCIDR() {
+	_, err := v2.IsCIDR("2001:db8::/32")
 	if err != nil {
-		// Send the errors back to the user
+		fmt.Println(err)
 	}
 }
 
-func TestIsCidrInvalid(t *testing.T) {
-	if checker.IsCidr("900.800.200.100//24") == nil {
-		t.Fail()
+func TestIsCIDRInvalid(t *testing.T) {
+	_, err := v2.IsCIDR("900.800.200.100//24")
+	if err == nil {
+		t.Fatal("expected error")
 	}
 }
 
-func TestIsCidrValid(t *testing.T) {
-	if checker.IsCidr("2001:db8::/32") != nil {
-		t.Fail()
+func TestIsCIDRValid(t *testing.T) {
+	_, err := v2.IsCIDR("2001:db8::/32")
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 
-func TestCheckCidrNonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
+func TestCheckCIDRNonString(t *testing.T) {
+	defer FailIfNoPanic(t, "expected panic")
 
 	type Network struct {
 		Subnet int `checkers:"cidr"`
@@ -39,10 +42,10 @@ func TestCheckCidrNonString(t *testing.T) {
 
 	network := &Network{}
 
-	checker.Check(network)
+	v2.CheckStruct(network)
 }
 
-func TestCheckCidrInvalid(t *testing.T) {
+func TestCheckCIDRInvalid(t *testing.T) {
 	type Network struct {
 		Subnet string `checkers:"cidr"`
 	}
@@ -51,13 +54,13 @@ func TestCheckCidrInvalid(t *testing.T) {
 		Subnet: "900.800.200.100//24",
 	}
 
-	_, valid := checker.Check(network)
-	if valid {
-		t.Fail()
+	_, ok := v2.CheckStruct(network)
+	if ok {
+		t.Fatal("expected error")
 	}
 }
 
-func TestCheckCidrValid(t *testing.T) {
+func TestCheckCIDRValid(t *testing.T) {
 	type Network struct {
 		Subnet string `checkers:"cidr"`
 	}
@@ -66,8 +69,8 @@ func TestCheckCidrValid(t *testing.T) {
 		Subnet: "192.0.2.0/24",
 	}
 
-	_, valid := checker.Check(network)
-	if !valid {
-		t.Fail()
+	_, ok := v2.CheckStruct(network)
+	if !ok {
+		t.Fatal("expected valid")
 	}
 }

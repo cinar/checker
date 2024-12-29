@@ -249,7 +249,7 @@ var (
 ```
 
 <a name="Check"></a>
-## func [Check](<https://github.com/cinar/checker/blob/main/v2/checker.go#L32>)
+## func [Check](<https://github.com/cinar/checker/blob/main/checker.go#L32>)
 
 ```go
 func Check[T any](value T, checks ...CheckFunc[T]) (T, error)
@@ -294,7 +294,7 @@ Onur Cinar
 </details>
 
 <a name="CheckStruct"></a>
-## func [CheckStruct](<https://github.com/cinar/checker/blob/main/v2/checker.go#L62>)
+## func [CheckStruct](<https://github.com/cinar/checker/blob/main/checker.go#L62>)
 
 ```go
 func CheckStruct(st any) (map[string]error, bool)
@@ -345,7 +345,7 @@ Onur Cinar
 </details>
 
 <a name="CheckWithConfig"></a>
-## func [CheckWithConfig](<https://github.com/cinar/checker/blob/main/v2/checker.go#L47>)
+## func [CheckWithConfig](<https://github.com/cinar/checker/blob/main/checker.go#L47>)
 
 ```go
 func CheckWithConfig[T any](value T, config string) (T, error)
@@ -354,7 +354,7 @@ func CheckWithConfig[T any](value T, config string) (T, error)
 CheckWithConfig applies the check functions specified by the config string to the given value. It returns the modified value and the first encountered error, if any.
 
 <a name="HTMLEscape"></a>
-## func [HTMLEscape](<https://github.com/cinar/checker/blob/main/v2/html_escape.go#L19>)
+## func [HTMLEscape](<https://github.com/cinar/checker/blob/main/html_escape.go#L19>)
 
 ```go
 func HTMLEscape(value string) (string, error)
@@ -363,7 +363,7 @@ func HTMLEscape(value string) (string, error)
 HTMLEscape applies HTML escaping to special characters.
 
 <a name="HTMLUnescape"></a>
-## func [HTMLUnescape](<https://github.com/cinar/checker/blob/main/v2/html_unescape.go#L17>)
+## func [HTMLUnescape](<https://github.com/cinar/checker/blob/main/html_unescape.go#L17>)
 
 ```go
 func HTMLUnescape(value string) (string, error)
@@ -372,7 +372,7 @@ func HTMLUnescape(value string) (string, error)
 HTMLUnescape applies HTML unescaping to special characters.
 
 <a name="IsASCII"></a>
-## func [IsASCII](<https://github.com/cinar/checker/blob/main/v2/ascii.go#L24>)
+## func [IsASCII](<https://github.com/cinar/checker/blob/main/ascii.go#L24>)
 
 ```go
 func IsASCII(value string) (string, error)
@@ -406,7 +406,7 @@ func main() {
 </details>
 
 <a name="IsAlphanumeric"></a>
-## func [IsAlphanumeric](<https://github.com/cinar/checker/blob/main/v2/alphanumeric.go#L24>)
+## func [IsAlphanumeric](<https://github.com/cinar/checker/blob/main/alphanumeric.go#L24>)
 
 ```go
 func IsAlphanumeric(value string) (string, error)
@@ -440,7 +440,7 @@ func main() {
 </details>
 
 <a name="IsAmexCreditCard"></a>
-## func [IsAmexCreditCard](<https://github.com/cinar/checker/blob/main/v2/credit_card.go#L80>)
+## func [IsAmexCreditCard](<https://github.com/cinar/checker/blob/main/credit_card.go#L80>)
 
 ```go
 func IsAmexCreditCard(number string) (string, error)
@@ -473,7 +473,7 @@ func main() {
 </details>
 
 <a name="IsAnyCreditCard"></a>
-## func [IsAnyCreditCard](<https://github.com/cinar/checker/blob/main/v2/credit_card.go#L75>)
+## func [IsAnyCreditCard](<https://github.com/cinar/checker/blob/main/credit_card.go#L75>)
 
 ```go
 func IsAnyCreditCard(number string) (string, error)
@@ -506,7 +506,7 @@ func main() {
 </details>
 
 <a name="IsCIDR"></a>
-## func [IsCIDR](<https://github.com/cinar/checker/blob/main/v2/cidr.go#L24>)
+## func [IsCIDR](<https://github.com/cinar/checker/blob/main/cidr.go#L24>)
 
 ```go
 func IsCIDR(value string) (string, error)
@@ -540,7 +540,7 @@ func main() {
 </details>
 
 <a name="IsDigits"></a>
-## func [IsDigits](<https://github.com/cinar/checker/blob/main/v2/digits.go#L24>)
+## func [IsDigits](<https://github.com/cinar/checker/blob/main/digits.go#L24>)
 
 ```go
 func IsDigits(value string) (string, error)
@@ -574,7 +574,7 @@ func main() {
 </details>
 
 <a name="IsDinersCreditCard"></a>
-## func [IsDinersCreditCard](<https://github.com/cinar/checker/blob/main/v2/credit_card.go#L85>)
+## func [IsDinersCreditCard](<https://github.com/cinar/checker/blob/main/credit_card.go#L85>)
 
 ```go
 func IsDinersCreditCard(number string) (string, error)
@@ -607,7 +607,7 @@ func main() {
 </details>
 
 <a name="IsDiscoverCreditCard"></a>
-## func [IsDiscoverCreditCard](<https://github.com/cinar/checker/blob/main/v2/credit_card.go#L90>)
+## func [IsDiscoverCreditCard](<https://github.com/cinar/checker/blob/main/credit_card.go#L90>)
 
 ```go
 func IsDiscoverCreditCard(number string) (string, error)
@@ -640,7 +640,7 @@ func main() {
 </details>
 
 <a name="IsEmail"></a>
-## func [IsEmail](<https://github.com/cinar/checker/blob/main/v2/email.go#L24>)
+## func [IsEmail](<https://github.com/cinar/checker/blob/main/email.go#L24>)
 
 ```go
 func IsEmail(value string) (string, error)
@@ -674,7 +674,7 @@ func main() {
 </details>
 
 <a name="IsFQDN"></a>
-## func [IsFQDN](<https://github.com/cinar/checker/blob/main/v2/fqdn.go#L27>)
+## func [IsFQDN](<https://github.com/cinar/checker/blob/main/fqdn.go#L27>)
 
 ```go
 func IsFQDN(value string) (string, error)
@@ -708,7 +708,7 @@ func main() {
 </details>
 
 <a name="IsHex"></a>
-## func [IsHex](<https://github.com/cinar/checker/blob/main/v2/hex.go#L23>)
+## func [IsHex](<https://github.com/cinar/checker/blob/main/hex.go#L23>)
 
 ```go
 func IsHex(value string) (string, error)
@@ -742,7 +742,7 @@ func main() {
 </details>
 
 <a name="IsIP"></a>
-## func [IsIP](<https://github.com/cinar/checker/blob/main/v2/ip.go#L24>)
+## func [IsIP](<https://github.com/cinar/checker/blob/main/ip.go#L24>)
 
 ```go
 func IsIP(value string) (string, error)
@@ -776,7 +776,7 @@ func main() {
 </details>
 
 <a name="IsIPv4"></a>
-## func [IsIPv4](<https://github.com/cinar/checker/blob/main/v2/ipv4.go#L24>)
+## func [IsIPv4](<https://github.com/cinar/checker/blob/main/ipv4.go#L24>)
 
 ```go
 func IsIPv4(value string) (string, error)
@@ -810,7 +810,7 @@ func main() {
 </details>
 
 <a name="IsIPv6"></a>
-## func [IsIPv6](<https://github.com/cinar/checker/blob/main/v2/ipv6.go#L24>)
+## func [IsIPv6](<https://github.com/cinar/checker/blob/main/ipv6.go#L24>)
 
 ```go
 func IsIPv6(value string) (string, error)
@@ -844,7 +844,7 @@ func main() {
 </details>
 
 <a name="IsISBN"></a>
-## func [IsISBN](<https://github.com/cinar/checker/blob/main/v2/isbn.go#L27>)
+## func [IsISBN](<https://github.com/cinar/checker/blob/main/isbn.go#L27>)
 
 ```go
 func IsISBN(value string) (string, error)
@@ -878,7 +878,7 @@ func main() {
 </details>
 
 <a name="IsJcbCreditCard"></a>
-## func [IsJcbCreditCard](<https://github.com/cinar/checker/blob/main/v2/credit_card.go#L95>)
+## func [IsJcbCreditCard](<https://github.com/cinar/checker/blob/main/credit_card.go#L95>)
 
 ```go
 func IsJcbCreditCard(number string) (string, error)
@@ -911,7 +911,7 @@ func main() {
 </details>
 
 <a name="IsLUHN"></a>
-## func [IsLUHN](<https://github.com/cinar/checker/blob/main/v2/luhn.go#L24>)
+## func [IsLUHN](<https://github.com/cinar/checker/blob/main/luhn.go#L24>)
 
 ```go
 func IsLUHN(value string) (string, error)
@@ -945,7 +945,7 @@ func main() {
 </details>
 
 <a name="IsMAC"></a>
-## func [IsMAC](<https://github.com/cinar/checker/blob/main/v2/mac.go#L24>)
+## func [IsMAC](<https://github.com/cinar/checker/blob/main/mac.go#L24>)
 
 ```go
 func IsMAC(value string) (string, error)
@@ -979,7 +979,7 @@ func main() {
 </details>
 
 <a name="IsMasterCardCreditCard"></a>
-## func [IsMasterCardCreditCard](<https://github.com/cinar/checker/blob/main/v2/credit_card.go#L100>)
+## func [IsMasterCardCreditCard](<https://github.com/cinar/checker/blob/main/credit_card.go#L100>)
 
 ```go
 func IsMasterCardCreditCard(number string) (string, error)
@@ -1012,7 +1012,7 @@ func main() {
 </details>
 
 <a name="IsRegexp"></a>
-## func [IsRegexp](<https://github.com/cinar/checker/blob/main/v2/regexp.go#L20>)
+## func [IsRegexp](<https://github.com/cinar/checker/blob/main/regexp.go#L20>)
 
 ```go
 func IsRegexp(expression, value string) (string, error)
@@ -1046,7 +1046,7 @@ func main() {
 </details>
 
 <a name="IsURL"></a>
-## func [IsURL](<https://github.com/cinar/checker/blob/main/v2/url.go#L24>)
+## func [IsURL](<https://github.com/cinar/checker/blob/main/url.go#L24>)
 
 ```go
 func IsURL(value string) (string, error)
@@ -1080,7 +1080,7 @@ func main() {
 </details>
 
 <a name="IsUnionPayCreditCard"></a>
-## func [IsUnionPayCreditCard](<https://github.com/cinar/checker/blob/main/v2/credit_card.go#L105>)
+## func [IsUnionPayCreditCard](<https://github.com/cinar/checker/blob/main/credit_card.go#L105>)
 
 ```go
 func IsUnionPayCreditCard(number string) (string, error)
@@ -1113,7 +1113,7 @@ func main() {
 </details>
 
 <a name="IsVisaCreditCard"></a>
-## func [IsVisaCreditCard](<https://github.com/cinar/checker/blob/main/v2/credit_card.go#L110>)
+## func [IsVisaCreditCard](<https://github.com/cinar/checker/blob/main/credit_card.go#L110>)
 
 ```go
 func IsVisaCreditCard(number string) (string, error)
@@ -1146,7 +1146,7 @@ func main() {
 </details>
 
 <a name="Lower"></a>
-## func [Lower](<https://github.com/cinar/checker/blob/main/v2/lower.go#L19>)
+## func [Lower](<https://github.com/cinar/checker/blob/main/lower.go#L19>)
 
 ```go
 func Lower(value string) (string, error)
@@ -1155,7 +1155,7 @@ func Lower(value string) (string, error)
 Lower maps all Unicode letters in the given value to their lower case.
 
 <a name="ReflectCheckWithConfig"></a>
-## func [ReflectCheckWithConfig](<https://github.com/cinar/checker/blob/main/v2/checker.go#L55>)
+## func [ReflectCheckWithConfig](<https://github.com/cinar/checker/blob/main/checker.go#L55>)
 
 ```go
 func ReflectCheckWithConfig(value reflect.Value, config string) (reflect.Value, error)
@@ -1164,7 +1164,7 @@ func ReflectCheckWithConfig(value reflect.Value, config string) (reflect.Value, 
 ReflectCheckWithConfig applies the check functions specified by the config string to the given reflect.Value. It returns the modified reflect.Value and the first encountered error, if any.
 
 <a name="RegisterLocale"></a>
-## func [RegisterLocale](<https://github.com/cinar/checker/blob/main/v2/check_error.go#L80>)
+## func [RegisterLocale](<https://github.com/cinar/checker/blob/main/check_error.go#L80>)
 
 ```go
 func RegisterLocale(locale string, messages map[string]string)
@@ -1173,7 +1173,7 @@ func RegisterLocale(locale string, messages map[string]string)
 RegisterLocale registers the localized error messages for the given locale.
 
 <a name="RegisterMaker"></a>
-## func [RegisterMaker](<https://github.com/cinar/checker/blob/main/v2/maker.go#L51>)
+## func [RegisterMaker](<https://github.com/cinar/checker/blob/main/maker.go#L51>)
 
 ```go
 func RegisterMaker(name string, maker MakeCheckFunc)
@@ -1232,7 +1232,7 @@ func main() {
 </details>
 
 <a name="Required"></a>
-## func [Required](<https://github.com/cinar/checker/blob/main/v2/required.go#L22>)
+## func [Required](<https://github.com/cinar/checker/blob/main/required.go#L22>)
 
 ```go
 func Required[T any](value T) (T, error)
@@ -1241,7 +1241,7 @@ func Required[T any](value T) (T, error)
 Required checks if the given value of type T is its zero value. It returns an error if the value is zero.
 
 <a name="Title"></a>
-## func [Title](<https://github.com/cinar/checker/blob/main/v2/title.go#L20>)
+## func [Title](<https://github.com/cinar/checker/blob/main/title.go#L20>)
 
 ```go
 func Title(value string) (string, error)
@@ -1250,7 +1250,7 @@ func Title(value string) (string, error)
 Title returns the value of the string with the first letter of each word in upper case.
 
 <a name="TrimLeft"></a>
-## func [TrimLeft](<https://github.com/cinar/checker/blob/main/v2/trim_left.go#L19>)
+## func [TrimLeft](<https://github.com/cinar/checker/blob/main/trim_left.go#L19>)
 
 ```go
 func TrimLeft(value string) (string, error)
@@ -1259,7 +1259,7 @@ func TrimLeft(value string) (string, error)
 TrimLeft returns the value of the string with whitespace removed from the beginning.
 
 <a name="TrimRight"></a>
-## func [TrimRight](<https://github.com/cinar/checker/blob/main/v2/trim_right.go#L19>)
+## func [TrimRight](<https://github.com/cinar/checker/blob/main/trim_right.go#L19>)
 
 ```go
 func TrimRight(value string) (string, error)
@@ -1268,7 +1268,7 @@ func TrimRight(value string) (string, error)
 TrimRight returns the value of the string with whitespace removed from the end.
 
 <a name="TrimSpace"></a>
-## func [TrimSpace](<https://github.com/cinar/checker/blob/main/v2/trim_space.go#L19>)
+## func [TrimSpace](<https://github.com/cinar/checker/blob/main/trim_space.go#L19>)
 
 ```go
 func TrimSpace(value string) (string, error)
@@ -1277,7 +1277,7 @@ func TrimSpace(value string) (string, error)
 TrimSpace returns the value of the string with whitespace removed from both ends.
 
 <a name="URLEscape"></a>
-## func [URLEscape](<https://github.com/cinar/checker/blob/main/v2/url_escape.go#L17>)
+## func [URLEscape](<https://github.com/cinar/checker/blob/main/url_escape.go#L17>)
 
 ```go
 func URLEscape(value string) (string, error)
@@ -1286,7 +1286,7 @@ func URLEscape(value string) (string, error)
 URLEscape applies URL escaping to special characters.
 
 <a name="URLUnescape"></a>
-## func [URLUnescape](<https://github.com/cinar/checker/blob/main/v2/url_unescape.go#L17>)
+## func [URLUnescape](<https://github.com/cinar/checker/blob/main/url_unescape.go#L17>)
 
 ```go
 func URLUnescape(value string) (string, error)
@@ -1295,7 +1295,7 @@ func URLUnescape(value string) (string, error)
 URLUnescape applies URL unescaping to special characters.
 
 <a name="Upper"></a>
-## func [Upper](<https://github.com/cinar/checker/blob/main/v2/upper.go#L19>)
+## func [Upper](<https://github.com/cinar/checker/blob/main/upper.go#L19>)
 
 ```go
 func Upper(value string) (string, error)
@@ -1304,7 +1304,7 @@ func Upper(value string) (string, error)
 Upper maps all Unicode letters in the given value to their upper case.
 
 <a name="CheckError"></a>
-## type [CheckError](<https://github.com/cinar/checker/blob/main/v2/check_error.go#L16-L22>)
+## type [CheckError](<https://github.com/cinar/checker/blob/main/check_error.go#L16-L22>)
 
 CheckError defines the check error.
 
@@ -1319,7 +1319,7 @@ type CheckError struct {
 ```
 
 <a name="NewCheckError"></a>
-### func [NewCheckError](<https://github.com/cinar/checker/blob/main/v2/check_error.go#L35>)
+### func [NewCheckError](<https://github.com/cinar/checker/blob/main/check_error.go#L35>)
 
 ```go
 func NewCheckError(code string) *CheckError
@@ -1328,7 +1328,7 @@ func NewCheckError(code string) *CheckError
 NewCheckError creates a new check error with the given code.
 
 <a name="NewCheckErrorWithData"></a>
-### func [NewCheckErrorWithData](<https://github.com/cinar/checker/blob/main/v2/check_error.go#L43>)
+### func [NewCheckErrorWithData](<https://github.com/cinar/checker/blob/main/check_error.go#L43>)
 
 ```go
 func NewCheckErrorWithData(code string, data map[string]interface{}) *CheckError
@@ -1337,7 +1337,7 @@ func NewCheckErrorWithData(code string, data map[string]interface{}) *CheckError
 NewCheckErrorWithData creates a new check error with the given code and data.
 
 <a name="CheckError.Error"></a>
-### func \(\*CheckError\) [Error](<https://github.com/cinar/checker/blob/main/v2/check_error.go#L51>)
+### func \(\*CheckError\) [Error](<https://github.com/cinar/checker/blob/main/check_error.go#L51>)
 
 ```go
 func (c *CheckError) Error() string
@@ -1346,7 +1346,7 @@ func (c *CheckError) Error() string
 Error returns the error message for the check.
 
 <a name="CheckError.ErrorWithLocale"></a>
-### func \(\*CheckError\) [ErrorWithLocale](<https://github.com/cinar/checker/blob/main/v2/check_error.go#L65>)
+### func \(\*CheckError\) [ErrorWithLocale](<https://github.com/cinar/checker/blob/main/check_error.go#L65>)
 
 ```go
 func (c *CheckError) ErrorWithLocale(locale string) string
@@ -1355,7 +1355,7 @@ func (c *CheckError) ErrorWithLocale(locale string) string
 ErrorWithLocale returns the localized error message for the check with the given locale.
 
 <a name="CheckError.Is"></a>
-### func \(\*CheckError\) [Is](<https://github.com/cinar/checker/blob/main/v2/check_error.go#L56>)
+### func \(\*CheckError\) [Is](<https://github.com/cinar/checker/blob/main/check_error.go#L56>)
 
 ```go
 func (c *CheckError) Is(target error) bool
@@ -1364,7 +1364,7 @@ func (c *CheckError) Is(target error) bool
 Is reports whether the check error is the same as the target error.
 
 <a name="CheckFunc"></a>
-## type [CheckFunc](<https://github.com/cinar/checker/blob/main/v2/check_func.go#L11>)
+## type [CheckFunc](<https://github.com/cinar/checker/blob/main/check_func.go#L11>)
 
 CheckFunc is a function that takes a value of type T and performs a check on it. It returns the resulting value and any error that occurred during the check.
 
@@ -1373,7 +1373,7 @@ type CheckFunc[T any] func(value T) (T, error)
 ```
 
 <a name="MakeRegexpChecker"></a>
-### func [MakeRegexpChecker](<https://github.com/cinar/checker/blob/main/v2/regexp.go#L29>)
+### func [MakeRegexpChecker](<https://github.com/cinar/checker/blob/main/regexp.go#L29>)
 
 ```go
 func MakeRegexpChecker(expression string, invalidError error) CheckFunc[reflect.Value]
@@ -1382,7 +1382,7 @@ func MakeRegexpChecker(expression string, invalidError error) CheckFunc[reflect.
 MakeRegexpChecker makes a regexp checker for the given regexp expression with the given invalid result.
 
 <a name="MaxLen"></a>
-### func [MaxLen](<https://github.com/cinar/checker/blob/main/v2/max_len.go#L25>)
+### func [MaxLen](<https://github.com/cinar/checker/blob/main/max_len.go#L25>)
 
 ```go
 func MaxLen[T any](n int) CheckFunc[T]
@@ -1391,7 +1391,7 @@ func MaxLen[T any](n int) CheckFunc[T]
 MaxLen checks if the length of the given value \(string, slice, or map\) is at most n. Returns an error if the length is greater than n.
 
 <a name="MinLen"></a>
-### func [MinLen](<https://github.com/cinar/checker/blob/main/v2/min_len.go#L25>)
+### func [MinLen](<https://github.com/cinar/checker/blob/main/min_len.go#L25>)
 
 ```go
 func MinLen[T any](n int) CheckFunc[T]
@@ -1400,7 +1400,7 @@ func MinLen[T any](n int) CheckFunc[T]
 MinLen checks if the length of the given value \(string, slice, or map\) is at least n. Returns an error if the length is less than n.
 
 <a name="MakeCheckFunc"></a>
-## type [MakeCheckFunc](<https://github.com/cinar/checker/blob/main/v2/maker.go#L15>)
+## type [MakeCheckFunc](<https://github.com/cinar/checker/blob/main/maker.go#L15>)
 
 MakeCheckFunc is a function that returns a check function using the given params.
 

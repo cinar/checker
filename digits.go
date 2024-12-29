@@ -3,41 +3,40 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker
+package v2
 
 import (
-	"errors"
 	"reflect"
 	"unicode"
 )
 
-// tagDigits is the tag of the checker.
-const tagDigits = "digits"
+const (
+	// nameDigits is the name of the digits check.
+	nameDigits = "digits"
+)
 
-// ErrNotDigits indicates that the given string contains non-digit characters.
-var ErrNotDigits = errors.New("please enter a valid number")
+var (
+	// ErrNotDigits indicates that the given value is not a valid digits string.
+	ErrNotDigits = NewCheckError("NOT_DIGITS")
+)
 
-// IsDigits checks if the given string consists of only digit characters.
-func IsDigits(value string) error {
-	for _, c := range value {
-		if !unicode.IsDigit(c) {
-			return ErrNotDigits
+// IsDigits checks if the value contains only digit characters.
+func IsDigits(value string) (string, error) {
+	for _, r := range value {
+		if !unicode.IsDigit(r) {
+			return value, ErrNotDigits
 		}
 	}
+	return value, nil
+}
 
-	return nil
+// checkDigits checks if the value contains only digit characters.
+func checkDigits(value reflect.Value) (reflect.Value, error) {
+	_, err := IsDigits(value.Interface().(string))
+	return value, err
 }
 
 // makeDigits makes a checker function for the digits checker.
-func makeDigits(_ string) CheckFunc {
+func makeDigits(_ string) CheckFunc[reflect.Value] {
 	return checkDigits
-}
-
-// checkDigits checks if the given string consists of only digit characters.
-func checkDigits(value, _ reflect.Value) error {
-	if value.Kind() != reflect.String {
-		panic("string expected")
-	}
-
-	return IsDigits(value.String())
 }

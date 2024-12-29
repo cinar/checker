@@ -3,71 +3,74 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker_test
+package v2_test
 
 import (
+	"fmt"
 	"testing"
 
-	"github.com/cinar/checker"
+	v2 "github.com/cinar/checker/v2"
 )
 
 func ExampleIsDigits() {
-	err := checker.IsDigits("1234")
+	_, err := v2.IsDigits("123456")
 	if err != nil {
-		// Send the errors back to the user
+		fmt.Println(err)
 	}
 }
 
 func TestIsDigitsInvalid(t *testing.T) {
-	if checker.IsDigits("checker") == nil {
-		t.Fail()
+	_, err := v2.IsDigits("123a456")
+	if err == nil {
+		t.Fatal("expected error")
 	}
 }
 
 func TestIsDigitsValid(t *testing.T) {
-	if checker.IsDigits("1234") != nil {
-		t.Fail()
+	_, err := v2.IsDigits("123456")
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 
 func TestCheckDigitsNonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
+	defer FailIfNoPanic(t, "expected panic")
 
-	type User struct {
-		ID int `checkers:"digits"`
+	type Code struct {
+		Value int `checkers:"digits"`
 	}
 
-	user := &User{}
+	code := &Code{}
 
-	checker.Check(user)
+	v2.CheckStruct(code)
 }
 
 func TestCheckDigitsInvalid(t *testing.T) {
-	type User struct {
-		ID string `checkers:"digits"`
+	type Code struct {
+		Value string `checkers:"digits"`
 	}
 
-	user := &User{
-		ID: "checker",
+	code := &Code{
+		Value: "123a456",
 	}
 
-	_, valid := checker.Check(user)
-	if valid {
-		t.Fail()
+	_, ok := v2.CheckStruct(code)
+	if ok {
+		t.Fatal("expected error")
 	}
 }
 
 func TestCheckDigitsValid(t *testing.T) {
-	type User struct {
-		ID string `checkers:"digits"`
+	type Code struct {
+		Value string `checkers:"digits"`
 	}
 
-	user := &User{
-		ID: "1234",
+	code := &Code{
+		Value: "123456",
 	}
 
-	_, valid := checker.Check(user)
-	if !valid {
-		t.Fail()
+	_, ok := v2.CheckStruct(code)
+	if !ok {
+		t.Fatal("expected valid")
 	}
 }

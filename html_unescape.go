@@ -3,29 +3,28 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker
+package v2
 
 import (
 	"html"
 	"reflect"
 )
 
-// tagHTMLUnescape is the tag of the normalizer.
-const tagHTMLUnescape = "html-unescape"
+// nameHTMLUnescape is the name of the HTML unescape normalizer.
+const nameHTMLUnescape = "html-unescape"
 
-// makeHTMLUnescape makes a normalizer function for the HTML unscape normalizer.
-func makeHTMLUnescape(_ string) CheckFunc {
-	return normalizeHTMLUnescape
+// HTMLUnescape applies HTML unescaping to special characters.
+func HTMLUnescape(value string) (string, error) {
+	return html.UnescapeString(value), nil
 }
 
-// normalizeHTMLUnescape applies HTML unescaping to special characters.
-// Uses html.UnescapeString for the actual unescape operation.
-func normalizeHTMLUnescape(value, _ reflect.Value) error {
-	if value.Kind() != reflect.String {
-		panic("string expected")
-	}
+// reflectHTMLUnescape applies HTML unescaping to special characters.
+func reflectHTMLUnescape(value reflect.Value) (reflect.Value, error) {
+	newValue, err := HTMLUnescape(value.Interface().(string))
+	return reflect.ValueOf(newValue), err
+}
 
-	value.SetString(html.UnescapeString(value.String()))
-
-	return nil
+// makeHTMLUnescape returns the HTML unescape normalizer function.
+func makeHTMLUnescape(_ string) CheckFunc[reflect.Value] {
+	return reflectHTMLUnescape
 }

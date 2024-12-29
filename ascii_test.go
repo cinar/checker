@@ -3,43 +3,46 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker_test
+package v2_test
 
 import (
+	"fmt"
 	"testing"
 
-	"github.com/cinar/checker"
+	v2 "github.com/cinar/checker/v2"
 )
 
 func ExampleIsASCII() {
-	err := checker.IsASCII("Checker")
+	_, err := v2.IsASCII("Checker")
 	if err != nil {
-		// Send the errors back to the user
+		fmt.Println(err)
 	}
 }
 
 func TestIsASCIIInvalid(t *testing.T) {
-	if checker.IsASCII("𝄞 Music!") == nil {
-		t.Fail()
+	_, err := v2.IsASCII("𝄞 Music!")
+	if err == nil {
+		t.Fatal("expected error")
 	}
 }
 
 func TestIsASCIIValid(t *testing.T) {
-	if checker.IsASCII("Checker") != nil {
-		t.Fail()
+	_, err := v2.IsASCII("Checker")
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 
 func TestCheckASCIINonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
+	defer FailIfNoPanic(t, "expected panic")
 
 	type User struct {
-		Age int `checkers:"ascii"`
+		Username int `checkers:"ascii"`
 	}
 
 	user := &User{}
 
-	checker.Check(user)
+	v2.CheckStruct(user)
 }
 
 func TestCheckASCIIInvalid(t *testing.T) {
@@ -51,9 +54,9 @@ func TestCheckASCIIInvalid(t *testing.T) {
 		Username: "𝄞 Music!",
 	}
 
-	_, valid := checker.Check(user)
-	if valid {
-		t.Fail()
+	_, ok := v2.CheckStruct(user)
+	if ok {
+		t.Fatal("expected error")
 	}
 }
 
@@ -66,8 +69,8 @@ func TestCheckASCIIValid(t *testing.T) {
 		Username: "checker",
 	}
 
-	_, valid := checker.Check(user)
-	if !valid {
-		t.Fail()
+	_, ok := v2.CheckStruct(user)
+	if !ok {
+		t.Fatal("expected valid")
 	}
 }

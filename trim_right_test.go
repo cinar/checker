@@ -3,53 +3,45 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker_test
+package v2_test
 
 import (
 	"testing"
 
-	"github.com/cinar/checker"
+	v2 "github.com/cinar/checker/v2"
 )
 
-func TestNormalizeTrimRightNonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
+func TestTrimRight(t *testing.T) {
+	input := "    test    "
+	expected := "    test"
 
-	type User struct {
-		Username int `checkers:"trim-right"`
+	actual, err := v2.TrimRight(input)
+	if err != nil {
+		t.Fatal(err)
 	}
 
-	user := &User{}
-
-	checker.Check(user)
-}
-
-func TestNormalizeTrimRightErrValid(t *testing.T) {
-	type User struct {
-		Username string `checkers:"trim-right"`
-	}
-
-	user := &User{
-		Username: "      normalizer      ",
-	}
-
-	_, valid := checker.Check(user)
-	if !valid {
-		t.Fail()
+	if actual != expected {
+		t.Fatalf("actual %s expected %s", actual, expected)
 	}
 }
 
-func TestNormalizeTrimRight(t *testing.T) {
-	type User struct {
-		Username string `checkers:"trim-right"`
+func TestReflectTrimRight(t *testing.T) {
+	type Person struct {
+		Name string `checkers:"trim-right"`
 	}
 
-	user := &User{
-		Username: "      normalizer      ",
+	person := &Person{
+		Name: "    test    ",
 	}
 
-	checker.Check(user)
+	expected := "    test"
 
-	if user.Username != "      normalizer" {
-		t.Fail()
+	errs, ok := v2.CheckStruct(person)
+	if !ok {
+		t.Fatalf("got unexpected errors %v", errs)
+	}
+
+	if person.Name != expected {
+		t.Fatalf("actual %s expected %s", person.Name, expected)
 	}
 }

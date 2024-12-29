@@ -3,27 +3,29 @@
 // license that can be found in the LICENSE file.
 // https://github.com/cinar/checker
 
-package checker_test
+package v2_test
 
 import (
 	"testing"
 
-	"github.com/cinar/checker"
+	v2 "github.com/cinar/checker/v2"
 )
 
-func TestNormalizeURLUnescapeNonString(t *testing.T) {
-	defer checker.FailIfNoPanic(t)
+func TestURLUnescape(t *testing.T) {
+	input := "param1%2Fparam2+%3D+1+%2B+2+%26+3+%2B+4"
+	expected := "param1/param2 = 1 + 2 & 3 + 4"
 
-	type Request struct {
-		Query int `checkers:"url-unescape"`
+	actual, err := v2.URLUnescape(input)
+	if err != nil {
+		t.Fatal(err)
 	}
 
-	request := &Request{}
-
-	checker.Check(request)
+	if actual != expected {
+		t.Fatalf("actual %s expected %s", actual, expected)
+	}
 }
 
-func TestNormalizeURLUnescape(t *testing.T) {
+func TestReflectURLUnescape(t *testing.T) {
 	type Request struct {
 		Query string `checkers:"url-unescape"`
 	}
@@ -32,12 +34,14 @@ func TestNormalizeURLUnescape(t *testing.T) {
 		Query: "param1%2Fparam2+%3D+1+%2B+2+%26+3+%2B+4",
 	}
 
-	_, valid := checker.Check(request)
-	if !valid {
-		t.Fail()
+	expected := "param1/param2 = 1 + 2 & 3 + 4"
+
+	errs, ok := v2.CheckStruct(request)
+	if !ok {
+		t.Fatalf("got unexpected errors %v", errs)
 	}
 
-	if request.Query != "param1/param2 = 1 + 2 & 3 + 4" {
-		t.Fail()
+	if request.Query != expected {
+		t.Fatalf("actual %s expected %s", request.Query, expected)
 	}
 }
