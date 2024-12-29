@@ -16,7 +16,7 @@ const (
 
 var (
 	// ErrNotHex indicates that the given string contains hex characters.
-	ErrNotHex = NewCheckError("HEX")
+	ErrNotHex = NewCheckError("NOT_HEX")
 )
 
 // IsHex checks if the given string consists of only hex characters.

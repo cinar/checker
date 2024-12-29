@@ -17,7 +17,7 @@ const (
 
 var (
 	// ErrNotIPv4 indicates that the given value is not a valid IPv4 address.
-	ErrNotIPv4 = NewCheckError("IPv4")
+	ErrNotIPv4 = NewCheckError("NOT_IPV4")
 )
 
 // IsIPv4 checks if the value is a valid IPv4 address.

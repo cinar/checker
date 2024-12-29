@@ -17,7 +17,7 @@ const (
 
 var (
 	// ErrNotISBN indicates that the given value is not a valid ISBN.
-	ErrNotISBN = NewCheckError("ISBN")
+	ErrNotISBN = NewCheckError("NOT_ISBN")
 
 	// isbnRegex is the regular expression for validating ISBN-10 and ISBN-13.
 	isbnRegex = regexp.MustCompile(`^(97(8|9))?\d{9}(\d|X)$`)

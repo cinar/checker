@@ -6,8 +6,6 @@
 package v2_test
 
 import (
-	"errors"
-	"log"
 	"testing"
 
 	v2 "github.com/cinar/checker/v2"
@@ -38,11 +36,11 @@ func TestMaxLenError(t *testing.T) {
 		t.Fatalf("result (%s) is not the original value (%s)", result, value)
 	}
 
-	if !errors.Is(err, v2.ErrMaxLen) {
-		t.Fatalf("got unexpected error %v", err)
-	}
+	message := "Value cannot be greater than 5."
 
-	log.Println(err)
+	if err.Error() != message {
+		t.Fatalf("expected %s actual %s", message, err.Error())
+	}
 }
 
 func TestReflectMaxLenError(t *testing.T) {

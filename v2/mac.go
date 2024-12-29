@@ -17,7 +17,7 @@ const (
 
 var (
 	// ErrNotMAC indicates that the given value is not a valid MAC address.
-	ErrNotMAC = NewCheckError("MAC")
+	ErrNotMAC = NewCheckError("NOT_MAC")
 )
 
 // IsMAC checks if the value is a valid MAC address.

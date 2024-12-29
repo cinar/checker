@@ -17,7 +17,7 @@ const (
 
 var (
 	// ErrNotAlphanumeric indicates that the given string contains non-alphanumeric characters.
-	ErrNotAlphanumeric = NewCheckError("ALPHANUMERIC")
+	ErrNotAlphanumeric = NewCheckError("NOT_ALPHANUMERIC")
 )
 
 // IsAlphanumeric checks if the given string consists of only alphanumeric characters.

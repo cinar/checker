@@ -17,7 +17,7 @@ const (
 
 var (
 	// ErrNotLUHN indicates that the given value is not a valid LUHN number.
-	ErrNotLUHN = NewCheckError("LUHN")
+	ErrNotLUHN = NewCheckError("NOT_LUHN")
 )
 
 // IsLUHN checks if the value is a valid LUHN number.

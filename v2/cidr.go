@@ -17,7 +17,7 @@ const (
 
 var (
 	// ErrNotCIDR indicates that the given value is not a valid CIDR.
-	ErrNotCIDR = NewCheckError("CIDR")
+	ErrNotCIDR = NewCheckError("NOT_CIDR")
 )
 
 // IsCIDR checks if the value is a valid CIDR notation IP address and prefix length.
