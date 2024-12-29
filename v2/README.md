@@ -157,6 +157,21 @@ if !valid {
 
 In this example, the `is-fruit` checker is used to validate that the `Name` field of the `Item` struct is either "apple" or "banana".
 
+# Slice and Item Level Checkers
+
+When adding checker struct tags to a slice, you can use the `@` prefix to indicate that the checker should be applied to the slice itself. Checkers without the `@` prefix will be applied to the individual items within the slice. Here is an example:
+
+```golang
+type Person struct {
+	Name   string   `checkers:"required"`
+	Emails []string `checkers:"@max-len:1 max-len:4"`
+}
+```
+
+In this example:
+- `@max-len:1` ensures that the `Emails` slice itself has at most one item.
+- `max-len:4` ensures that each email string within the `Emails` slice has a maximum length of 4 characters.
+
 # Localized Error Messages
 
 When validation fails, Checker returns an error. By default, the [Error()](DOC.md#CheckError.Error) function provides a human-readable error message in `en-US` locale.
