@@ -58,6 +58,18 @@ if err != nil {
 }
 ```
 
+The checkers and normalizers can also be provided through a config string. Here is an example:
+
+```golang
+name := " Onur Cinar "
+
+name, err := checker.CheckWithConfig(name, "trim requied")
+if err != nil {
+	// Handle validation error
+}
+
+```
+
 ### Validating Individual User Input
 
 For simpler validation, you can call individual checker functions. Here is an example:
