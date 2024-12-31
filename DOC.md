@@ -29,6 +29,7 @@ Package v2 Checker is a Go library for validating user input through checker rul
 - [func IsDiscoverCreditCard\(number string\) \(string, error\)](<#IsDiscoverCreditCard>)
 - [func IsEmail\(value string\) \(string, error\)](<#IsEmail>)
 - [func IsFQDN\(value string\) \(string, error\)](<#IsFQDN>)
+- [func IsGte\[T cmp.Ordered\]\(value, n T\) \(T, error\)](<#IsGte>)
 - [func IsHex\(value string\) \(string, error\)](<#IsHex>)
 - [func IsIP\(value string\) \(string, error\)](<#IsIP>)
 - [func IsIPv4\(value string\) \(string, error\)](<#IsIPv4>)
@@ -36,6 +37,7 @@ Package v2 Checker is a Go library for validating user input through checker rul
 - [func IsISBN\(value string\) \(string, error\)](<#IsISBN>)
 - [func IsJcbCreditCard\(number string\) \(string, error\)](<#IsJcbCreditCard>)
 - [func IsLUHN\(value string\) \(string, error\)](<#IsLUHN>)
+- [func IsLte\[T cmp.Ordered\]\(value, n T\) \(T, error\)](<#IsLte>)
 - [func IsMAC\(value string\) \(string, error\)](<#IsMAC>)
 - [func IsMasterCardCreditCard\(number string\) \(string, error\)](<#IsMasterCardCreditCard>)
 - [func IsRegexp\(expression, value string\) \(string, error\)](<#IsRegexp>)
@@ -79,6 +81,24 @@ const (
 ```
 
 ## Variables
+
+<a name="ErrGte"></a>
+
+```go
+var (
+    // ErrGte indicates that the value is not greater than or equal to the given value.
+    ErrGte = NewCheckError("NOT_GTE")
+)
+```
+
+<a name="ErrLte"></a>
+
+```go
+var (
+    // ErrLte indicates that the value is not less than or equal to the given value.
+    ErrLte = NewCheckError("NOT_LTE")
+)
+```
 
 <a name="ErrMaxLen"></a>
 
@@ -707,6 +727,15 @@ func main() {
 </p>
 </details>
 
+<a name="IsGte"></a>
+## func [IsGte](<https://github.com/cinar/checker/blob/main/gte.go#L25>)
+
+```go
+func IsGte[T cmp.Ordered](value, n T) (T, error)
+```
+
+IsGte checks if the value is greater than or equal to the given value.
+
 <a name="IsHex"></a>
 ## func [IsHex](<https://github.com/cinar/checker/blob/main/hex.go#L23>)
 
@@ -944,6 +973,15 @@ func main() {
 </p>
 </details>
 
+<a name="IsLte"></a>
+## func [IsLte](<https://github.com/cinar/checker/blob/main/lte.go#L25>)
+
+```go
+func IsLte[T cmp.Ordered](value, n T) (T, error)
+```
+
+IsLte checks if the value is less than or equal to the given value.
+
 <a name="IsMAC"></a>
 ## func [IsMAC](<https://github.com/cinar/checker/blob/main/mac.go#L24>)
 
@@ -1173,7 +1211,7 @@ func RegisterLocale(locale string, messages map[string]string)
 RegisterLocale registers the localized error messages for the given locale.
 
 <a name="RegisterMaker"></a>
-## func [RegisterMaker](<https://github.com/cinar/checker/blob/main/maker.go#L51>)
+## func [RegisterMaker](<https://github.com/cinar/checker/blob/main/maker.go#L53>)
 
 ```go
 func RegisterMaker(name string, maker MakeCheckFunc)

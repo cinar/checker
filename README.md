@@ -104,11 +104,13 @@ type Person struct {
 - [`digits`](DOC.md#IsDigits): Ensures the string contains only digits.
 - [`email`](DOC.md#IsEmail): Ensures the string is a valid email address.
 - [`fqdn`](DOC.md#IsFQDN): Ensures the string is a valid fully qualified domain name.
-- [`hex`](DOC.md#IsHex): Ensures the string contains only hex digits.
+- [`gte`](DOC.md#IsGte): Ensures the value is greater than or equal to the specified number.
+- [`hex`](DOC.md#IsHex): Ensures the string contains only hexadecimal digits.
 - [`ip`](DOC.md#IsIP): Ensures the string is a valid IP address.
 - [`ipv4`](DOC.md#IsIPv4): Ensures the string is a valid IPv4 address.
 - [`ipv6`](DOC.md#IsIPv6): Ensures the string is a valid IPv6 address.
 - [`isbn`](DOC.md#IsISBN): Ensures the string is a valid ISBN.
+- [`lte`](DOC.md#ISLte): Ensures the value is less than or equal to the specified number.
 - [`luhn`](DOC.md#IsLUHN): Ensures the string is a valid LUHN number.
 - [`mac`](DOC.md#IsMAC): Ensures the string is a valid MAC address.
 - [`max-len`](DOC.md#func-maxlen): Ensures the length of the given value (string, slice, or map) is at most n.
