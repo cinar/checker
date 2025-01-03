@@ -25,6 +25,7 @@ var EnUSMessages = map[string]string{
 	"NOT_MAC":          "Not a valid MAC address.",
 	"NOT_MAX_LEN":      "Value cannot be greater than {{ .max }}.",
 	"NOT_MIN_LEN":      "Value cannot be less than {{ .min }}.",
+	"NOT_TIME":         "Not a valid time.",
 	"REQUIRED":         "Required value is missing.",
 	"NOT_URL":          "Not a valid URL.",
 }

@@ -117,6 +117,7 @@ type Person struct {
 - [`min-len`](DOC.md#func-minlen): Ensures the length of the given value (string, slice, or map) is at least n.
 - [`required`](DOC.md#func-required) Ensures the value is provided.
 - [`regexp`](DOC.md#func-makeregexpchecker) Ensured the string matches the pattern.
+- [`time`](DOC.md#func-istime) Ensured the string matches the provided time layout.
 - [`url`](DOC.md#IsURL): Ensures the string is a valid URL.
 
 # Normalizers Provided
