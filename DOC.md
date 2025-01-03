@@ -1102,6 +1102,58 @@ func IsTime(params, value string) (string, error)
 
 IsTime checks if the given value is a valid time based on the given layout.
 
+<details><summary>Example</summary>
+<p>
+
+
+
+```go
+package main
+
+import (
+	v2 "github.com/cinar/checker/v2"
+)
+
+func main() {
+	value := "2024-12-31"
+
+	_, err := v2.IsTime("DateOnly", value)
+	if err != nil {
+		panic(err)
+	}
+}
+```
+
+</p>
+</details>
+
+<details><summary>Example (Custom)</summary>
+<p>
+
+
+
+```go
+package main
+
+import (
+	v2 "github.com/cinar/checker/v2"
+)
+
+func main() {
+	rfc3339Layout := "2006-01-02T15:04:05Z07:00"
+
+	value := "2024-12-31T10:20:00Z07:00"
+
+	_, err := v2.IsTime(rfc3339Layout, value)
+	if err != nil {
+		panic(err)
+	}
+}
+```
+
+</p>
+</details>
+
 <a name="IsURL"></a>
 ## func [IsURL](<https://github.com/cinar/checker/blob/main/url.go#L24>)
 

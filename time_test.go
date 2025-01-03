@@ -12,6 +12,26 @@ import (
 	v2 "github.com/cinar/checker/v2"
 )
 
+func ExampleIsTime() {
+	value := "2024-12-31"
+
+	_, err := v2.IsTime("DateOnly", value)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func ExampleIsTime_custom() {
+	rfc3339Layout := "2006-01-02T15:04:05Z07:00"
+
+	value := "2024-12-31T10:20:00Z07:00"
+
+	_, err := v2.IsTime(rfc3339Layout, value)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func TestIsTimeSuccess(t *testing.T) {
 	value := "2024-12-31"
 
