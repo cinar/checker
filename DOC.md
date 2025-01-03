@@ -41,6 +41,7 @@ Package v2 Checker is a Go library for validating user input through checker rul
 - [func IsMAC\(value string\) \(string, error\)](<#IsMAC>)
 - [func IsMasterCardCreditCard\(number string\) \(string, error\)](<#IsMasterCardCreditCard>)
 - [func IsRegexp\(expression, value string\) \(string, error\)](<#IsRegexp>)
+- [func IsTime\(params, value string\) \(string, error\)](<#IsTime>)
 - [func IsURL\(value string\) \(string, error\)](<#IsURL>)
 - [func IsUnionPayCreditCard\(number string\) \(string, error\)](<#IsUnionPayCreditCard>)
 - [func IsVisaCreditCard\(number string\) \(string, error\)](<#IsVisaCreditCard>)
@@ -265,6 +266,15 @@ var (
 var (
     // ErrRequired indicates that a required value was missing.
     ErrRequired = NewCheckError("REQUIRED")
+)
+```
+
+<a name="ErrTime"></a>
+
+```go
+var (
+    // ErrTime indicates that the value is not a valid based on the given time format.
+    ErrTime = NewCheckError("NOT_TIME")
 )
 ```
 
@@ -1083,6 +1093,15 @@ func main() {
 </p>
 </details>
 
+<a name="IsTime"></a>
+## func [IsTime](<https://github.com/cinar/checker/blob/main/time.go#L47>)
+
+```go
+func IsTime(params, value string) (string, error)
+```
+
+IsTime checks if the given value is a valid time based on the given layout.
+
 <a name="IsURL"></a>
 ## func [IsURL](<https://github.com/cinar/checker/blob/main/url.go#L24>)
 
@@ -1211,7 +1230,7 @@ func RegisterLocale(locale string, messages map[string]string)
 RegisterLocale registers the localized error messages for the given locale.
 
 <a name="RegisterMaker"></a>
-## func [RegisterMaker](<https://github.com/cinar/checker/blob/main/maker.go#L53>)
+## func [RegisterMaker](<https://github.com/cinar/checker/blob/main/maker.go#L54>)
 
 ```go
 func RegisterMaker(name string, maker MakeCheckFunc)
