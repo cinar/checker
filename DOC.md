@@ -15,7 +15,6 @@ Package v2 Checker is a Go library for validating user input through checker rul
 - [Constants](<#constants>)
 - [Variables](<#variables>)
 - [func Check\[T any\]\(value T, checks ...CheckFunc\[T\]\) \(T, error\)](<#Check>)
-- [func CheckStruct\(st any\) \(map\[string\]error, bool\)](<#CheckStruct>)
 - [func CheckWithConfig\[T any\]\(value T, config string\) \(T, error\)](<#CheckWithConfig>)
 - [func HTMLEscape\(value string\) \(string, error\)](<#HTMLEscape>)
 - [func HTMLUnescape\(value string\) \(string, error\)](<#HTMLUnescape>)
@@ -63,10 +62,16 @@ Package v2 Checker is a Go library for validating user input through checker rul
   - [func \(c \*CheckError\) Error\(\) string](<#CheckError.Error>)
   - [func \(c \*CheckError\) ErrorWithLocale\(locale string\) string](<#CheckError.ErrorWithLocale>)
   - [func \(c \*CheckError\) Is\(target error\) bool](<#CheckError.Is>)
+- [type CheckErrors](<#CheckErrors>)
+  - [func CheckStruct\(st any\) \(CheckErrors, bool\)](<#CheckStruct>)
+  - [func \(errs CheckErrors\) Error\(\) string](<#CheckErrors.Error>)
+  - [func \(errs CheckErrors\) JSON\(\) \(\[\]byte, error\)](<#CheckErrors.JSON>)
+  - [func \(errs CheckErrors\) JSONWithLocale\(locale string\) \(\[\]byte, error\)](<#CheckErrors.JSONWithLocale>)
 - [type CheckFunc](<#CheckFunc>)
   - [func MakeRegexpChecker\(expression string, invalidError error\) CheckFunc\[reflect.Value\]](<#MakeRegexpChecker>)
   - [func MaxLen\[T any\]\(n int\) CheckFunc\[T\]](<#MaxLen>)
   - [func MinLen\[T any\]\(n int\) CheckFunc\[T\]](<#MinLen>)
+- [type FieldError](<#FieldError>)
 - [type MakeCheckFunc](<#MakeCheckFunc>)
 
 
@@ -311,57 +316,6 @@ func main() {
 	}
 
 	fmt.Println(name)
-}
-```
-
-#### Output
-
-```
-Onur Cinar
-```
-
-</p>
-</details>
-
-<a name="CheckStruct"></a>
-## func [CheckStruct](<https://github.com/cinar/checker/blob/main/checker.go#L62>)
-
-```go
-func CheckStruct(st any) (map[string]error, bool)
-```
-
-CheckStruct checks the given struct based on the validation rules specified in the "checker" tag of each struct field. It returns a map of field names to their corresponding errors, and a boolean indicating if all checks passed.
-
-<details><summary>Example</summary>
-<p>
-
-
-
-```go
-package main
-
-import (
-	"fmt"
-
-	v2 "github.com/cinar/checker/v2"
-)
-
-func main() {
-	type Person struct {
-		Name string `checkers:"trim required"`
-	}
-
-	person := &Person{
-		Name: "    Onur Cinar    ",
-	}
-
-	errs, ok := v2.CheckStruct(person)
-	if !ok {
-		fmt.Println(errs)
-		return
-	}
-
-	fmt.Println(person.Name)
 }
 ```
 
@@ -1472,6 +1426,136 @@ func (c *CheckError) Is(target error) bool
 
 Is reports whether the check error is the same as the target error.
 
+<a name="CheckErrors"></a>
+## type [CheckErrors](<https://github.com/cinar/checker/blob/main/check_errors.go#L16>)
+
+CheckErrors is a map of field names to their corresponding check errors, as returned by CheckStruct.
+
+```go
+type CheckErrors map[string]error
+```
+
+<a name="CheckStruct"></a>
+### func [CheckStruct](<https://github.com/cinar/checker/blob/main/checker.go#L62>)
+
+```go
+func CheckStruct(st any) (CheckErrors, bool)
+```
+
+CheckStruct checks the given struct based on the validation rules specified in the "checker" tag of each struct field. It returns CheckErrors, a map of field names to their corresponding errors, and a boolean indicating if all checks passed.
+
+<details><summary>Example</summary>
+<p>
+
+
+
+```go
+package main
+
+import (
+	"fmt"
+
+	v2 "github.com/cinar/checker/v2"
+)
+
+func main() {
+	type Person struct {
+		Name string `checkers:"trim required"`
+	}
+
+	person := &Person{
+		Name: "    Onur Cinar    ",
+	}
+
+	errs, ok := v2.CheckStruct(person)
+	if !ok {
+		fmt.Println(errs)
+		return
+	}
+
+	fmt.Println(person.Name)
+}
+```
+
+#### Output
+
+```
+Onur Cinar
+```
+
+</p>
+</details>
+
+<a name="CheckErrors.Error"></a>
+### func \(CheckErrors\) [Error](<https://github.com/cinar/checker/blob/main/check_errors.go#L33>)
+
+```go
+func (errs CheckErrors) Error() string
+```
+
+Error joins the errors of all the fields into a single human\-readable message, sorted by field name for a deterministic result. It allows CheckErrors to be used and propagated as a regular error.
+
+<a name="CheckErrors.JSON"></a>
+### func \(CheckErrors\) [JSON](<https://github.com/cinar/checker/blob/main/check_errors.go#L59>)
+
+```go
+func (errs CheckErrors) JSON() ([]byte, error)
+```
+
+JSON marshals the errors as a JSON object of field name to FieldError, localized using the default locale. It is suitable for use directly as an HTTP API error response body.
+
+<details><summary>Example</summary>
+<p>
+
+
+
+```go
+package main
+
+import (
+	"fmt"
+
+	v2 "github.com/cinar/checker/v2"
+)
+
+func main() {
+	type Person struct {
+		Name string `checkers:"required"`
+	}
+
+	person := &Person{}
+
+	errs, ok := v2.CheckStruct(person)
+	if !ok {
+		data, err := errs.JSON()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		fmt.Println(string(data))
+	}
+}
+```
+
+#### Output
+
+```
+{"Name":{"code":"REQUIRED","message":"Required value is missing."}}
+```
+
+</p>
+</details>
+
+<a name="CheckErrors.JSONWithLocale"></a>
+### func \(CheckErrors\) [JSONWithLocale](<https://github.com/cinar/checker/blob/main/check_errors.go#L65>)
+
+```go
+func (errs CheckErrors) JSONWithLocale(locale string) ([]byte, error)
+```
+
+JSONWithLocale marshals the errors as a JSON object of field name to FieldError, localized using the given locale.
+
 <a name="CheckFunc"></a>
 ## type [CheckFunc](<https://github.com/cinar/checker/blob/main/check_func.go#L11>)
 
@@ -1507,6 +1591,22 @@ func MinLen[T any](n int) CheckFunc[T]
 ```
 
 MinLen checks if the length of the given value \(string, slice, or map\) is at least n. Returns an error if the length is less than n.
+
+<a name="FieldError"></a>
+## type [FieldError](<https://github.com/cinar/checker/blob/main/check_errors.go#L21-L28>)
+
+FieldError is the JSON representation of a single field's check error. Code is the machine\-readable check error code, and Message is the localized human\-readable error message.
+
+```go
+type FieldError struct {
+    // Code is the check error code, such as "REQUIRED". It is empty when the
+    // field's error is not a *CheckError.
+    Code string `json:"code"`
+
+    // Message is the localized human-readable error message.
+    Message string `json:"message"`
+}
+```
 
 <a name="MakeCheckFunc"></a>
 ## type [MakeCheckFunc](<https://github.com/cinar/checker/blob/main/maker.go#L15>)

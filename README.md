@@ -246,6 +246,36 @@ if !valid {
 }
 ```
 
+# Structured Errors
+
+`CheckStruct` returns [CheckErrors](DOC.md#CheckErrors), a `map[string]error` that also implements the `error` interface, so it can be returned or wrapped directly like any other error.
+
+```golang
+errs, valid := checker.CheckStruct(person)
+if !valid {
+	return errs // errs.Error() joins every field's message
+}
+```
+
+To respond to an API request, use [JSON()](DOC.md#CheckErrors.JSON) to marshal the errors into a field name to `{code, message}` object, ready to be written directly as the response body:
+
+```golang
+errs, valid := checker.CheckStruct(person)
+if !valid {
+	data, _ := errs.JSON()
+	w.WriteHeader(http.StatusBadRequest)
+	w.Write(data)
+	// {"Name":{"code":"REQUIRED","message":"Required value is missing."}}
+	return
+}
+```
+
+Use [JSONWithLocale()](DOC.md#CheckErrors.JSONWithLocale) to localize the messages in the response, the same way `ErrorWithLocale()` works for a single error.
+
+```golang
+data, _ := errs.JSONWithLocale(locales.DeDE)
+```
+
 # Contributing to the Project
 
 Anyone can contribute to Checkers library. Please make sure to read our [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md) guide first. Follow the [How to Contribute to Checker](./CONTRIBUTING.md) to contribute.
