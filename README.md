@@ -276,6 +276,38 @@ Use [JSONWithLocale()](DOC.md#CheckErrors.JSONWithLocale) to localize the messag
 data, _ := errs.JSONWithLocale(locales.DeDE)
 ```
 
+# Framework Integration
+
+Checker ships thin, separately-versioned adapter modules that bind a request and run `CheckStruct` in a single call, writing a JSON `400` response automatically when binding or validation fails. Each adapter is its own Go module, so the framework it wraps is only pulled in if you actually `go get` that adapter; the core `checker` module stays dependency-free either way.
+
+## Echo
+
+```bash
+go get github.com/cinar/checker/v2/echo
+```
+
+```golang
+import checkerecho "github.com/cinar/checker/v2/echo"
+
+type Registration struct {
+	Name  string `json:"name" checkers:"trim required"`
+	Email string `json:"email" checkers:"required email"`
+}
+
+e.POST("/register", func(c echo.Context) error {
+	var registration Registration
+
+	if !checkerecho.Bind(c, &registration) {
+		// The 400 response has already been written by Bind.
+		return nil
+	}
+
+	return c.JSON(http.StatusOK, registration)
+})
+```
+
+See [echo/README.md](echo/README.md) for the full example, including how to call `checkerecho.Check` directly when the struct is assembled from more than just the request body.
+
 # Contributing to the Project
 
 Anyone can contribute to Checkers library. Please make sure to read our [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md) guide first. Follow the [How to Contribute to Checker](./CONTRIBUTING.md) to contribute.

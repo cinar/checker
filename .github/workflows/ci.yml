@@ -34,3 +34,29 @@ jobs:
       uses: codecov/codecov-action@v4.5.0
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
+
+  echo:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: echo
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version-file: ./echo/go.mod
+
+    - name: Setup cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-echo-${{ hashFiles('echo/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-echo-
+
+    - name: Run task
+      run: go run github.com/go-task/task/v3/cmd/task@v3.38.0
