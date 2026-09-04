@@ -103,6 +103,7 @@ type Person struct {
 - [`cidr`](DOC.md#IsCIDR): Ensures the string is a valid CIDR notation.
 - [`digits`](DOC.md#IsDigits): Ensures the string contains only digits.
 - [`email`](DOC.md#IsEmail): Ensures the string is a valid email address.
+- [`eoa`](DOC.md#IsEOA): Ensures the string is a valid externally owned address (EOA), i.e. an Ethereum address.
 - [`fqdn`](DOC.md#IsFQDN): Ensures the string is a valid fully qualified domain name.
 - [`gte`](DOC.md#IsGte): Ensures the value is greater than or equal to the specified number.
 - [`hex`](DOC.md#IsHex): Ensures the string contains only hexadecimal digits.

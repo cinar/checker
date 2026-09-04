@@ -27,6 +27,7 @@ Package v2 Checker is a Go library for validating user input through checker rul
 - [func IsDigits\(value string\) \(string, error\)](<#IsDigits>)
 - [func IsDinersCreditCard\(number string\) \(string, error\)](<#IsDinersCreditCard>)
 - [func IsDiscoverCreditCard\(number string\) \(string, error\)](<#IsDiscoverCreditCard>)
+- [func IsEOA\(value string\) \(string, error\)](<#IsEOA>)
 - [func IsEmail\(value string\) \(string, error\)](<#IsEmail>)
 - [func IsFQDN\(value string\) \(string, error\)](<#IsFQDN>)
 - [func IsGte\[T cmp.Ordered\]\(value, n T\) \(T, error\)](<#IsGte>)
@@ -161,6 +162,15 @@ var (
 var (
     // ErrNotDigits indicates that the given value is not a valid digits string.
     ErrNotDigits = NewCheckError("NOT_DIGITS")
+)
+```
+
+<a name="ErrNotEOA"></a>
+
+```go
+var (
+    // ErrNotEOA indicates that the given value is not a valid externally owned address (EOA).
+    ErrNotEOA = NewCheckError("NOT_EOA")
 )
 ```
 
@@ -668,6 +678,15 @@ func main() {
 
 </p>
 </details>
+
+<a name="IsEOA"></a>
+## func [IsEOA](<https://github.com/cinar/checker/blob/main/eoa.go#L29>)
+
+```go
+func IsEOA(value string) (string, error)
+```
+
+IsEOA checks if the value is a valid externally owned address \(EOA\), i.e. an Ethereum address: the "0x" prefix followed by 40 hexadecimal characters. It does not check the EIP\-55 mixed\-case checksum, only the address's shape.
 
 <a name="IsEmail"></a>
 ## func [IsEmail](<https://github.com/cinar/checker/blob/main/email.go#L24>)
@@ -1282,7 +1301,7 @@ func RegisterLocale(locale string, messages map[string]string)
 RegisterLocale registers the localized error messages for the given locale.
 
 <a name="RegisterMaker"></a>
-## func [RegisterMaker](<https://github.com/cinar/checker/blob/main/maker.go#L54>)
+## func [RegisterMaker](<https://github.com/cinar/checker/blob/main/maker.go#L55>)
 
 ```go
 func RegisterMaker(name string, maker MakeCheckFunc)
