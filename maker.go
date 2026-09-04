@@ -31,6 +31,7 @@ var makers = map[string]MakeCheckFunc{
 	nameIPv4:         makeIPv4,
 	nameIPv6:         makeIPv6,
 	nameISBN:         makeISBN,
+	nameISO6391:      makeISO6391,
 	nameLower:        makeLower,
 	nameLte:          makeLte,
 	nameLUHN:         makeLUHN,

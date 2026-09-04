@@ -35,6 +35,7 @@ Package v2 Checker is a Go library for validating user input through checker rul
 - [func IsIPv4\(value string\) \(string, error\)](<#IsIPv4>)
 - [func IsIPv6\(value string\) \(string, error\)](<#IsIPv6>)
 - [func IsISBN\(value string\) \(string, error\)](<#IsISBN>)
+- [func IsISO6391\(value string\) \(string, error\)](<#IsISO6391>)
 - [func IsJcbCreditCard\(number string\) \(string, error\)](<#IsJcbCreditCard>)
 - [func IsLUHN\(value string\) \(string, error\)](<#IsLUHN>)
 - [func IsLte\[T cmp.Ordered\]\(value, n T\) \(T, error\)](<#IsLte>)
@@ -224,6 +225,15 @@ var (
 var (
     // ErrNotISBN indicates that the given value is not a valid ISBN.
     ErrNotISBN = NewCheckError("NOT_ISBN")
+)
+```
+
+<a name="ErrNotISO6391"></a>
+
+```go
+var (
+    // ErrNotISO6391 indicates that the given value is not a valid ISO 639-1 language code.
+    ErrNotISO6391 = NewCheckError("NOT_ISO6391")
 )
 ```
 
@@ -916,6 +926,15 @@ func main() {
 </p>
 </details>
 
+<a name="IsISO6391"></a>
+## func [IsISO6391](<https://github.com/cinar/checker/blob/main/iso639_1.go#L46>)
+
+```go
+func IsISO6391(value string) (string, error)
+```
+
+IsISO6391 checks if the value is a valid two\-letter ISO 639\-1 language code, such as "en" or "tr". The check is case\-sensitive; combine it with the lower normalizer if the input's case is not already guaranteed.
+
 <a name="IsJcbCreditCard"></a>
 ## func [IsJcbCreditCard](<https://github.com/cinar/checker/blob/main/credit_card.go#L95>)
 
@@ -1282,7 +1301,7 @@ func RegisterLocale(locale string, messages map[string]string)
 RegisterLocale registers the localized error messages for the given locale.
 
 <a name="RegisterMaker"></a>
-## func [RegisterMaker](<https://github.com/cinar/checker/blob/main/maker.go#L54>)
+## func [RegisterMaker](<https://github.com/cinar/checker/blob/main/maker.go#L55>)
 
 ```go
 func RegisterMaker(name string, maker MakeCheckFunc)
