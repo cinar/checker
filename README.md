@@ -105,6 +105,7 @@ type Person struct {
 - [`email`](DOC.md#IsEmail): Ensures the string is a valid email address.
 - [`fqdn`](DOC.md#IsFQDN): Ensures the string is a valid fully qualified domain name.
 - [`gte`](DOC.md#IsGte): Ensures the value is greater than or equal to the specified number.
+- [`hash`](DOC.md#IsHash): Ensures the string is a valid hex-encoded hash for the given algorithm (`md5`, `sha1`, `sha256`, `sha384`, or `sha512`), e.g. `hash:sha256`.
 - [`hex`](DOC.md#IsHex): Ensures the string contains only hexadecimal digits.
 - [`ip`](DOC.md#IsIP): Ensures the string is a valid IP address.
 - [`ipv4`](DOC.md#IsIPv4): Ensures the string is a valid IPv4 address.

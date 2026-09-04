@@ -30,6 +30,7 @@ Package v2 Checker is a Go library for validating user input through checker rul
 - [func IsEmail\(value string\) \(string, error\)](<#IsEmail>)
 - [func IsFQDN\(value string\) \(string, error\)](<#IsFQDN>)
 - [func IsGte\[T cmp.Ordered\]\(value, n T\) \(T, error\)](<#IsGte>)
+- [func IsHash\(algorithm, value string\) \(string, error\)](<#IsHash>)
 - [func IsHex\(value string\) \(string, error\)](<#IsHex>)
 - [func IsIP\(value string\) \(string, error\)](<#IsIP>)
 - [func IsIPv4\(value string\) \(string, error\)](<#IsIPv4>)
@@ -179,6 +180,15 @@ var (
 var (
     // ErrNotFQDN indicates that the given value is not a valid FQDN.
     ErrNotFQDN = NewCheckError("FQDN")
+)
+```
+
+<a name="ErrNotHash"></a>
+
+```go
+var (
+    // ErrNotHash indicates that the given value is not a valid hash for the given algorithm.
+    ErrNotHash = NewCheckError("NOT_HASH")
 )
 ```
 
@@ -746,6 +756,15 @@ func IsGte[T cmp.Ordered](value, n T) (T, error)
 
 IsGte checks if the value is greater than or equal to the given value.
 
+<a name="IsHash"></a>
+## func [IsHash](<https://github.com/cinar/checker/blob/main/hash.go#L35>)
+
+```go
+func IsHash(algorithm, value string) (string, error)
+```
+
+IsHash checks if the value is a valid hex\-encoded hash for the given algorithm. The supported algorithms are md5, sha1, sha256, sha384, and sha512. Panics if the algorithm is not one of these, as that indicates a configuration error.
+
 <a name="IsHex"></a>
 ## func [IsHex](<https://github.com/cinar/checker/blob/main/hex.go#L23>)
 
@@ -1282,7 +1301,7 @@ func RegisterLocale(locale string, messages map[string]string)
 RegisterLocale registers the localized error messages for the given locale.
 
 <a name="RegisterMaker"></a>
-## func [RegisterMaker](<https://github.com/cinar/checker/blob/main/maker.go#L54>)
+## func [RegisterMaker](<https://github.com/cinar/checker/blob/main/maker.go#L55>)
 
 ```go
 func RegisterMaker(name string, maker MakeCheckFunc)
