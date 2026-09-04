@@ -97,8 +97,10 @@ type Person struct {
 
 # Checkers Provided
 
+- [`after`](DOC.md#IsAfter): Ensures the value is a time after the given reference time, e.g. `after:DateOnly:2024-01-01`.
 - [`ascii`](DOC.md#IsASCII): Ensures the string contains only ASCII characters.
 - [`alphanumeric`](DOC.md#IsAlphanumeric): Ensures the string contains only letters and numbers.
+- [`before`](DOC.md#IsBefore): Ensures the value is a time before the given reference time, e.g. `before:DateOnly:2024-01-01`.
 - [`credit-card`](DOC.md#IsAnyCreditCard): Ensures the string is a valid credit card number.
 - [`cidr`](DOC.md#IsCIDR): Ensures the string is a valid CIDR notation.
 - [`digits`](DOC.md#IsDigits): Ensures the string contains only digits.

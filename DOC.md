@@ -20,9 +20,11 @@ Package v2 Checker is a Go library for validating user input through checker rul
 - [func HTMLEscape\(value string\) \(string, error\)](<#HTMLEscape>)
 - [func HTMLUnescape\(value string\) \(string, error\)](<#HTMLUnescape>)
 - [func IsASCII\(value string\) \(string, error\)](<#IsASCII>)
+- [func IsAfter\(layout, reference, value string\) \(string, error\)](<#IsAfter>)
 - [func IsAlphanumeric\(value string\) \(string, error\)](<#IsAlphanumeric>)
 - [func IsAmexCreditCard\(number string\) \(string, error\)](<#IsAmexCreditCard>)
 - [func IsAnyCreditCard\(number string\) \(string, error\)](<#IsAnyCreditCard>)
+- [func IsBefore\(layout, reference, value string\) \(string, error\)](<#IsBefore>)
 - [func IsCIDR\(value string\) \(string, error\)](<#IsCIDR>)
 - [func IsDigits\(value string\) \(string, error\)](<#IsDigits>)
 - [func IsDinersCreditCard\(number string\) \(string, error\)](<#IsDinersCreditCard>)
@@ -128,12 +130,30 @@ var (
 )
 ```
 
+<a name="ErrNotAfter"></a>
+
+```go
+var (
+    // ErrNotAfter indicates that the value is not after the given reference time.
+    ErrNotAfter = NewCheckError("NOT_AFTER")
+)
+```
+
 <a name="ErrNotAlphanumeric"></a>
 
 ```go
 var (
     // ErrNotAlphanumeric indicates that the given string contains non-alphanumeric characters.
     ErrNotAlphanumeric = NewCheckError("NOT_ALPHANUMERIC")
+)
+```
+
+<a name="ErrNotBefore"></a>
+
+```go
+var (
+    // ErrNotBefore indicates that the value is not before the given reference time.
+    ErrNotBefore = NewCheckError("NOT_BEFORE")
 )
 ```
 
@@ -435,6 +455,15 @@ func main() {
 </p>
 </details>
 
+<a name="IsAfter"></a>
+## func [IsAfter](<https://github.com/cinar/checker/blob/main/after.go#L29>)
+
+```go
+func IsAfter(layout, reference, value string) (string, error)
+```
+
+IsAfter checks if the value, parsed using the given layout, is after the given reference time, which is parsed using the same layout. Panics if the reference cannot be parsed, as that indicates a configuration error. If the value itself cannot be parsed, ErrTime is returned.
+
 <a name="IsAlphanumeric"></a>
 ## func [IsAlphanumeric](<https://github.com/cinar/checker/blob/main/alphanumeric.go#L24>)
 
@@ -534,6 +563,15 @@ func main() {
 
 </p>
 </details>
+
+<a name="IsBefore"></a>
+## func [IsBefore](<https://github.com/cinar/checker/blob/main/before.go#L29>)
+
+```go
+func IsBefore(layout, reference, value string) (string, error)
+```
+
+IsBefore checks if the value, parsed using the given layout, is before the given reference time, which is parsed using the same layout. Panics if the reference cannot be parsed, as that indicates a configuration error. If the value itself cannot be parsed, ErrTime is returned.
 
 <a name="IsCIDR"></a>
 ## func [IsCIDR](<https://github.com/cinar/checker/blob/main/cidr.go#L24>)
@@ -1094,7 +1132,7 @@ func main() {
 </details>
 
 <a name="IsTime"></a>
-## func [IsTime](<https://github.com/cinar/checker/blob/main/time.go#L47>)
+## func [IsTime](<https://github.com/cinar/checker/blob/main/time.go#L58>)
 
 ```go
 func IsTime(params, value string) (string, error)
@@ -1282,7 +1320,7 @@ func RegisterLocale(locale string, messages map[string]string)
 RegisterLocale registers the localized error messages for the given locale.
 
 <a name="RegisterMaker"></a>
-## func [RegisterMaker](<https://github.com/cinar/checker/blob/main/maker.go#L54>)
+## func [RegisterMaker](<https://github.com/cinar/checker/blob/main/maker.go#L56>)
 
 ```go
 func RegisterMaker(name string, maker MakeCheckFunc)
