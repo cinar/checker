@@ -77,10 +77,10 @@ func reflectCheckFieldWithConfig(value, parent reflect.Value, config string) (re
 }
 
 // CheckStruct checks the given struct based on the validation rules specified in the
-// "checker" tag of each struct field. It returns a map of field names to their
-// corresponding errors, and a boolean indicating if all checks passed.
-func CheckStruct(st any) (map[string]error, bool) {
-	errs := make(map[string]error)
+// "checker" tag of each struct field. It returns CheckErrors, a map of field names
+// to their corresponding errors, and a boolean indicating if all checks passed.
+func CheckStruct(st any) (CheckErrors, bool) {
+	errs := make(CheckErrors)
 
 	jobs := []*checkStructJob{
 		{
