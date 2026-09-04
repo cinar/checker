@@ -35,6 +35,8 @@ Package v2 Checker is a Go library for validating user input through checker rul
 - [func IsIPv4\(value string\) \(string, error\)](<#IsIPv4>)
 - [func IsIPv6\(value string\) \(string, error\)](<#IsIPv6>)
 - [func IsISBN\(value string\) \(string, error\)](<#IsISBN>)
+- [func IsISO31661Alpha2\(value string\) \(string, error\)](<#IsISO31661Alpha2>)
+- [func IsISO31661Alpha3\(value string\) \(string, error\)](<#IsISO31661Alpha3>)
 - [func IsJcbCreditCard\(number string\) \(string, error\)](<#IsJcbCreditCard>)
 - [func IsLUHN\(value string\) \(string, error\)](<#IsLUHN>)
 - [func IsLte\[T cmp.Ordered\]\(value, n T\) \(T, error\)](<#IsLte>)
@@ -224,6 +226,24 @@ var (
 var (
     // ErrNotISBN indicates that the given value is not a valid ISBN.
     ErrNotISBN = NewCheckError("NOT_ISBN")
+)
+```
+
+<a name="ErrNotISO31661Alpha2"></a>
+
+```go
+var (
+    // ErrNotISO31661Alpha2 indicates that the given value is not a valid ISO 3166-1 alpha-2 country code.
+    ErrNotISO31661Alpha2 = NewCheckError("NOT_ISO31661_ALPHA2")
+)
+```
+
+<a name="ErrNotISO31661Alpha3"></a>
+
+```go
+var (
+    // ErrNotISO31661Alpha3 indicates that the given value is not a valid ISO 3166-1 alpha-3 country code.
+    ErrNotISO31661Alpha3 = NewCheckError("NOT_ISO31661_ALPHA3")
 )
 ```
 
@@ -916,6 +936,24 @@ func main() {
 </p>
 </details>
 
+<a name="IsISO31661Alpha2"></a>
+## func [IsISO31661Alpha2](<https://github.com/cinar/checker/blob/main/iso3166_1_alpha2.go#L52>)
+
+```go
+func IsISO31661Alpha2(value string) (string, error)
+```
+
+IsISO31661Alpha2 checks if the value is a valid two\-letter ISO 3166\-1 alpha\-2 country code, such as "US" or "TR". The check is case\-sensitive; combine it with the upper normalizer if the input's case is not already guaranteed.
+
+<a name="IsISO31661Alpha3"></a>
+## func [IsISO31661Alpha3](<https://github.com/cinar/checker/blob/main/iso3166_1_alpha3.go#L53>)
+
+```go
+func IsISO31661Alpha3(value string) (string, error)
+```
+
+IsISO31661Alpha3 checks if the value is a valid three\-letter ISO 3166\-1 alpha\-3 country code, such as "USA" or "TUR". The check is case\-sensitive; combine it with the upper normalizer if the input's case is not already guaranteed.
+
 <a name="IsJcbCreditCard"></a>
 ## func [IsJcbCreditCard](<https://github.com/cinar/checker/blob/main/credit_card.go#L95>)
 
@@ -1282,7 +1320,7 @@ func RegisterLocale(locale string, messages map[string]string)
 RegisterLocale registers the localized error messages for the given locale.
 
 <a name="RegisterMaker"></a>
-## func [RegisterMaker](<https://github.com/cinar/checker/blob/main/maker.go#L54>)
+## func [RegisterMaker](<https://github.com/cinar/checker/blob/main/maker.go#L56>)
 
 ```go
 func RegisterMaker(name string, maker MakeCheckFunc)
