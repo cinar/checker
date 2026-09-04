@@ -78,3 +78,28 @@ func TestRegisterMaker(t *testing.T) {
 		t.Fatal("expected valid")
 	}
 }
+
+func TestRegisterFieldMaker(t *testing.T) {
+	v2.RegisterFieldMaker("eq-const", func(params string) v2.CheckFieldFunc {
+		return func(parent, value reflect.Value) (reflect.Value, error) {
+			if value.Interface().(string) != params {
+				return value, v2.NewCheckError("NOT_EQ_CONST")
+			}
+
+			return value, nil
+		}
+	})
+
+	type Person struct {
+		Name string `checkers:"eq-const:Onur"`
+	}
+
+	person := &Person{
+		Name: "Onur",
+	}
+
+	_, ok := v2.CheckStruct(person)
+	if !ok {
+		t.Fatal("expected valid")
+	}
+}

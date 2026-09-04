@@ -16,15 +16,28 @@ const (
 	// checkerTag is the name of the field tag used for checker.
 	checkerTag = "checkers"
 
-	// sliceConfigPrefix is the prefix used to distinguish slice-level checks from item-level checks.
+	// sliceConfigPrefix is the prefix used to distinguish slice or map-level checks from item-level checks.
 	sliceConfigPrefix = "@"
 )
 
 // checkStructJob defines a check strcut job.
 type checkStructJob struct {
-	Name   string
-	Value  reflect.Value
+	// Name is the fully qualified name of the value being checked.
+	Name string
+
+	// Value is the value being checked.
+	Value reflect.Value
+
+	// Parent is the enclosing struct's reflect.Value, used by field-relative checks
+	// such as eq-field. It is only set for direct struct fields.
+	Parent reflect.Value
+
+	// Config is the checker config string for the value.
 	Config string
+
+	// SetFunc writes the checked value back to its place, which may not always be
+	// as simple as Value.Set, such as for values held in a map.
+	SetFunc func(reflect.Value)
 }
 
 // Check applies the given check functions to a value sequentially.
@@ -53,7 +66,14 @@ func CheckWithConfig[T any](value T, config string) (T, error) {
 // to the given reflect.Value. It returns the modified reflect.Value and the first
 // encountered error, if any.
 func ReflectCheckWithConfig(value reflect.Value, config string) (reflect.Value, error) {
-	return Check(value, makeChecks(config)...)
+	return reflectCheckFieldWithConfig(value, reflect.Value{}, config)
+}
+
+// reflectCheckFieldWithConfig applies the check functions specified by the config string
+// to the given reflect.Value, making the parent struct's reflect.Value available to any
+// field-relative checks, such as eq-field.
+func reflectCheckFieldWithConfig(value, parent reflect.Value, config string) (reflect.Value, error) {
+	return Check(value, makeChecks(config, parent)...)
 }
 
 // CheckStruct checks the given struct based on the validation rules specified in the
@@ -82,9 +102,11 @@ func CheckStruct(st any) (CheckErrors, bool) {
 				value := reflect.Indirect(job.Value.FieldByIndex(field.Index))
 
 				jobs = append(jobs, &checkStructJob{
-					Name:   name,
-					Value:  value,
-					Config: field.Tag.Get(checkerTag),
+					Name:    name,
+					Value:   value,
+					Parent:  job.Value,
+					Config:  field.Tag.Get(checkerTag),
+					SetFunc: value.Set,
 				})
 			}
 
@@ -97,20 +119,48 @@ func CheckStruct(st any) (CheckErrors, bool) {
 				value := reflect.Indirect(job.Value.Index(i))
 
 				jobs = append(jobs, &checkStructJob{
+					Name:    name,
+					Value:   value,
+					Config:  itemConfig,
+					SetFunc: value.Set,
+				})
+			}
+
+		case reflect.Map:
+			mapConfig, itemConfig := splitSliceConfig(job.Config)
+			job.Config = mapConfig
+
+			mapValue := job.Value
+
+			for _, key := range mapValue.MapKeys() {
+				name := fmt.Sprintf("%s[%v]", job.Name, key.Interface())
+				value := reflect.Indirect(mapValue.MapIndex(key))
+
+				jobs = append(jobs, &checkStructJob{
 					Name:   name,
 					Value:  value,
 					Config: itemConfig,
+					SetFunc: func(newValue reflect.Value) {
+						// A pointer map value is addressable through its indirected
+						// value, so it can be mutated in place. A non-pointer map
+						// value is a copy, so it must be written back through the map.
+						if value.CanSet() {
+							value.Set(newValue)
+						} else {
+							mapValue.SetMapIndex(key, newValue)
+						}
+					},
 				})
 			}
 		}
 
 		if job.Config != "" {
-			newValue, err := ReflectCheckWithConfig(job.Value, job.Config)
+			newValue, err := reflectCheckFieldWithConfig(job.Value, job.Parent, job.Config)
 			if err != nil {
 				errs[job.Name] = err
 			}
 
-			job.Value.Set(newValue)
+			job.SetFunc(newValue)
 		}
 	}
 
@@ -137,7 +187,7 @@ func fieldName(prefix string, field reflect.StructField) string {
 	return name
 }
 
-// splitSliceConfig splits config string into slice and item-level configurations.
+// splitSliceConfig splits config string into slice/map and item-level configurations.
 func splitSliceConfig(config string) (string, string) {
 	sliceFileds := make([]string, 0)
 	itemFields := make([]string, 0)
