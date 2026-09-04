@@ -13,6 +13,7 @@ var EnUSMessages = map[string]string{
 	"NOT_CREDIT_CARD":  "Not a valid credit card number.",
 	"NOT_DIGITS":       "Can only contain digits.",
 	"NOT_EMAIL":        "Not a valid email address.",
+	"NOT_EQ_FIELD":     "Value must match the {{ .field }} field.",
 	"NOT_FQDN":         "Not a fully qualified domain name (FQDN).",
 	"NOT_GTE":          "Value cannot be less than {{ .n }}.",
 	"NOT_HEX":          "Can only contain hexadecimal characters.",
