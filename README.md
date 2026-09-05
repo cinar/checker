@@ -124,16 +124,16 @@ func main() {
 }
 ```
 
-> 🎮 **[Try this example live on the Go Playground](https://go.dev/play/p/c9ohvThGz1D)**
+> 🎮 **[Try this example live on the Go Playground](https://go.dev/play/p/FfkXm5oC9ii)**
 
 ### Interactive Playgrounds & Examples
 
 Try Checker immediately in your browser via the official Go Playground:
 
-- 🎮 [**Quickstart & Normalization Playground**](https://go.dev/play/p/c9ohvThGz1D) — In-place normalization, validation, and JSON error responses.
-- 🎮 [**JSON Schema Generation Playground**](https://go.dev/play/p/U04Du4M6spX) — Generate Draft 2020-12 schemas from struct tags.
-- 🎮 [**Locales (i18n) Playground**](https://go.dev/play/p/GQEENYcQPgD) — Multilingual error messages in German, Spanish, French, and Japanese.
-- 🎮 [**Standard net/http Handler Playground**](https://go.dev/play/p/M_tKEKwL38G) — Zero-dependency HTTP request validation.
+- 🎮 [**Quickstart & Normalization Playground**](https://go.dev/play/p/5X8ukfSOnZ1) — In-place normalization, validation, and JSON error responses.
+- 🎮 [**JSON Schema Generation Playground**](https://go.dev/play/p/MkBT8QVY5-c) — Generate Draft 2020-12 schemas from struct tags.
+- 🎮 [**Locales (i18n) Playground**](https://go.dev/play/p/9j9L8nI10MR) — Multilingual error messages in German, Spanish, French, and Japanese.
+- 🎮 [**Standard net/http Handler Playground**](https://go.dev/play/p/M5cPYl4eDoJ) — Zero-dependency HTTP request validation.
 
 Explore the [**examples/**](examples/) directory for full standalone project templates, including [Gin](examples/gin/) and [Echo](examples/echo/) integrations.
 
