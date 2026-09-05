@@ -26,14 +26,14 @@ func IsBeforeField(parent, value reflect.Value, layout, name string) (reflect.Va
 	field := lookupParentField(nameBeforeField, parent, name)
 
 	resolvedLayout := resolveTimeLayout(layout)
-	reference := field.Interface().(string)
+	reference := reflectString(field)
 
 	referenceTime, err := time.Parse(resolvedLayout, reference)
 	if err != nil {
 		return value, ErrTime
 	}
 
-	valueTime, err := time.Parse(resolvedLayout, value.Interface().(string))
+	valueTime, err := time.Parse(resolvedLayout, reflectString(value))
 	if err != nil {
 		return value, ErrTime
 	}

@@ -22,8 +22,8 @@ func HTMLEscape(value string) (string, error) {
 
 // reflectHTMLEscape applies HTML escaping to special characters.
 func reflectHTMLEscape(value reflect.Value) (reflect.Value, error) {
-	newValue, err := HTMLEscape(value.Interface().(string))
-	return reflect.ValueOf(newValue), err
+	newValue, err := HTMLEscape(reflectString(value))
+	return reflect.ValueOf(newValue).Convert(value.Type()), err
 }
 
 // makeHTMLEscape returns the HTML escape normalizer function.

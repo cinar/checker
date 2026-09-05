@@ -22,8 +22,8 @@ func Upper(value string) (string, error) {
 
 // reflectUpper maps all Unicode letters in the given value to their upper case.
 func reflectUpper(value reflect.Value) (reflect.Value, error) {
-	newValue, err := Upper(value.Interface().(string))
-	return reflect.ValueOf(newValue), err
+	newValue, err := Upper(reflectString(value))
+	return reflect.ValueOf(newValue).Convert(value.Type()), err
 }
 
 // makeUpper returns the upper normalizer function.

@@ -31,7 +31,7 @@ func IsMAC(value string) (string, error) {
 
 // checkMAC checks if the value is a valid MAC address.
 func checkMAC(value reflect.Value) (reflect.Value, error) {
-	_, err := IsMAC(value.Interface().(string))
+	_, err := IsMAC(reflectString(value))
 	return value, err
 }
 

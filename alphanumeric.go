@@ -33,7 +33,7 @@ func IsAlphanumeric(value string) (string, error) {
 
 // checkAlphanumeric checks if the given string consists of only alphanumeric characters.
 func isAlphanumeric(value reflect.Value) (reflect.Value, error) {
-	_, err := IsAlphanumeric(value.Interface().(string))
+	_, err := IsAlphanumeric(reflectString(value))
 	return value, err
 }
 
