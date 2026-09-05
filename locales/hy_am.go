@@ -33,6 +33,7 @@ var HyAMMessages = map[string]string{
 	"NOT_MAC":             "Վավեր MAC հասցե չէ:",
 	"NOT_MAX_LEN":         "Արժեքը չի կարող մեծ լինել {{ .max }}-ից:",
 	"NOT_MIN_LEN":         "Արժեքը չի կարող փոքր լինել {{ .min }}-ից:",
+	"NOT_ONE_OF":          "Արժեքը պետք է լինի հետևյալներից մեկը՝ {{ .allowed }}:",
 	"NOT_TIME":            "Վավեր ժամանակ չէ:",
 	"REQUIRED":            "Պարտադիր արժեքը բացակայում է:",
 	"NOT_URL":             "Վավեր URL չէ:",

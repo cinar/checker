@@ -33,6 +33,7 @@ var DeDEMessages = map[string]string{
 	"NOT_MAC":             "Keine gültige MAC-Adresse.",
 	"NOT_MAX_LEN":         "Der Wert darf nicht größer als {{ .max }} sein.",
 	"NOT_MIN_LEN":         "Der Wert darf nicht kleiner als {{ .min }} sein.",
+	"NOT_ONE_OF":          "Der Wert muss einer der folgenden sein: {{ .allowed }}.",
 	"NOT_TIME":            "Keine gültige Uhrzeit.",
 	"REQUIRED":            "Erforderlicher Wert fehlt.",
 	"NOT_URL":             "Keine gültige URL.",

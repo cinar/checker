@@ -33,6 +33,7 @@ var FaIRMessages = map[string]string{
 	"NOT_MAC":             "آدرس MAC معتبر نیست.",
 	"NOT_MAX_LEN":         "مقدار نمی\u200cتواند بیشتر از {{ .max }} باشد.",
 	"NOT_MIN_LEN":         "مقدار نمی\u200cتواند کمتر از {{ .min }} باشد.",
+	"NOT_ONE_OF":          "مقدار باید یکی از {{ .allowed }} باشد.",
 	"NOT_TIME":            "زمان معتبر نیست.",
 	"REQUIRED":            "مقدار الزامی وجود ندارد.",
 	"NOT_URL":             "URL معتبر نیست.",

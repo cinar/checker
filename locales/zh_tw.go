@@ -33,6 +33,7 @@ var ZhTWMessages = map[string]string{
 	"NOT_MAC":             "不是有效的MAC位址。",
 	"NOT_MAX_LEN":         "值不能大於{{ .max }}。",
 	"NOT_MIN_LEN":         "值不能小於{{ .min }}。",
+	"NOT_ONE_OF":          "值必須是{{ .allowed }}之一。",
 	"NOT_TIME":            "不是有效的時間。",
 	"REQUIRED":            "缺少必填值。",
 	"NOT_URL":             "不是有效的URL。",

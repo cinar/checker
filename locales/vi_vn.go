@@ -33,6 +33,7 @@ var ViVNMessages = map[string]string{
 	"NOT_MAC":             "Không phải là địa chỉ MAC hợp lệ.",
 	"NOT_MAX_LEN":         "Giá trị không được lớn hơn {{ .max }}.",
 	"NOT_MIN_LEN":         "Giá trị không được nhỏ hơn {{ .min }}.",
+	"NOT_ONE_OF":          "Giá trị phải là một trong {{ .allowed }}.",
 	"NOT_TIME":            "Không phải là thời gian hợp lệ.",
 	"REQUIRED":            "Thiếu giá trị bắt buộc.",
 	"NOT_URL":             "Không phải là URL hợp lệ.",

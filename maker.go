@@ -66,6 +66,7 @@ var makers = map[string]MakeCheckFunc{
 	nameMAC:            makeMAC,
 	nameMaxLen:         makeMaxLen,
 	nameMinLen:         makeMinLen,
+	nameOneOf:          makeOneOf,
 	nameRegexp:         makeRegexp,
 	nameRequired:       makeRequired,
 	nameTime:           makeTime,

@@ -7,6 +7,7 @@ package v2
 
 import (
 	"strconv"
+	"strings"
 	"sync"
 )
 
@@ -49,6 +50,7 @@ var schemaMakers = map[string]SchemaMakeFunc{
 	nameLte:    schemaMaximum,
 	nameMaxLen: schemaMaxLen,
 	nameMinLen: schemaMinLen,
+	nameOneOf:  schemaOneOf,
 	nameRegexp: schemaPattern,
 	nameURL:    schemaFormat("uri"),
 	nameUUID:   schemaFormat("uuid"),
@@ -62,6 +64,12 @@ func RegisterSchemaMaker(name string, maker SchemaMakeFunc) {
 	defer schemaMakersMu.Unlock()
 
 	schemaMakers[name] = maker
+}
+
+// schemaOneOf sets the Schema's Enum from the checker's comma-separated
+// list of allowed values.
+func schemaOneOf(schema *Schema, params string) {
+	schema.Enum = strings.Split(params, ",")
 }
 
 // schemaFormat returns a SchemaMakeFunc that sets the Schema's Format.

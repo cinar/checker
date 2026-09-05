@@ -33,6 +33,7 @@ var JaJPMessages = map[string]string{
 	"NOT_MAC":             "有効なMACアドレスではありません。",
 	"NOT_MAX_LEN":         "値は{{ .max }}を超えることはできません。",
 	"NOT_MIN_LEN":         "値は{{ .min }}未満にはできません。",
+	"NOT_ONE_OF":          "値は次のいずれかである必要があります: {{ .allowed }}。",
 	"NOT_TIME":            "有効な時刻ではありません。",
 	"REQUIRED":            "必須の値がありません。",
 	"NOT_URL":             "有効なURLではありません。",

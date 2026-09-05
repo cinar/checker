@@ -33,6 +33,7 @@ var PtBRMessages = map[string]string{
 	"NOT_MAC":             "Não é um endereço MAC válido.",
 	"NOT_MAX_LEN":         "O valor não pode ser maior que {{ .max }}.",
 	"NOT_MIN_LEN":         "O valor não pode ser menor que {{ .min }}.",
+	"NOT_ONE_OF":          "O valor deve ser um dos seguintes: {{ .allowed }}.",
 	"NOT_TIME":            "Não é um horário válido.",
 	"REQUIRED":            "Falta um valor obrigatório.",
 	"NOT_URL":             "Não é uma URL válida.",

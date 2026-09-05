@@ -33,6 +33,7 @@ var EsESMessages = map[string]string{
 	"NOT_MAC":             "No es una dirección MAC válida.",
 	"NOT_MAX_LEN":         "El valor no puede ser mayor que {{ .max }}.",
 	"NOT_MIN_LEN":         "El valor no puede ser menor que {{ .min }}.",
+	"NOT_ONE_OF":          "El valor debe ser uno de {{ .allowed }}.",
 	"NOT_TIME":            "No es una hora válida.",
 	"REQUIRED":            "Falta un valor obligatorio.",
 	"NOT_URL":             "No es una URL válida.",

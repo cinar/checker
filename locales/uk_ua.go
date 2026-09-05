@@ -33,6 +33,7 @@ var UkUAMessages = map[string]string{
 	"NOT_MAC":             "Недійсна MAC-адреса.",
 	"NOT_MAX_LEN":         "Значення не може бути більшим за {{ .max }}.",
 	"NOT_MIN_LEN":         "Значення не може бути меншим за {{ .min }}.",
+	"NOT_ONE_OF":          "Значення має бути одним із {{ .allowed }}.",
 	"NOT_TIME":            "Недійсний час.",
 	"REQUIRED":            "Відсутнє обов'язкове значення.",
 	"NOT_URL":             "Недійсна URL-адреса.",
