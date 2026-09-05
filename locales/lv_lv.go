@@ -15,6 +15,8 @@ var LvLVMessages = map[string]string{
 	"NOT_CREDIT_CARD":     "Nav derīga kredītkartes numura.",
 	"NOT_DIGITS":          "Var saturēt tikai ciparus.",
 	"NOT_EMAIL":           "Nav derīgas e-pasta adreses.",
+	"EQ":                  "Vērtība nedrīkst būt vienāda ar {{ .forbidden }}.",
+	"NOT_EQ":              "Vērtībai jābūt vienādai ar {{ .expected }}.",
 	"NOT_EOA":             "Nav derīgas ārēji piederošas adreses (EOA).",
 	"NOT_EQ_FIELD":        "Vērtībai jāsakrīt ar lauku {{ .field }}.",
 	"NOT_FQDN":            "Nav pilnībā kvalificēta domēna nosaukuma (FQDN).",

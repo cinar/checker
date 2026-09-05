@@ -15,6 +15,8 @@ var FrFRMessages = map[string]string{
 	"NOT_CREDIT_CARD":     "N'est pas un numéro de carte de crédit valide.",
 	"NOT_DIGITS":          "Ne peut contenir que des chiffres.",
 	"NOT_EMAIL":           "N'est pas une adresse e-mail valide.",
+	"EQ":                  "La valeur ne doit pas être égale à {{ .forbidden }}.",
+	"NOT_EQ":              "La valeur doit être égale à {{ .expected }}.",
 	"NOT_EOA":             "N'est pas une adresse détenue en externe (EOA) valide.",
 	"NOT_EQ_FIELD":        "La valeur doit correspondre au champ {{ .field }}.",
 	"NOT_FQDN":            "N'est pas un nom de domaine complet (FQDN).",

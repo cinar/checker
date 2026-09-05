@@ -43,6 +43,7 @@ var schemaMakersMu sync.RWMutex
 // here is instead recorded in the Schema's XChecker list.
 var schemaMakers = map[string]SchemaMakeFunc{
 	nameEmail:  schemaFormat("email"),
+	nameEq:     schemaConst,
 	nameFQDN:   schemaFormat("hostname"),
 	nameGt:     schemaExclusiveMinimum,
 	nameGte:    schemaMinimum,
@@ -72,6 +73,11 @@ func RegisterSchemaMaker(name string, maker SchemaMakeFunc) {
 // list of allowed values.
 func schemaOneOf(schema *Schema, params string) {
 	schema.Enum = strings.Split(params, ",")
+}
+
+// schemaConst sets the Schema's Const to the checker's expected value.
+func schemaConst(schema *Schema, params string) {
+	schema.Const = &params
 }
 
 // schemaFormat returns a SchemaMakeFunc that sets the Schema's Format.

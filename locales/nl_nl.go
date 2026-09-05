@@ -15,6 +15,8 @@ var NlNLMessages = map[string]string{
 	"NOT_CREDIT_CARD":     "Geen geldig creditcardnummer.",
 	"NOT_DIGITS":          "Mag alleen cijfers bevatten.",
 	"NOT_EMAIL":           "Geen geldig e-mailadres.",
+	"EQ":                  "De waarde mag niet gelijk zijn aan {{ .forbidden }}.",
+	"NOT_EQ":              "De waarde moet gelijk zijn aan {{ .expected }}.",
 	"NOT_EOA":             "Geen geldig extern beheerd adres (EOA).",
 	"NOT_EQ_FIELD":        "De waarde moet overeenkomen met het veld {{ .field }}.",
 	"NOT_FQDN":            "Geen volledig gekwalificeerde domeinnaam (FQDN).",

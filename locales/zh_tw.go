@@ -15,6 +15,8 @@ var ZhTWMessages = map[string]string{
 	"NOT_CREDIT_CARD":     "不是有效的信用卡號。",
 	"NOT_DIGITS":          "只能包含數字。",
 	"NOT_EMAIL":           "不是有效的電子郵件地址。",
+	"EQ":                  "值不能等於{{ .forbidden }}。",
+	"NOT_EQ":              "值必須等於{{ .expected }}。",
 	"NOT_EOA":             "不是有效的外部擁有帳戶地址(EOA)。",
 	"NOT_EQ_FIELD":        "值必須與欄位{{ .field }}相符。",
 	"NOT_FQDN":            "不是有效的完全限定網域名稱(FQDN)。",

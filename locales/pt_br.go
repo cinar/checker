@@ -15,6 +15,8 @@ var PtBRMessages = map[string]string{
 	"NOT_CREDIT_CARD":     "Não é um número de cartão de crédito válido.",
 	"NOT_DIGITS":          "Só pode conter dígitos.",
 	"NOT_EMAIL":           "Não é um endereço de e-mail válido.",
+	"EQ":                  "O valor não deve ser igual a {{ .forbidden }}.",
+	"NOT_EQ":              "O valor deve ser igual a {{ .expected }}.",
 	"NOT_EOA":             "Não é um endereço de propriedade externa (EOA) válido.",
 	"NOT_EQ_FIELD":        "O valor deve corresponder ao campo {{ .field }}.",
 	"NOT_FQDN":            "Não é um nome de domínio totalmente qualificado (FQDN).",

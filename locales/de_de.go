@@ -15,6 +15,8 @@ var DeDEMessages = map[string]string{
 	"NOT_CREDIT_CARD":     "Keine gültige Kreditkartennummer.",
 	"NOT_DIGITS":          "Darf nur Ziffern enthalten.",
 	"NOT_EMAIL":           "Keine gültige E-Mail-Adresse.",
+	"EQ":                  "Der Wert darf nicht {{ .forbidden }} entsprechen.",
+	"NOT_EQ":              "Der Wert muss {{ .expected }} entsprechen.",
 	"NOT_EOA":             "Keine gültige extern kontrollierte Adresse (EOA).",
 	"NOT_EQ_FIELD":        "Der Wert muss mit dem Feld {{ .field }} übereinstimmen.",
 	"NOT_FQDN":            "Kein vollqualifizierter Domainname (FQDN).",

@@ -247,6 +247,8 @@ Checkers validate that a value conforms to expected criteria, returning an error
 | [`IsGt`](https://pkg.go.dev/github.com/cinar/checker/v2#IsGt) | `gt:<n>` | Ensures the value is strictly greater than the specified number |
 | [`IsLt`](https://pkg.go.dev/github.com/cinar/checker/v2#IsLt) | `lt:<n>` | Ensures the value is strictly less than the specified number |
 | [`IsOneOf`](https://pkg.go.dev/github.com/cinar/checker/v2#IsOneOf) | `oneof:<v1>,<v2>,...` | Ensures the value equals one of a comma-separated list of allowed values |
+| [`IsEq`](https://pkg.go.dev/github.com/cinar/checker/v2#IsEq) | `eq:<value>` | Ensures the value equals the given literal value |
+| [`IsNe`](https://pkg.go.dev/github.com/cinar/checker/v2#IsNe) | `ne:<value>` | Ensures the value does not equal the given literal value |
 
 ### Field-Relative & Conditional (Structs)
 

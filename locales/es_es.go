@@ -15,6 +15,8 @@ var EsESMessages = map[string]string{
 	"NOT_CREDIT_CARD":     "No es un número de tarjeta de crédito válido.",
 	"NOT_DIGITS":          "Solo puede contener dígitos.",
 	"NOT_EMAIL":           "No es una dirección de correo electrónico válida.",
+	"EQ":                  "El valor no debe ser igual a {{ .forbidden }}.",
+	"NOT_EQ":              "El valor debe ser igual a {{ .expected }}.",
 	"NOT_EOA":             "No es una dirección de cuenta externa (EOA) válida.",
 	"NOT_EQ_FIELD":        "El valor debe coincidir con el campo {{ .field }}.",
 	"NOT_FQDN":            "No es un nombre de dominio completamente calificado (FQDN).",
