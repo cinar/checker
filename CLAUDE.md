@@ -101,6 +101,8 @@ local development/CI only; that replace has no effect on external consumers.
 ## Conventions
 
 - Every new file needs the standard copyright header (see `header.txt` / any existing file for the exact form).
-- Add a `## [Unreleased]` entry to `CHANGELOG.md` for any user-visible behavior change (new checker, new field,
-  bug fix, breaking change). Skip it for docs-only or internal refactors.
+- Don't edit `CHANGELOG.md` for a PR. It no longer accumulates a running `## [Unreleased]` section — that pattern
+  made it a near-guaranteed merge conflict whenever two PRs landed close together (the same problem `DOC.md` used
+  to cause). Unreleased changes are covered by GitHub's auto-generated release notes instead; see the note at the
+  top of `CHANGELOG.md`.
 - `revive.toml` enforces `package-comments`, `exported`, etc. — exported identifiers need doc comments.

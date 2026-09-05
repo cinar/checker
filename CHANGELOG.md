@@ -1,6 +1,17 @@
 # Changelog
 
-All notable changes to this project are documented in this file.
+This file no longer gains an entry from every pull request. It used to: each
+PR added its own bullet under a running `## [Unreleased]` section, and since
+PRs regularly land close together, that section turned into a near-guaranteed
+merge conflict on every concurrent pull request — the same problem `DOC.md`
+used to cause. Changes since the last tag are instead covered by
+[GitHub Releases](https://github.com/cinar/checker/releases), whose notes
+are generated automatically from merged pull requests when a release is cut.
+The `## [Unreleased]` section below is a one-time snapshot, frozen as of
+2026-09-05, of what had accumulated there before this policy changed; it
+won't grow any further; expect the next entry in this file to be a tagged
+version once one is cut, added by hand at release time from that release's
+GitHub-generated notes, if the maintainer chooses to keep this file at all.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
