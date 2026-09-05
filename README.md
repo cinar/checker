@@ -115,6 +115,7 @@ type Person struct {
 - [`ipv4`](DOC.md#IsIPv4): Ensures the string is a valid IPv4 address.
 - [`ipv6`](DOC.md#IsIPv6): Ensures the string is a valid IPv6 address.
 - [`isbn`](DOC.md#IsISBN): Ensures the string is a valid ISBN.
+- [`iso639-1`](DOC.md#IsISO6391): Ensures the string is a valid two-letter ISO 639-1 language code, e.g. `en`.
 - [`lte`](DOC.md#ISLte): Ensures the value is less than or equal to the specified number.
 - [`luhn`](DOC.md#IsLUHN): Ensures the string is a valid LUHN number.
 - [`mac`](DOC.md#IsMAC): Ensures the string is a valid MAC address.

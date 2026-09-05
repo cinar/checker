@@ -50,6 +50,7 @@ var EnUSMessages = map[string]string{
     "NOT_IPV4":         "Not a valid IPv4 address.",
     "NOT_IPV6":         "Not a valid IPv6 address.",
     "NOT_ISBN":         "Not a valid ISBN number.",
+    "NOT_ISO6391":      "Not a valid ISO 639-1 language code.",
     "NOT_LTE":          "Value cannot be less than {{ .n }}.",
     "NOT_LUHN":         "Not a valid LUHN number.",
     "NOT_MAC":          "Not a valid MAC address.",
