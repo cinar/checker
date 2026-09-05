@@ -171,12 +171,13 @@ func CheckStruct(st any) (CheckErrors, bool) {
 // tag value instead. It also prepends the parent struct's name (if any) to
 // create a fully qualified field name.
 func fieldName(prefix string, field reflect.StructField) string {
-	// Default to field name
-	name := field.Name
-
-	// Use json tag if present
-	if jsonTag, ok := field.Tag.Lookup("json"); ok {
-		name = jsonTag
+	// Use the json tag's property name if present, stripping any
+	// comma-separated options (e.g. ",omitempty"); fields tagged json:"-"
+	// still need an error key, so fall back to the Go field name for them,
+	// same as fields with no json tag at all.
+	name, ok := jsonPropertyName(field)
+	if !ok {
+		name = field.Name
 	}
 
 	// Prepend parent name
