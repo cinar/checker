@@ -235,6 +235,9 @@ Checkers validate that a value conforms to expected criteria, returning an error
 | [`IsNumeric`](https://pkg.go.dev/github.com/cinar/checker/v2#IsNumeric) | `numeric` | Ensures the string is a valid numeric string, e.g. `"-3.14"` (unlike `digits`, allows a leading sign and a decimal point) |
 | [`IsDigits`](https://pkg.go.dev/github.com/cinar/checker/v2#IsDigits) | `digits` | Ensures the string contains only digits |
 | [`IsHex`](https://pkg.go.dev/github.com/cinar/checker/v2#IsHex) | `hex` | Ensures the string contains only hexadecimal digits |
+| [`IsContains`](https://pkg.go.dev/github.com/cinar/checker/v2#IsContains) | `contains:<substr>` | Ensures the string contains the given substring |
+| [`IsStartsWith`](https://pkg.go.dev/github.com/cinar/checker/v2#IsStartsWith) | `starts-with:<prefix>` | Ensures the string starts with the given prefix |
+| [`IsEndsWith`](https://pkg.go.dev/github.com/cinar/checker/v2#IsEndsWith) | `ends-with:<suffix>` | Ensures the string ends with the given suffix |
 | [`MakeRegexpChecker`](https://pkg.go.dev/github.com/cinar/checker/v2#MakeRegexpChecker) | `regexp:<pattern>` | Ensures the string matches the pattern |
 
 ### Presence, Sizes & Numeric Bounds
