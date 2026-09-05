@@ -83,6 +83,14 @@ type Schema struct {
 	// Maximum is the largest value a numeric value can hold.
 	Maximum *float64 `json:"maximum,omitempty"`
 
+	// ExclusiveMinimum is the smallest value a numeric value can hold,
+	// exclusive: the value itself doesn't satisfy the bound.
+	ExclusiveMinimum *float64 `json:"exclusiveMinimum,omitempty"`
+
+	// ExclusiveMaximum is the largest value a numeric value can hold,
+	// exclusive: the value itself doesn't satisfy the bound.
+	ExclusiveMaximum *float64 `json:"exclusiveMaximum,omitempty"`
+
 	// XChecker lists the raw checker tag tokens that have no JSON Schema
 	// equivalent, such as "eq-field:Password" or "luhn", so the constraint
 	// isn't silently lost even though it isn't translated.

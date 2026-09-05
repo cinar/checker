@@ -259,6 +259,19 @@ func TestJSONSchemaUUIDFormat(t *testing.T) {
 	}
 }
 
+func TestJSONSchemaGtLtExclusiveBounds(t *testing.T) {
+	type Order struct {
+		Quantity int `checkers:"gt:0 lt:100"`
+	}
+
+	schema := v2.JSONSchema(&Order{})
+
+	quantity, ok := schema.Properties["Quantity"]
+	if !ok || *quantity.ExclusiveMinimum != 0 || *quantity.ExclusiveMaximum != 100 {
+		t.Fatalf("unexpected quantity schema %+v", quantity)
+	}
+}
+
 func TestJSONSchemaOneOfEnum(t *testing.T) {
 	type Role struct {
 		Name string `checkers:"oneof:admin,user,guest"`
@@ -339,6 +352,26 @@ func TestJSONSchemaBadMaximum(t *testing.T) {
 
 	type Person struct {
 		Age int `checkers:"lte:abc"`
+	}
+
+	v2.JSONSchema(&Person{})
+}
+
+func TestJSONSchemaBadExclusiveMinimum(t *testing.T) {
+	defer FailIfNoPanic(t, "expected panic")
+
+	type Person struct {
+		Age int `checkers:"gt:abc"`
+	}
+
+	v2.JSONSchema(&Person{})
+}
+
+func TestJSONSchemaBadExclusiveMaximum(t *testing.T) {
+	defer FailIfNoPanic(t, "expected panic")
+
+	type Person struct {
+		Age int `checkers:"lt:abc"`
 	}
 
 	v2.JSONSchema(&Person{})

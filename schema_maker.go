@@ -44,9 +44,11 @@ var schemaMakersMu sync.RWMutex
 var schemaMakers = map[string]SchemaMakeFunc{
 	nameEmail:  schemaFormat("email"),
 	nameFQDN:   schemaFormat("hostname"),
+	nameGt:     schemaExclusiveMinimum,
 	nameGte:    schemaMinimum,
 	nameIPv4:   schemaFormat("ipv4"),
 	nameIPv6:   schemaFormat("ipv6"),
+	nameLt:     schemaExclusiveMaximum,
 	nameLte:    schemaMaximum,
 	nameMaxLen: schemaMaxLen,
 	nameMinLen: schemaMinLen,
@@ -104,6 +106,30 @@ func schemaMaximum(schema *Schema, params string) {
 	}
 
 	schema.Maximum = &n
+}
+
+// schemaExclusiveMinimum sets the Schema's ExclusiveMinimum from the
+// checker's numeric parameter. Panics if the parameter cannot be parsed as
+// a number.
+func schemaExclusiveMinimum(schema *Schema, params string) {
+	n, err := strconv.ParseFloat(params, 64)
+	if err != nil {
+		panic("unable to parse params as float")
+	}
+
+	schema.ExclusiveMinimum = &n
+}
+
+// schemaExclusiveMaximum sets the Schema's ExclusiveMaximum from the
+// checker's numeric parameter. Panics if the parameter cannot be parsed as
+// a number.
+func schemaExclusiveMaximum(schema *Schema, params string) {
+	n, err := strconv.ParseFloat(params, 64)
+	if err != nil {
+		panic("unable to parse params as float")
+	}
+
+	schema.ExclusiveMaximum = &n
 }
 
 // schemaMinLen sets the Schema's MinLength, MinItems, or MinProperties,

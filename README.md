@@ -244,6 +244,8 @@ Checkers validate that a value conforms to expected criteria, returning an error
 | [`MaxLen`](https://pkg.go.dev/github.com/cinar/checker/v2#MaxLen) | `max-len:<n>` | Ensures the length of the given value (string, slice, or map) is at most n |
 | [`IsGte`](https://pkg.go.dev/github.com/cinar/checker/v2#IsGte) | `gte:<n>` | Ensures the value is greater than or equal to the specified number |
 | [`IsLte`](https://pkg.go.dev/github.com/cinar/checker/v2#IsLte) | `lte:<n>` | Ensures the value is less than or equal to the specified number |
+| [`IsGt`](https://pkg.go.dev/github.com/cinar/checker/v2#IsGt) | `gt:<n>` | Ensures the value is strictly greater than the specified number |
+| [`IsLt`](https://pkg.go.dev/github.com/cinar/checker/v2#IsLt) | `lt:<n>` | Ensures the value is strictly less than the specified number |
 | [`IsOneOf`](https://pkg.go.dev/github.com/cinar/checker/v2#IsOneOf) | `oneof:<v1>,<v2>,...` | Ensures the value equals one of a comma-separated list of allowed values |
 
 ### Field-Relative & Conditional (Structs)
