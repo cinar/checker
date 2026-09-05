@@ -8,6 +8,7 @@ package v2
 import (
 	"html/template"
 	"strings"
+	"sync"
 
 	"github.com/cinar/checker/v2/locales"
 )
@@ -25,6 +26,11 @@ const (
 	// DefaultLocale is the default locale.
 	DefaultLocale = locales.EnUS
 )
+
+// errorMessagesMu guards errorMessages, which can be written concurrently
+// with error rendering through RegisterLocale (e.g. registered during
+// server startup while other goroutines are already rendering errors).
+var errorMessagesMu sync.RWMutex
 
 // errorMessages is the map of localized error messages.
 var errorMessages = map[string]map[string]string{
@@ -78,11 +84,17 @@ func (c *CheckError) ErrorWithLocale(locale string) string {
 
 // RegisterLocale registers the localized error messages for the given locale.
 func RegisterLocale(locale string, messages map[string]string) {
+	errorMessagesMu.Lock()
+	defer errorMessagesMu.Unlock()
+
 	errorMessages[locale] = messages
 }
 
 // getLocalizedErrorMessage returns the localized error message for the given locale and code.
 func getLocalizedErrorMessage(locale, code string) string {
+	errorMessagesMu.RLock()
+	defer errorMessagesMu.RUnlock()
+
 	if messages, found := errorMessages[locale]; found {
 		if message, exists := messages[code]; exists {
 			return message

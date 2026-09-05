@@ -5,7 +5,10 @@
 
 package v2
 
-import "strconv"
+import (
+	"strconv"
+	"sync"
+)
 
 // SchemaMakeFunc refines a Schema for the given checker's parameter. It is
 // called with the Schema of the value the checker is attached to: the field
@@ -27,6 +30,11 @@ var ignoredForSchema = map[string]bool{
 	nameURLUnescape:  true,
 }
 
+// schemaMakersMu guards schemaMakers, which can be written concurrently with
+// JSONSchema reads through RegisterSchemaMaker (e.g. registered during
+// server startup while other goroutines are already generating schemas).
+var schemaMakersMu sync.RWMutex
+
 // schemaMakers provides a mapping of SchemaMakeFunc keyed by checker name,
 // for checkers with a direct JSON Schema equivalent. A checker with no entry
 // here is instead recorded in the Schema's XChecker list.
@@ -47,6 +55,9 @@ var schemaMakers = map[string]SchemaMakeFunc{
 // normalizer name, so JSONSchema can translate it into a JSON Schema
 // keyword instead of recording it in XChecker.
 func RegisterSchemaMaker(name string, maker SchemaMakeFunc) {
+	schemaMakersMu.Lock()
+	defer schemaMakersMu.Unlock()
+
 	schemaMakers[name] = maker
 }
 

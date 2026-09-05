@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"sync"
 )
 
 // MakeCheckFunc is a function that returns a check function using the given params.
@@ -17,6 +18,13 @@ type MakeCheckFunc func(params string) CheckFunc[reflect.Value]
 // MakeCheckFieldFunc is a function that returns a field-relative check function
 // using the given params.
 type MakeCheckFieldFunc func(params string) CheckFieldFunc
+
+// makersMu guards both fieldMakers and makers below. They're populated at
+// init time and then only mutated through RegisterMaker/RegisterFieldMaker,
+// but those can run concurrently with CheckStruct calls (e.g. a custom
+// checker registered during server startup while requests are already being
+// handled), so every read and write goes through this mutex.
+var makersMu sync.RWMutex
 
 // fieldMakers provides a mapping of maker functions for field-relative checks
 // keyed by the check name.
@@ -73,11 +81,17 @@ var makers = map[string]MakeCheckFunc{
 
 // RegisterMaker registers a new maker function with the given name.
 func RegisterMaker(name string, maker MakeCheckFunc) {
+	makersMu.Lock()
+	defer makersMu.Unlock()
+
 	makers[name] = maker
 }
 
 // RegisterFieldMaker registers a new field-relative maker function with the given name.
 func RegisterFieldMaker(name string, maker MakeCheckFieldFunc) {
+	makersMu.Lock()
+	defer makersMu.Unlock()
+
 	fieldMakers[name] = maker
 }
 
@@ -91,7 +105,12 @@ func makeChecks(config string, parent reflect.Value) []CheckFunc[reflect.Value] 
 	for i, field := range fields {
 		name, params, _ := strings.Cut(field, ":")
 
-		if fieldMaker, ok := fieldMakers[name]; ok {
+		makersMu.RLock()
+		fieldMaker, isFieldMaker := fieldMakers[name]
+		maker, isMaker := makers[name]
+		makersMu.RUnlock()
+
+		if isFieldMaker {
 			fieldCheck := fieldMaker(params)
 
 			checks[i] = func(value reflect.Value) (reflect.Value, error) {
@@ -101,8 +120,7 @@ func makeChecks(config string, parent reflect.Value) []CheckFunc[reflect.Value] 
 			continue
 		}
 
-		maker, ok := makers[name]
-		if !ok {
+		if !isMaker {
 			panic(fmt.Sprintf("check %s not found", name))
 		}
 
