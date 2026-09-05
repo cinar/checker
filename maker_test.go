@@ -15,6 +15,38 @@ import (
 	v2 "github.com/cinar/checker/v2"
 )
 
+func TestRegisteredMakerNamesIncludesBuiltins(t *testing.T) {
+	names := v2.RegisteredMakerNames()
+
+	found := false
+	for _, name := range names {
+		if name == "required" {
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		t.Fatalf("expected \"required\" among registered maker names, got %v", names)
+	}
+}
+
+func TestRegisteredFieldMakerNamesIncludesBuiltins(t *testing.T) {
+	names := v2.RegisteredFieldMakerNames()
+
+	found := false
+	for _, name := range names {
+		if name == "eq-field" {
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		t.Fatalf("expected \"eq-field\" among registered field maker names, got %v", names)
+	}
+}
+
 func TestMakeCheckersUnknown(t *testing.T) {
 	defer FailIfNoPanic(t, "expected panic")
 

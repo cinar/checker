@@ -109,6 +109,40 @@ func RegisterFieldMaker(name string, maker MakeCheckFieldFunc) {
 	configCache.Clear()
 }
 
+// RegisteredMakerNames returns the name of every currently registered
+// non-field-relative checker/normalizer maker, including built-ins and any
+// custom makers added via RegisterMaker. The order is not significant.
+// Intended for tooling built on top of checker, such as the checkerlint
+// static analyzer, that needs to know the current checker vocabulary.
+func RegisteredMakerNames() []string {
+	makersMu.RLock()
+	defer makersMu.RUnlock()
+
+	names := make([]string, 0, len(makers))
+	for name := range makers {
+		names = append(names, name)
+	}
+
+	return names
+}
+
+// RegisteredFieldMakerNames returns the name of every currently registered
+// field-relative checker maker, including built-ins and any custom makers
+// added via RegisterFieldMaker. The order is not significant. Intended for
+// tooling built on top of checker, such as the checkerlint static
+// analyzer, that needs to know the current checker vocabulary.
+func RegisteredFieldMakerNames() []string {
+	makersMu.RLock()
+	defer makersMu.RUnlock()
+
+	names := make([]string, 0, len(fieldMakers))
+	for name := range fieldMakers {
+		names = append(names, name)
+	}
+
+	return names
+}
+
 // compiledCheck is a checkers/validate tag token already resolved to its
 // checker/normalizer closure. fieldFn is set instead of fn for a
 // field-relative check, since that still needs the enclosing struct's
