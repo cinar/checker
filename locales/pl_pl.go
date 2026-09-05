@@ -15,6 +15,8 @@ var PlPLMessages = map[string]string{
 	"NOT_CREDIT_CARD":     "Nieprawidłowy numer karty kredytowej.",
 	"NOT_DIGITS":          "Może zawierać tylko cyfry.",
 	"NOT_EMAIL":           "Nieprawidłowy adres e-mail.",
+	"EQ":                  "Wartość nie może być równa {{ .forbidden }}.",
+	"NOT_EQ":              "Wartość musi być równa {{ .expected }}.",
 	"NOT_EOA":             "Nieprawidłowy adres zewnętrzny (EOA).",
 	"NOT_EQ_FIELD":        "Wartość musi być zgodna z polem {{ .field }}.",
 	"NOT_FQDN":            "Nieprawidłowa w pełni kwalifikowana nazwa domeny (FQDN).",

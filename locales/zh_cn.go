@@ -15,6 +15,8 @@ var ZhCNMessages = map[string]string{
 	"NOT_CREDIT_CARD":     "不是有效的信用卡号。",
 	"NOT_DIGITS":          "只能包含数字。",
 	"NOT_EMAIL":           "不是有效的电子邮件地址。",
+	"EQ":                  "值不能等于{{ .forbidden }}。",
+	"NOT_EQ":              "值必须等于{{ .expected }}。",
 	"NOT_EOA":             "不是有效的外部拥有账户地址(EOA)。",
 	"NOT_EQ_FIELD":        "值必须与字段{{ .field }}匹配。",
 	"NOT_FQDN":            "不是有效的完全限定域名(FQDN)。",

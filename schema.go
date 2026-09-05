@@ -52,12 +52,15 @@ type Schema struct {
 	// Pattern is a regular expression a string value must match.
 	Pattern string `json:"pattern,omitempty"`
 
-	// Enum lists the only values a value may hold. Not set by any built-in
-	// checker, since checkers like iso639-1 back it with a code list too
-	// large to be worth inlining into every generated schema; register a
-	// SchemaMakeFunc via RegisterSchemaMaker to populate it for a custom
-	// checker instead.
+	// Enum lists the only values a value may hold. Set by the oneof checker.
+	// Checkers like iso639-1 don't set it, since they'd back it with a code
+	// list too large to be worth inlining into every generated schema;
+	// register a SchemaMakeFunc via RegisterSchemaMaker to populate it for
+	// a custom checker instead.
 	Enum []string `json:"enum,omitempty"`
+
+	// Const is the exact value a value must equal. Set by the eq checker.
+	Const *string `json:"const,omitempty"`
 
 	// MinLength is the minimum length of a string value.
 	MinLength *int `json:"minLength,omitempty"`

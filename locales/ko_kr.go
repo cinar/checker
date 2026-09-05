@@ -15,6 +15,8 @@ var KoKRMessages = map[string]string{
 	"NOT_CREDIT_CARD":     "유효한 신용카드 번호가 아닙니다.",
 	"NOT_DIGITS":          "숫자만 포함할 수 있습니다.",
 	"NOT_EMAIL":           "유효한 이메일 주소가 아닙니다.",
+	"EQ":                  "값은 {{ .forbidden }}와(과) 같을 수 없습니다.",
+	"NOT_EQ":              "값은 {{ .expected }}와(과) 같아야 합니다.",
 	"NOT_EOA":             "유효한 외부 소유 주소(EOA)가 아닙니다.",
 	"NOT_EQ_FIELD":        "값은 {{ .field }} 필드와 일치해야 합니다.",
 	"NOT_FQDN":            "정규화된 전체 도메인 이름(FQDN)이 아닙니다.",

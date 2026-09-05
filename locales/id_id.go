@@ -15,6 +15,8 @@ var IDIDMessages = map[string]string{
 	"NOT_CREDIT_CARD":     "Bukan nomor kartu kredit yang valid.",
 	"NOT_DIGITS":          "Hanya boleh berisi angka.",
 	"NOT_EMAIL":           "Bukan alamat email yang valid.",
+	"EQ":                  "Nilai tidak boleh sama dengan {{ .forbidden }}.",
+	"NOT_EQ":              "Nilai harus sama dengan {{ .expected }}.",
 	"NOT_EOA":             "Bukan alamat yang dimiliki secara eksternal (EOA) yang valid.",
 	"NOT_EQ_FIELD":        "Nilai harus sama dengan bidang {{ .field }}.",
 	"NOT_FQDN":            "Bukan nama domain yang memenuhi syarat sepenuhnya (FQDN).",

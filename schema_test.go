@@ -259,6 +259,33 @@ func TestJSONSchemaUUIDFormat(t *testing.T) {
 	}
 }
 
+func TestJSONSchemaEqConst(t *testing.T) {
+	type Status struct {
+		Value string `checkers:"eq:active"`
+	}
+
+	schema := v2.JSONSchema(&Status{})
+
+	value, ok := schema.Properties["Value"]
+	if !ok || value.Const == nil || *value.Const != "active" {
+		t.Fatalf("unexpected value schema %+v", value)
+	}
+}
+
+func TestJSONSchemaNeXChecker(t *testing.T) {
+	type User struct {
+		Role string `checkers:"ne:admin"`
+	}
+
+	schema := v2.JSONSchema(&User{})
+
+	role := schema.Properties["Role"]
+
+	if len(role.XChecker) != 1 || role.XChecker[0] != "ne:admin" {
+		t.Fatalf("unexpected x-checker %+v", role.XChecker)
+	}
+}
+
 func TestJSONSchemaGtLtExclusiveBounds(t *testing.T) {
 	type Order struct {
 		Quantity int `checkers:"gt:0 lt:100"`

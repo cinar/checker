@@ -15,6 +15,8 @@ var TrTRMessages = map[string]string{
 	"NOT_CREDIT_CARD":     "Geçerli bir kredi kartı numarası değil.",
 	"NOT_DIGITS":          "Yalnızca rakam içerebilir.",
 	"NOT_EMAIL":           "Geçerli bir e-posta adresi değil.",
+	"EQ":                  "Değer {{ .forbidden }} değerine eşit olmamalı.",
+	"NOT_EQ":              "Değer {{ .expected }} değerine eşit olmalı.",
 	"NOT_EOA":             "Geçerli bir harici sahipli adres (EOA) değil.",
 	"NOT_EQ_FIELD":        "Değer, {{ .field }} alanıyla eşleşmelidir.",
 	"NOT_FQDN":            "Tam nitelikli bir alan adı (FQDN) değil.",

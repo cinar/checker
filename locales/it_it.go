@@ -15,6 +15,8 @@ var ItITMessages = map[string]string{
 	"NOT_CREDIT_CARD":     "Non è un numero di carta di credito valido.",
 	"NOT_DIGITS":          "Può contenere solo cifre.",
 	"NOT_EMAIL":           "Non è un indirizzo email valido.",
+	"EQ":                  "Il valore non deve essere uguale a {{ .forbidden }}.",
+	"NOT_EQ":              "Il valore deve essere uguale a {{ .expected }}.",
 	"NOT_EOA":             "Non è un indirizzo a proprietà esterna (EOA) valido.",
 	"NOT_EQ_FIELD":        "Il valore deve corrispondere al campo {{ .field }}.",
 	"NOT_FQDN":            "Non è un nome di dominio completamente qualificato (FQDN).",

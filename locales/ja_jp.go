@@ -15,6 +15,8 @@ var JaJPMessages = map[string]string{
 	"NOT_CREDIT_CARD":     "有効なクレジットカード番号ではありません。",
 	"NOT_DIGITS":          "数字のみを使用できます。",
 	"NOT_EMAIL":           "有効なメールアドレスではありません。",
+	"EQ":                  "値は{{ .forbidden }}と等しくてはなりません。",
+	"NOT_EQ":              "値は{{ .expected }}と等しくなければなりません。",
 	"NOT_EOA":             "有効な外部所有アドレス(EOA)ではありません。",
 	"NOT_EQ_FIELD":        "値はフィールド{{ .field }}と一致する必要があります。",
 	"NOT_FQDN":            "完全修飾ドメイン名(FQDN)ではありません。",

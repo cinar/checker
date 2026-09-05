@@ -15,6 +15,8 @@ var ViVNMessages = map[string]string{
 	"NOT_CREDIT_CARD":     "Không phải là số thẻ tín dụng hợp lệ.",
 	"NOT_DIGITS":          "Chỉ được chứa chữ số.",
 	"NOT_EMAIL":           "Không phải là địa chỉ email hợp lệ.",
+	"EQ":                  "Giá trị không được bằng {{ .forbidden }}.",
+	"NOT_EQ":              "Giá trị phải bằng {{ .expected }}.",
 	"NOT_EOA":             "Không phải là địa chỉ sở hữu bên ngoài (EOA) hợp lệ.",
 	"NOT_EQ_FIELD":        "Giá trị phải khớp với trường {{ .field }}.",
 	"NOT_FQDN":            "Không phải là tên miền đầy đủ điều kiện (FQDN) hợp lệ.",
