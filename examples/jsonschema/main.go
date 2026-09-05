@@ -1,4 +1,4 @@
-// Copyright (c) 2024-2026 Onur Cinar. All Rights Reserved.
+// Copyright (c) 2023-2026 Onur Cinar. All Rights Reserved.
 // The source code is provided under MIT License.
 //
 // https://github.com/cinar/checker
