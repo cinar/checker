@@ -35,6 +35,7 @@ var PtBRMessages = map[string]string{
 	"NOT_ISO31661_ALPHA3": "Não é um código de país ISO 3166-1 alfa-3 válido.",
 	"NOT_ISO6391":         "Não é um código de idioma ISO 639-1 válido.",
 	"NOT_LT":              "O valor deve ser menor que {{ .n }}.",
+	"NOT_LEN":             "O valor deve ter comprimento {{ .len }}.",
 	"NOT_LTE":             "O valor não pode ser menor que {{ .n }}.",
 	"NOT_LUHN":            "Não é um número LUHN válido.",
 	"NOT_MAC":             "Não é um endereço MAC válido.",

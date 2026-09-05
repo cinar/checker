@@ -35,6 +35,7 @@ var FrFRMessages = map[string]string{
 	"NOT_ISO31661_ALPHA3": "N'est pas un code pays ISO 3166-1 alpha-3 valide.",
 	"NOT_ISO6391":         "N'est pas un code de langue ISO 639-1 valide.",
 	"NOT_LT":              "La valeur doit être inférieure à {{ .n }}.",
+	"NOT_LEN":             "La valeur doit avoir une longueur de {{ .len }}.",
 	"NOT_LTE":             "La valeur ne peut pas être inférieure à {{ .n }}.",
 	"NOT_LUHN":            "N'est pas un numéro LUHN valide.",
 	"NOT_MAC":             "N'est pas une adresse MAC valide.",

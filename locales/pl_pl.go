@@ -35,6 +35,7 @@ var PlPLMessages = map[string]string{
 	"NOT_ISO31661_ALPHA3": "Nieprawidłowy kod kraju ISO 3166-1 alfa-3.",
 	"NOT_ISO6391":         "Nieprawidłowy kod języka ISO 639-1.",
 	"NOT_LT":              "Wartość musi być mniejsza niż {{ .n }}.",
+	"NOT_LEN":             "Wartość musi mieć długość {{ .len }}.",
 	"NOT_LTE":             "Wartość nie może być mniejsza niż {{ .n }}.",
 	"NOT_LUHN":            "Nieprawidłowy numer LUHN.",
 	"NOT_MAC":             "Nieprawidłowy adres MAC.",

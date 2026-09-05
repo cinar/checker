@@ -65,6 +65,7 @@ var makers = map[string]MakeCheckFunc{
 	nameISO31661Alpha2: makeISO31661Alpha2,
 	nameISO31661Alpha3: makeISO31661Alpha3,
 	nameISO6391:        makeISO6391,
+	nameLen:            makeLen,
 	nameLower:          makeLower,
 	nameLt:             makeLt,
 	nameLte:            makeLte,

@@ -35,6 +35,7 @@ var IDIDMessages = map[string]string{
 	"NOT_ISO31661_ALPHA3": "Bukan kode negara ISO 3166-1 alpha-3 yang valid.",
 	"NOT_ISO6391":         "Bukan kode bahasa ISO 639-1 yang valid.",
 	"NOT_LT":              "Nilai harus kurang dari {{ .n }}.",
+	"NOT_LEN":             "Nilai harus memiliki panjang {{ .len }}.",
 	"NOT_LTE":             "Nilai tidak boleh kurang dari {{ .n }}.",
 	"NOT_LUHN":            "Bukan nomor LUHN yang valid.",
 	"NOT_MAC":             "Bukan alamat MAC yang valid.",
