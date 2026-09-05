@@ -35,6 +35,7 @@ var JaJPMessages = map[string]string{
 	"NOT_ISO31661_ALPHA3": "有効なISO 3166-1 alpha-3国コードではありません。",
 	"NOT_ISO6391":         "有効なISO 639-1言語コードではありません。",
 	"NOT_LT":              "値は{{ .n }}より小さくなければなりません。",
+	"NOT_LEN":             "値の長さは{{ .len }}でなければなりません。",
 	"NOT_LTE":             "値は{{ .n }}未満にはできません。",
 	"NOT_LUHN":            "有効なLUHN番号ではありません。",
 	"NOT_MAC":             "有効なMACアドレスではありません。",

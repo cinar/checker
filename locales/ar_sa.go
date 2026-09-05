@@ -35,6 +35,7 @@ var ArSAMessages = map[string]string{
 	"NOT_ISO31661_ALPHA3": "ليس رمز دولة ISO 3166-1 alpha-3 صالحًا.",
 	"NOT_ISO6391":         "ليس رمز لغة ISO 639-1 صالحًا.",
 	"NOT_LT":              "يجب أن تكون القيمة أقل من {{ .n }}.",
+	"NOT_LEN":             "يجب أن يكون طول القيمة {{ .len }}.",
 	"NOT_LTE":             "لا يمكن أن تكون القيمة أقل من {{ .n }}.",
 	"NOT_LUHN":            "ليس رقم LUHN صالحًا.",
 	"NOT_MAC":             "ليس عنوان MAC صالحًا.",

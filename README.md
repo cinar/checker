@@ -247,6 +247,7 @@ Checkers validate that a value conforms to expected criteria, returning an error
 | [`Required`](https://pkg.go.dev/github.com/cinar/checker/v2#Required) | `required` | Ensures the value is provided |
 | [`MinLen`](https://pkg.go.dev/github.com/cinar/checker/v2#MinLen) | `min-len:<n>` | Ensures the length of the given value (string, slice, or map) is at least n |
 | [`MaxLen`](https://pkg.go.dev/github.com/cinar/checker/v2#MaxLen) | `max-len:<n>` | Ensures the length of the given value (string, slice, or map) is at most n |
+| [`Len`](https://pkg.go.dev/github.com/cinar/checker/v2#Len) | `len:<n>` | Ensures the length of the given value (string, slice, or map) is exactly n |
 | [`IsGte`](https://pkg.go.dev/github.com/cinar/checker/v2#IsGte) | `gte:<n>` | Ensures the value is greater than or equal to the specified number |
 | [`IsLte`](https://pkg.go.dev/github.com/cinar/checker/v2#IsLte) | `lte:<n>` | Ensures the value is less than or equal to the specified number |
 | [`IsGt`](https://pkg.go.dev/github.com/cinar/checker/v2#IsGt) | `gt:<n>` | Ensures the value is strictly greater than the specified number |

@@ -35,6 +35,7 @@ var FaIRMessages = map[string]string{
 	"NOT_ISO31661_ALPHA3": "کد کشور ISO 3166-1 alpha-3 معتبر نیست.",
 	"NOT_ISO6391":         "کد زبان ISO 639-1 معتبر نیست.",
 	"NOT_LT":              "مقدار باید کمتر از {{ .n }} باشد.",
+	"NOT_LEN":             "طول مقدار باید {{ .len }} باشد.",
 	"NOT_LTE":             "مقدار نمی\u200cتواند کمتر از {{ .n }} باشد.",
 	"NOT_LUHN":            "شماره LUHN معتبر نیست.",
 	"NOT_MAC":             "آدرس MAC معتبر نیست.",

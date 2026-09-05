@@ -52,6 +52,7 @@ var schemaMakers = map[string]SchemaMakeFunc{
 	nameGte:        schemaMinimum,
 	nameIPv4:       schemaFormat("ipv4"),
 	nameIPv6:       schemaFormat("ipv6"),
+	nameLen:        schemaLen,
 	nameLt:         schemaExclusiveMaximum,
 	nameLte:        schemaMaximum,
 	nameMaxLen:     schemaMaxLen,
@@ -197,5 +198,27 @@ func schemaMaxLen(schema *Schema, params string) {
 		schema.MaxProperties = &n
 	default:
 		schema.MaxLength = &n
+	}
+}
+
+// schemaLen sets the Schema's Min/Max Length, Items, or Properties (both
+// bounds equal, since len is an exact length), depending on whether it
+// describes a string, array, or object, from the checker's integer
+// parameter. Panics if the parameter cannot be parsed as an integer.
+func schemaLen(schema *Schema, params string) {
+	n, err := strconv.Atoi(params)
+	if err != nil {
+		panic("unable to parse len")
+	}
+
+	m := n
+
+	switch schema.Type {
+	case "array":
+		schema.MinItems, schema.MaxItems = &n, &m
+	case "object":
+		schema.MinProperties, schema.MaxProperties = &n, &m
+	default:
+		schema.MinLength, schema.MaxLength = &n, &m
 	}
 }
