@@ -6,13 +6,21 @@
     <a href="https://github.com/cinar/checker/stargazers"><img src="https://img.shields.io/github/stars/cinar/checker?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Stars" /></a>
 </p>
 
-<p align="center">
-    <img src="logo.svg" alt="Checker logo: a tag with a punched checkmark" width="96" height="96" />
-</p>
-
-<h1 align="center">Checker</h1>
+<h1 align="center">
+    <img src="logo.svg" alt="Checker logo: a tag with a punched checkmark" width="128" height="128" /><br />
+    Checker
+</h1>
 
 <p align="center">Checker is a lightweight Go library for validating and normalizing user input, driven by struct tags or plain function calls, with zero external dependencies.</p>
+
+<p align="center">
+    <a href="#quickstart-example">Quickstart</a> &middot;
+    <a href="#checkers-provided">Checkers</a> &middot;
+    <a href="#json-schema-generation">JSON Schema</a> &middot;
+    <a href="#localized-error-messages">Locales</a> &middot;
+    <a href="#framework-integration">Frameworks</a> &middot;
+    <a href="#contributing-to-the-project">Contributing</a>
+</p>
 
 - **Zero dependencies** — the core module imports nothing beyond the Go standard library.
 - **Struct tags or plain functions** — validate a whole struct declaratively, or call checkers directly for one-off values.
