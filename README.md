@@ -20,10 +20,14 @@ Checker is a lightweight Go library for validating and normalizing user input, d
 
 ## Table of Contents
 
+- [Why Checker?](#why-checker)
 - [Usage](#usage)
+  - [Quickstart Example](#quickstart-example)
+  - [Validating Structs](#validating-structs)
+  - [Validating Individual Values](#validating-individual-values)
 - [Normalizers and Checkers](#normalizers-and-checkers)
-- [Checkers Provided](#checkers-provided)
 - [Normalizers Provided](#normalizers-provided)
+- [Checkers Provided](#checkers-provided)
 - [Custom Checkers and Normalizers](#custom-checkers-and-normalizers)
 - [Slice and Item Level Checkers](#slice-and-item-level-checkers)
 - [Field-Relative and Conditional Checkers](#field-relative-and-conditional-checkers)
@@ -31,9 +35,33 @@ Checker is a lightweight Go library for validating and normalizing user input, d
 - [Structured Errors](#structured-errors)
 - [JSON Schema Generation](#json-schema-generation)
 - [Framework Integration](#framework-integration)
+- [Performance](#performance)
 - [Changelog](#changelog)
 - [Contributing to the Project](#contributing-to-the-project)
 - [License](#license)
+
+## Why Checker?
+
+Validating user input in Go often requires piecing together separate libraries: one for struct validation, another for string trimming and normalization, and custom code or extra tooling for JSON Schemas.
+
+Checker provides a **single, zero-dependency pipeline** designed around three core pillars:
+
+1. **Zero External Dependencies** — The core module imports nothing beyond the Go standard library. No supply-chain bloat or dependency drift.
+2. **Unified Normalization & Validation** — Clean, transform, and validate input in one atomic pass (`trim lower required email`). Input is mutated in-place.
+3. **Living JSON Schemas** — Struct tags generate Draft 2020-12 JSON Schema documents for frontend contract sharing and API docs without duplicating rules.
+
+### Feature Comparison
+
+| Feature | Checker (`v2`) | go-playground/validator | ozzo-validation |
+| :--- | :---: | :---: | :---: |
+| **External Dependencies** | **0 (Standard library only)** | 4+ packages | Standard library only |
+| **In-place Normalization** | **Built-in (`trim`, `lower`, etc.)** | Not supported | Not supported |
+| **JSON Schema Generation** | **Built-in (`checker.JSONSchema`)** | Requires external tooling | Not supported |
+| **Cross-field Validation** | **Built-in (`eq-field`, `required-if`, ...)** | Built-in (`eqfield`, etc.) | Custom rules |
+| **Slice / Container Rules** | **Container (`@max-len`) + Items** | Items only | Custom loops |
+| **Internationalization** | **23 Locales (Opt-in import)** | 30+ Locales (Always linked) | Manual translation |
+| **Test Coverage** | **100% Coverage** | ~85% | ~90% |
+| **API Error Payloads** | **Built-in (`errs.JSON()`)** | Manual formatting | Manual formatting |
 
 ## Usage
 
@@ -43,7 +71,7 @@ To begin using the Checker library, install it with the following command:
 go get github.com/cinar/checker/v2
 ```
 
-Then, import the library into your source file as shown below:
+Then, import the library into your source file:
 
 ```golang
 import (
@@ -51,7 +79,51 @@ import (
 )
 ```
 
-### Validating User Input Stored in a Struct
+### Quickstart Example
+
+Here is a real-world registration request showing in-place normalization, cross-field comparison, slice validation, and structured error responses:
+
+```golang
+package main
+
+import (
+	"fmt"
+
+	checker "github.com/cinar/checker/v2"
+)
+
+type SignupRequest struct {
+	// 1. Normalizes in-place (trims spaces, converts to lowercase) and validates:
+	Email           string   `json:"email" checkers:"trim lower required email"`
+	Password        string   `json:"password" checkers:"required min-len:8"`
+	ConfirmPassword string   `json:"confirm_password" checkers:"required eq-field:Password"`
+	Roles           []string `json:"roles" checkers:"@max-len:3 trim alphanumeric"`
+}
+
+func main() {
+	req := &SignupRequest{
+		Email:           "  ALICE@EXAMPLE.COM  ",
+		Password:        "supersecret123",
+		ConfirmPassword: "supersecret123",
+		Roles:           []string{"  admin  ", "editor"},
+	}
+
+	// CheckStruct normalizes fields in-place and validates all rules:
+	errs, valid := checker.CheckStruct(req)
+	if !valid {
+		// Marshals errors directly to JSON for HTTP API responses:
+		data, _ := errs.JSON()
+		fmt.Println(string(data))
+		return
+	}
+
+	// Values are sanitized in-place and ready for database persistence:
+	fmt.Println(req.Email) // "alice@example.com"
+	fmt.Println(req.Roles) // ["admin", "editor"]
+}
+```
+
+### Validating Structs
 
 Checker can validate user input stored in a struct by listing the checkers in the struct tags for each field. Here is an example:
 
@@ -70,9 +142,9 @@ if !valid {
 }
 ```
 
-### Validating Individual User Input with Multiple Checkers
+### Validating Individual Values
 
-You can also validate individual user input by calling checker functions directly. Here is an example:
+You can also validate individual user input by calling checker functions directly:
 
 ```golang
 name := " Onur Cinar "
@@ -83,21 +155,18 @@ if err != nil {
 }
 ```
 
-The checkers and normalizers can also be provided through a config string. Here is an example:
+The checkers and normalizers can also be provided through a config string:
 
 ```golang
 name := " Onur Cinar "
 
-name, err := checker.CheckWithConfig(name, "trim requied")
+name, err := checker.CheckWithConfig(name, "trim required")
 if err != nil {
 	// Handle validation error
 }
-
 ```
 
-### Validating Individual User Input
-
-For simpler validation, you can call individual checker functions. Here is an example:
+For simpler validation, you can call individual checker functions:
 
 ```golang
 name := "Onur Cinar"
@@ -112,7 +181,7 @@ if err != nil {
 
 Checkers validate user input, while normalizers transform it into a preferred format. For example, a normalizer can trim spaces from a string or convert it to title case.
 
-Although combining checkers and normalizers into a single library might seem unconventional, using them together can be beneficial. They can be mixed in any order when defining validation steps. For instance, you can use the `trim` normalizer with the `required` checker to first trim the input and then ensure it is provided. Here is an example:
+Although combining checkers and normalizers into a single library might seem unconventional, using them together can be beneficial. They can be mixed in any order when defining validation steps. For instance, you can use the `trim` normalizer with the `required` checker to first trim the input and then ensure it is provided:
 
 ```golang
 type Person struct {
@@ -120,62 +189,97 @@ type Person struct {
 }
 ```
 
-## Checkers Provided
-
-- [`after`](https://pkg.go.dev/github.com/cinar/checker/v2#IsAfter): Ensures the value is a time after the given reference time, e.g. `after:DateOnly:2024-01-01`.
-- [`after-field`](https://pkg.go.dev/github.com/cinar/checker/v2#IsAfterField): Ensures the value is a time after the value of another field on the struct, e.g. `after-field:DateOnly:BornAt`.
-- [`ascii`](https://pkg.go.dev/github.com/cinar/checker/v2#IsASCII): Ensures the string contains only ASCII characters.
-- [`alphanumeric`](https://pkg.go.dev/github.com/cinar/checker/v2#IsAlphanumeric): Ensures the string contains only letters and numbers.
-- [`before`](https://pkg.go.dev/github.com/cinar/checker/v2#IsBefore): Ensures the value is a time before the given reference time, e.g. `before:DateOnly:2024-01-01`.
-- [`before-field`](https://pkg.go.dev/github.com/cinar/checker/v2#IsBeforeField): Ensures the value is a time before the value of another field on the struct, e.g. `before-field:DateOnly:ReturnAt`.
-- [`credit-card`](https://pkg.go.dev/github.com/cinar/checker/v2#IsAnyCreditCard): Ensures the string is a valid credit card number.
-- [`cidr`](https://pkg.go.dev/github.com/cinar/checker/v2#IsCIDR): Ensures the string is a valid CIDR notation.
-- [`digits`](https://pkg.go.dev/github.com/cinar/checker/v2#IsDigits): Ensures the string contains only digits.
-- [`email`](https://pkg.go.dev/github.com/cinar/checker/v2#IsEmail): Ensures the string is a valid email address.
-- [`eoa`](https://pkg.go.dev/github.com/cinar/checker/v2#IsEOA): Ensures the string is a valid externally owned address (EOA), i.e. an Ethereum address.
-- [`eq-field`](https://pkg.go.dev/github.com/cinar/checker/v2#IsEqField): Ensures the value is equal to the value of another field on the struct.
-- [`fqdn`](https://pkg.go.dev/github.com/cinar/checker/v2#IsFQDN): Ensures the string is a valid fully qualified domain name.
-- [`gte`](https://pkg.go.dev/github.com/cinar/checker/v2#IsGte): Ensures the value is greater than or equal to the specified number.
-- [`hash`](https://pkg.go.dev/github.com/cinar/checker/v2#IsHash): Ensures the string is a valid hex-encoded hash for the given algorithm (`md5`, `sha1`, `sha256`, `sha384`, or `sha512`), e.g. `hash:sha256`.
-- [`hex`](https://pkg.go.dev/github.com/cinar/checker/v2#IsHex): Ensures the string contains only hexadecimal digits.
-- [`ip`](https://pkg.go.dev/github.com/cinar/checker/v2#IsIP): Ensures the string is a valid IP address.
-- [`ipv4`](https://pkg.go.dev/github.com/cinar/checker/v2#IsIPv4): Ensures the string is a valid IPv4 address.
-- [`ipv6`](https://pkg.go.dev/github.com/cinar/checker/v2#IsIPv6): Ensures the string is a valid IPv6 address.
-- [`isbn`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISBN): Ensures the string is a valid ISBN.
-- [`iso3166-1-alpha-2`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO31661Alpha2): Ensures the string is a valid two-letter ISO 3166-1 alpha-2 country code, e.g. `US`.
-- [`iso3166-1-alpha-3`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO31661Alpha3): Ensures the string is a valid three-letter ISO 3166-1 alpha-3 country code, e.g. `USA`.
-- [`iso639-1`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO6391): Ensures the string is a valid two-letter ISO 639-1 language code, e.g. `en`.
-- [`lte`](https://pkg.go.dev/github.com/cinar/checker/v2#IsLte): Ensures the value is less than or equal to the specified number.
-- [`luhn`](https://pkg.go.dev/github.com/cinar/checker/v2#IsLUHN): Ensures the string is a valid LUHN number.
-- [`mac`](https://pkg.go.dev/github.com/cinar/checker/v2#IsMAC): Ensures the string is a valid MAC address.
-- [`max-len`](https://pkg.go.dev/github.com/cinar/checker/v2#MaxLen): Ensures the length of the given value (string, slice, or map) is at most n.
-- [`min-len`](https://pkg.go.dev/github.com/cinar/checker/v2#MinLen): Ensures the length of the given value (string, slice, or map) is at least n.
-- [`required`](https://pkg.go.dev/github.com/cinar/checker/v2#Required) Ensures the value is provided.
-- [`required-if`](https://pkg.go.dev/github.com/cinar/checker/v2#IsRequiredIf): Ensures the value is provided when another field is equal to a given value.
-- [`required-unless`](https://pkg.go.dev/github.com/cinar/checker/v2#IsRequiredUnless): Ensures the value is provided unless another field is equal to a given value.
-- [`regexp`](https://pkg.go.dev/github.com/cinar/checker/v2#MakeRegexpChecker) Ensured the string matches the pattern.
-- [`time`](https://pkg.go.dev/github.com/cinar/checker/v2#IsTime) Ensured the string matches the provided time layout.
-- [`url`](https://pkg.go.dev/github.com/cinar/checker/v2#IsURL): Ensures the string is a valid URL.
-
 ## Normalizers Provided
 
-- [`lower`](https://pkg.go.dev/github.com/cinar/checker/v2#Lower): Converts the string to lowercase.
-- [`title`](https://pkg.go.dev/github.com/cinar/checker/v2#Title): Converts the string to title case.
-- [`trim-left`](https://pkg.go.dev/github.com/cinar/checker/v2#TrimLeft): Trims whitespace from the left side of the string.
-- [`trim-right`](https://pkg.go.dev/github.com/cinar/checker/v2#TrimRight): Trims whitespace from the right side of the string.
-- [`trim`](https://pkg.go.dev/github.com/cinar/checker/v2#TrimSpace): Trims whitespace from both sides of the string.
-- [`upper`](https://pkg.go.dev/github.com/cinar/checker/v2#Upper): Converts the string to uppercase.
-- [`html-escape`](https://pkg.go.dev/github.com/cinar/checker/v2#HTMLEscape): Escapes special characters in the string for HTML.
-- [`html-unescape`](https://pkg.go.dev/github.com/cinar/checker/v2#HTMLUnescape): Unescapes special characters in the string for HTML.
-- [`url-escape`](https://pkg.go.dev/github.com/cinar/checker/v2#URLEscape): Escapes special characters in the string for URLs.
-- [`url-unescape`](https://pkg.go.dev/github.com/cinar/checker/v2#URLUnescape): Unescapes special characters in the string for URLs.
+Normalizers mutate string values in-place and pass them to the next checker in the chain:
+
+| Category | Normalizer | Tag | Description |
+| :--- | :--- | :--- | :--- |
+| **Whitespace** | [`TrimSpace`](https://pkg.go.dev/github.com/cinar/checker/v2#TrimSpace) | `trim` | Trims whitespace from both sides of the string |
+| | [`TrimLeft`](https://pkg.go.dev/github.com/cinar/checker/v2#TrimLeft) | `trim-left` | Trims whitespace from the left side of the string |
+| | [`TrimRight`](https://pkg.go.dev/github.com/cinar/checker/v2#TrimRight) | `trim-right` | Trims whitespace from the right side of the string |
+| **Case** | [`Lower`](https://pkg.go.dev/github.com/cinar/checker/v2#Lower) | `lower` | Converts the string to lowercase |
+| | [`Upper`](https://pkg.go.dev/github.com/cinar/checker/v2#Upper) | `upper` | Converts the string to uppercase |
+| | [`Title`](https://pkg.go.dev/github.com/cinar/checker/v2#Title) | `title` | Converts the string to title case |
+| **Sanitization** | [`HTMLEscape`](https://pkg.go.dev/github.com/cinar/checker/v2#HTMLEscape) | `html-escape` | Escapes special characters in the string for HTML |
+| | [`HTMLUnescape`](https://pkg.go.dev/github.com/cinar/checker/v2#HTMLUnescape) | `html-unescape` | Unescapes special characters in the string for HTML |
+| | [`URLEscape`](https://pkg.go.dev/github.com/cinar/checker/v2#URLEscape) | `url-escape` | Escapes special characters in the string for URLs |
+| | [`URLUnescape`](https://pkg.go.dev/github.com/cinar/checker/v2#URLUnescape) | `url-unescape` | Unescapes special characters in the string for URLs |
+
+## Checkers Provided
+
+Checkers validate that a value conforms to expected criteria, returning an error if validation fails.
+
+### Strings & Characters
+
+| Checker | Tag Syntax | Description |
+| :--- | :--- | :--- |
+| [`IsASCII`](https://pkg.go.dev/github.com/cinar/checker/v2#IsASCII) | `ascii` | Ensures the string contains only ASCII characters |
+| [`IsAlphanumeric`](https://pkg.go.dev/github.com/cinar/checker/v2#IsAlphanumeric) | `alphanumeric` | Ensures the string contains only letters and numbers |
+| [`IsDigits`](https://pkg.go.dev/github.com/cinar/checker/v2#IsDigits) | `digits` | Ensures the string contains only digits |
+| [`IsHex`](https://pkg.go.dev/github.com/cinar/checker/v2#IsHex) | `hex` | Ensures the string contains only hexadecimal digits |
+| [`MakeRegexpChecker`](https://pkg.go.dev/github.com/cinar/checker/v2#MakeRegexpChecker) | `regexp:<pattern>` | Ensures the string matches the pattern |
+
+### Presence, Sizes & Numeric Bounds
+
+| Checker | Tag Syntax | Description |
+| :--- | :--- | :--- |
+| [`Required`](https://pkg.go.dev/github.com/cinar/checker/v2#Required) | `required` | Ensures the value is provided |
+| [`MinLen`](https://pkg.go.dev/github.com/cinar/checker/v2#MinLen) | `min-len:<n>` | Ensures the length of the given value (string, slice, or map) is at least n |
+| [`MaxLen`](https://pkg.go.dev/github.com/cinar/checker/v2#MaxLen) | `max-len:<n>` | Ensures the length of the given value (string, slice, or map) is at most n |
+| [`IsGte`](https://pkg.go.dev/github.com/cinar/checker/v2#IsGte) | `gte:<n>` | Ensures the value is greater than or equal to the specified number |
+| [`IsLte`](https://pkg.go.dev/github.com/cinar/checker/v2#IsLte) | `lte:<n>` | Ensures the value is less than or equal to the specified number |
+
+### Field-Relative & Conditional (Structs)
+
+| Checker | Tag Syntax | Description |
+| :--- | :--- | :--- |
+| [`IsEqField`](https://pkg.go.dev/github.com/cinar/checker/v2#IsEqField) | `eq-field:<field>` | Ensures the value is equal to the value of another field on the struct |
+| [`IsRequiredIf`](https://pkg.go.dev/github.com/cinar/checker/v2#IsRequiredIf) | `required-if:<field>:<val>` | Ensures the value is provided when another field is equal to a given value |
+| [`IsRequiredUnless`](https://pkg.go.dev/github.com/cinar/checker/v2#IsRequiredUnless) | `required-unless:<field>:<val>` | Ensures the value is provided unless another field is equal to a given value |
+| [`IsBeforeField`](https://pkg.go.dev/github.com/cinar/checker/v2#IsBeforeField) | `before-field:<layout>:<field>` | Ensures the value is a time before another field on the struct |
+| [`IsAfterField`](https://pkg.go.dev/github.com/cinar/checker/v2#IsAfterField) | `after-field:<layout>:<field>` | Ensures the value is a time after another field on the struct |
+
+### Network & Web
+
+| Checker | Tag Syntax | Description |
+| :--- | :--- | :--- |
+| [`IsEmail`](https://pkg.go.dev/github.com/cinar/checker/v2#IsEmail) | `email` | Ensures the string is a valid email address |
+| [`IsURL`](https://pkg.go.dev/github.com/cinar/checker/v2#IsURL) | `url` | Ensures the string is a valid URL |
+| [`IsFQDN`](https://pkg.go.dev/github.com/cinar/checker/v2#IsFQDN) | `fqdn` | Ensures the string is a valid fully qualified domain name |
+| [`IsIP`](https://pkg.go.dev/github.com/cinar/checker/v2#IsIP) | `ip` | Ensures the string is a valid IP address |
+| [`IsIPv4`](https://pkg.go.dev/github.com/cinar/checker/v2#IsIPv4) | `ipv4` | Ensures the string is a valid IPv4 address |
+| [`IsIPv6`](https://pkg.go.dev/github.com/cinar/checker/v2#IsIPv6) | `ipv6` | Ensures the string is a valid IPv6 address |
+| [`IsCIDR`](https://pkg.go.dev/github.com/cinar/checker/v2#IsCIDR) | `cidr` | Ensures the string is a valid CIDR notation |
+| [`IsMAC`](https://pkg.go.dev/github.com/cinar/checker/v2#IsMAC) | `mac` | Ensures the string is a valid MAC address |
+
+### Dates & Times
+
+| Checker | Tag Syntax | Description |
+| :--- | :--- | :--- |
+| [`IsTime`](https://pkg.go.dev/github.com/cinar/checker/v2#IsTime) | `time:<layout>` | Ensures the string matches the provided time layout |
+| [`IsAfter`](https://pkg.go.dev/github.com/cinar/checker/v2#IsAfter) | `after:<layout>:<time>` | Ensures the value is a time after the given reference time |
+| [`IsBefore`](https://pkg.go.dev/github.com/cinar/checker/v2#IsBefore) | `before:<layout>:<time>` | Ensures the value is a time before the given reference time |
+
+### Identifiers, Cryptography & Standards
+
+| Checker | Tag Syntax | Description |
+| :--- | :--- | :--- |
+| [`IsAnyCreditCard`](https://pkg.go.dev/github.com/cinar/checker/v2#IsAnyCreditCard) | `credit-card` | Ensures the string is a valid credit card number |
+| [`IsLUHN`](https://pkg.go.dev/github.com/cinar/checker/v2#IsLUHN) | `luhn` | Ensures the string is a valid LUHN number |
+| [`IsHash`](https://pkg.go.dev/github.com/cinar/checker/v2#IsHash) | `hash:<algo>` | Ensures the string is a valid hex hash (`md5`, `sha1`, `sha256`, `sha384`, `sha512`) |
+| [`IsEOA`](https://pkg.go.dev/github.com/cinar/checker/v2#IsEOA) | `eoa` | Ensures the string is a valid Ethereum externally owned address (EOA) |
+| [`IsISBN`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISBN) | `isbn` | Ensures the string is a valid ISBN |
+| [`IsISO31661Alpha2`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO31661Alpha2) | `iso3166-1-alpha-2` | Ensures the string is a valid 2-letter ISO 3166-1 alpha-2 country code |
+| [`IsISO31661Alpha3`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO31661Alpha3) | `iso3166-1-alpha-3` | Ensures the string is a valid 3-letter ISO 3166-1 alpha-3 country code |
+| [`IsISO6391`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO6391) | `iso639-1` | Ensures the string is a valid 2-letter ISO 639-1 language code |
 
 ## Custom Checkers and Normalizers
 
 You can define custom checkers or normalizers and register them for use in your validation logic. Here is an example of how to create and register a custom checker:
 
 ```golang
-checker.RegisterMaker("is-fruit", func(params string) v2.CheckFunc[reflect.Value] {
+checker.RegisterMaker("is-fruit", func(params string) checker.CheckFunc[reflect.Value] {
 	return func(value reflect.Value) (reflect.Value, error) {
 		stringValue := value.Interface().(string)
 
@@ -183,7 +287,7 @@ checker.RegisterMaker("is-fruit", func(params string) v2.CheckFunc[reflect.Value
 			return value, nil
 		}
 
-		return value, v2.NewCheckError("NOT_FRUIT")
+		return value, checker.NewCheckError("NOT_FRUIT")
 	}
 })
 ```
@@ -201,7 +305,7 @@ item := &Item{
 	Name: "banana",
 }
 
-errors, valid := v2.CheckStruct(item)
+errors, valid := checker.CheckStruct(item)
 if !valid {
 	fmt.Println(errors)
 }
@@ -292,17 +396,17 @@ You can also customize existing error messages or add new ones to `locales.EnUSM
 // Register the en-US localized error message for the custom NOT_FRUIT error code.
 locales.EnUSMessages["NOT_FRUIT"] = "Not a fruit name."
 
-errors, valid := v2.CheckStruct(item)
+errors, valid := checker.CheckStruct(item)
 if !valid {
 	fmt.Println(errors)
 	// Output: map[Name:Not a fruit name.]
 }
 ```
 
-Error messages are generated using Golang template functions, allowing them to include variables.
+Error messages are generated using Go template functions, allowing them to include variables.
 
 ```golang
-// Custrom checker error containing the item name.
+// Custom checker error containing the item name.
 err := checker.NewCheckErrorWithData(
 	"NOT_FRUIT",
 	map[string]interface{}{
@@ -313,7 +417,7 @@ err := checker.NewCheckErrorWithData(
 // Register the en-US localized error message for the custom NOT_FRUIT error code.
 locales.EnUSMessages["NOT_FRUIT"] = "Name {{ .name }} is not a fruit name."
 
-errors, valid := v2.CheckStruct(item)
+errors, valid := checker.CheckStruct(item)
 if !valid {
 	fmt.Println(errors)
 	// Output: map[Name:Name abcd is not a fruit name.]
@@ -461,6 +565,24 @@ e.POST("/register", func(c echo.Context) error {
 ```
 
 See [echo/README.md](echo/README.md) for the full example, including how to call `checkerecho.Check` directly when the struct is assembled from more than just the request body.
+
+## Performance
+
+Checker is designed for low memory allocations and high throughput in HTTP request pipelines with zero external dependencies.
+
+Run benchmarks on your machine:
+
+```bash
+go test -bench=. -benchmem
+```
+
+Benchmark results on Linux x86_64 (Intel N100, Go 1.23):
+
+| Benchmark | Iterations | Time / Op | Memory / Op | Allocs / Op |
+| :--- | :---: | :---: | :---: | :---: |
+| `BenchmarkCheckStruct_Simple` (3 fields) | ~517,000 | **2.2 µs/op** | 976 B/op | 31 allocs/op |
+| `BenchmarkCheckStruct_Complex` (15 fields, nested, slices) | ~69,000 | **17.2 µs/op** | 7,489 B/op | 186 allocs/op |
+| `BenchmarkJSONSchema` (Static schema generation) | ~155,000 | **7.8 µs/op** | 5,948 B/op | 72 allocs/op |
 
 ## Changelog
 
