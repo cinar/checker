@@ -36,6 +36,7 @@ var makers = map[string]MakeCheckFunc{
 	nameEmail:        makeEmail,
 	nameFQDN:         makeFQDN,
 	nameGte:          makeGte,
+	nameHash:         makeHash,
 	nameHex:          makeHex,
 	nameHTMLEscape:   makeHTMLEscape,
 	nameHTMLUnescape: makeHTMLUnescape,

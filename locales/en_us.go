@@ -16,6 +16,7 @@ var EnUSMessages = map[string]string{
 	"NOT_EQ_FIELD":     "Value must match the {{ .field }} field.",
 	"NOT_FQDN":         "Not a fully qualified domain name (FQDN).",
 	"NOT_GTE":          "Value cannot be less than {{ .n }}.",
+	"NOT_HASH":         "Not a valid {{ .algorithm }} hash.",
 	"NOT_HEX":          "Can only contain hexadecimal characters.",
 	"NOT_IP":           "Not a valid IP address.",
 	"NOT_IPV4":         "Not a valid IPv4 address.",
