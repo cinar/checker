@@ -33,7 +33,7 @@ func IsFQDN(value string) (string, error) {
 
 // checkFQDN checks if the value is a valid fully qualified domain name (FQDN).
 func checkFQDN(value reflect.Value) (reflect.Value, error) {
-    _, err := IsFQDN(value.Interface().(string))
+    _, err := IsFQDN(reflectString(value))
     return value, err
 }
 

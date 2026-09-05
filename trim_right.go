@@ -22,8 +22,8 @@ func TrimRight(value string) (string, error) {
 
 // reflectTrimRight returns the value of the string with whitespace removed from the end.
 func reflectTrimRight(value reflect.Value) (reflect.Value, error) {
-	newValue, err := TrimRight(value.Interface().(string))
-	return reflect.ValueOf(newValue), err
+	newValue, err := TrimRight(reflectString(value))
+	return reflect.ValueOf(newValue).Convert(value.Type()), err
 }
 
 // makeTrimRight returns the trim right normalizer function.

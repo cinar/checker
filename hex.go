@@ -26,7 +26,7 @@ func IsHex(value string) (string, error) {
 
 // isHex checks if the given string consists of only hex characters.
 func isHex(value reflect.Value) (reflect.Value, error) {
-	_, err := IsHex(value.Interface().(string))
+	_, err := IsHex(reflectString(value))
 	return value, err
 }
 

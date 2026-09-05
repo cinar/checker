@@ -33,7 +33,7 @@ func IsASCII(value string) (string, error) {
 
 // checkASCII checks if the given string consists of only ASCII characters.
 func isASCII(value reflect.Value) (reflect.Value, error) {
-	_, err := IsASCII(value.Interface().(string))
+	_, err := IsASCII(reflectString(value))
 	return value, err
 }
 

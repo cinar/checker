@@ -60,7 +60,7 @@ func IsISO31661Alpha3(value string) (string, error) {
 
 // checkISO31661Alpha3 checks if the value is a valid ISO 3166-1 alpha-3 country code.
 func checkISO31661Alpha3(value reflect.Value) (reflect.Value, error) {
-	_, err := IsISO31661Alpha3(value.Interface().(string))
+	_, err := IsISO31661Alpha3(reflectString(value))
 	return value, err
 }
 

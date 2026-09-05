@@ -52,7 +52,7 @@ func IsHash(algorithm, value string) (string, error) {
 // makeHash makes a hash check function for the given algorithm parameter.
 func makeHash(params string) CheckFunc[reflect.Value] {
 	return func(value reflect.Value) (reflect.Value, error) {
-		_, err := IsHash(params, value.Interface().(string))
+		_, err := IsHash(params, reflectString(value))
 		return value, err
 	}
 }

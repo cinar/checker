@@ -53,7 +53,7 @@ func IsISO6391(value string) (string, error) {
 
 // checkISO6391 checks if the value is a valid ISO 639-1 language code.
 func checkISO6391(value reflect.Value) (reflect.Value, error) {
-	_, err := IsISO6391(value.Interface().(string))
+	_, err := IsISO6391(reflectString(value))
 	return value, err
 }
 
