@@ -27,7 +27,13 @@ func TestJSONSchemaStructFields(t *testing.T) {
 		private string
 	}
 
-	schema := v2.JSONSchema(&Person{})
+	person := &Person{private: "unexported"}
+
+	schema := v2.JSONSchema(person)
+
+	if person.private != "unexported" {
+		t.Fatal("expected the unexported field to be left untouched")
+	}
 
 	if schema.Dialect == "" {
 		t.Fatal("expected root schema to declare a dialect")
