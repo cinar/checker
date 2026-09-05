@@ -15,11 +15,11 @@
 
 <p align="center">
     <a href="#quickstart-example">Quickstart</a> &middot;
+    <a href="#normalizers-provided">Normalizers</a> &middot;
     <a href="#checkers-provided">Checkers</a> &middot;
     <a href="#json-schema-generation">JSON Schema</a> &middot;
     <a href="#localized-error-messages">Locales</a> &middot;
-    <a href="#framework-integration">Frameworks</a> &middot;
-    <a href="#contributing-to-the-project">Contributing</a>
+    <a href="#framework-integration">Frameworks</a>
 </p>
 
 - **Zero dependencies** — the core module imports nothing beyond the Go standard library.
@@ -29,6 +29,7 @@
 - **23 built-in locales** — opt-in, translated error messages, matching the set go-playground/validator ships.
 - **JSON Schema generation** — turn a struct's checker tags into a JSON Schema document, for API docs or frontend validation, without hand-maintaining a second copy of your rules.
 - **Framework adapters** — thin, separately-versioned `gin` and `echo` modules bind a request and validate it in one call.
+- **Context-aware pipelines** — `Pipeline[T]` reuses the same checkers for domain rules that need a `context.Context` (a DB lookup, a tenant claim) struct tags can't carry.
 - **Static analysis** — the separate `checkerlint` module catches unknown checker names, type mismatches, and dangling cross-field targets at build time, not runtime.
 
 ## Table of Contents
@@ -46,6 +47,7 @@
 - [Slice and Item Level Checkers](#slice-and-item-level-checkers)
 - [Optional Fields with `omitempty`](#optional-fields-with-omitempty)
 - [Field-Relative and Conditional Checkers](#field-relative-and-conditional-checkers)
+- [Programmatic Pipelines (Context-Aware Validation)](#programmatic-pipelines-context-aware-validation)
 - [Localized Error Messages](#localized-error-messages)
 - [Structured Errors](#structured-errors)
 - [JSON Schema Generation](#json-schema-generation)
@@ -421,6 +423,34 @@ type Trip struct {
 }
 ```
 
+## Programmatic Pipelines (Context-Aware Validation)
+
+Struct tags are great for a flat DTO's shape, but they can't express rules that need request-scoped state — a database uniqueness check, a tenant boundary, an auth claim — since there's no way to pass a `context.Context` through a tag. `Pipeline[T]` is a small, fully opt-in, generic builder for exactly that: it reuses the same checker/normalizer functions as struct tags via `Field`, and adds `Rule` for whole-value, context-aware domain checks. Combine it with `CheckStruct` freely on the same type — one validates shape, the other validates domain rules that need `ctx`.
+
+```golang
+type User struct {
+	Email         string
+	Role          string
+	HasMFAEnabled bool
+}
+
+pipeline := checker.NewPipeline[User]().Step(
+	checker.Field("Email", func(u *User) *string { return &u.Email },
+		checker.TrimSpace, checker.Lower, checker.Required, checker.IsEmail,
+	),
+	checker.Rule("MFA", func(ctx context.Context, u *User) error {
+		if u.Role == "admin" && !u.HasMFAEnabled {
+			return checker.NewCheckError("MFA_REQUIRED_FOR_ADMIN")
+		}
+		return nil
+	}),
+)
+
+errs, ok := pipeline.Validate(ctx, user)
+```
+
+`Field` normalizes and validates one field in place, exactly like a `checkers` tag chain: checks run in order and stop at the first error, and any normalizer among them writes its result back before the next check runs. `Rule` runs against the whole value with `ctx`, for anything a single field's tag can't express. `Validate` runs every step regardless of earlier failures — matching `CheckStruct`'s field-independent error collection — and returns the same `CheckErrors` type, so both validation styles produce API-ready errors the same way.
+
 ## Localized Error Messages
 
 When validation fails, Checker returns an error. By default, the [Error()](https://pkg.go.dev/github.com/cinar/checker/v2#CheckError.Error) function provides a human-readable error message in `en-US` locale.
@@ -513,6 +543,23 @@ Use [JSONWithLocale()](https://pkg.go.dev/github.com/cinar/checker/v2#CheckError
 ```golang
 data, _ := errs.JSONWithLocale(locales.DeDE)
 ```
+
+For an [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) `application/problem+json` response instead, use [ProblemDetails()](https://pkg.go.dev/github.com/cinar/checker/v2#CheckErrors.ProblemDetails):
+
+```golang
+errs, valid := checker.CheckStruct(person)
+if !valid {
+	data, _ := json.Marshal(errs.ProblemDetails())
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(http.StatusBadRequest)
+	w.Write(data)
+	// {"type":"about:blank","title":"Your request parameters failed validation.","status":400,
+	//  "invalid-params":[{"name":"Name","reason":"Required value is missing.","code":"REQUIRED"}]}
+	return
+}
+```
+
+`Type`, `Title`, and `Status` are plain exported fields on the returned `*ProblemDetails` — RFC 9457 leaves their exact values to the API producer, so set them directly to override the defaults (`"about:blank"`, a generic title, `400`). `ProblemDetailsWithLocale()` localizes the messages, matching `JSONWithLocale()`.
 
 ## JSON Schema Generation
 
@@ -639,7 +686,7 @@ See [checkerlint/README.md](checkerlint/README.md) for `go vet -vettool` and `go
 
 ## Performance
 
-Checker is designed for low memory allocations and high throughput in HTTP request pipelines with zero external dependencies. [`benchmark_test.go`](benchmark_test.go) covers `CheckStruct` on a small struct (success and failure paths), a larger struct (nested struct, slice, map, cross-field and conditional checkers), and static `JSONSchema` generation.
+Checker is designed for low memory allocations and high throughput in HTTP request pipelines with zero external dependencies. `CheckStruct` compiles each struct type's `checkers`/`validate` tags into a resolved execution plan (field metadata, container/item splits, and maker-resolved checker chains) on first use and caches it, so repeated validation of the same struct type — or of any field sharing an identical tag string — doesn't re-parse tag strings or re-resolve checker names on every call. [`benchmark_test.go`](benchmark_test.go) covers `CheckStruct` on a small struct (success and failure paths), a larger struct (nested struct, slice, map, cross-field and conditional checkers), and static `JSONSchema` generation.
 
 Run the benchmarks on your machine:
 
@@ -651,10 +698,10 @@ Measured with `go test -bench=. -benchmem -benchtime=2s` on Linux x86_64 (Intel 
 
 | Benchmark | Iterations | Time / Op | Memory / Op | Allocs / Op |
 | :--- | :---: | :---: | :---: | :---: |
-| `BenchmarkCheckStruct_Simple_Success` (3 fields, all valid) | ~870,000 | **2.6 µs/op** | 1,176 B/op | 37 allocs/op |
-| `BenchmarkCheckStruct_Simple_Failure` (3 fields, one invalid) | ~880,000 | **2.7 µs/op** | 1,448 B/op | 37 allocs/op |
-| `BenchmarkCheckStruct_Complex` (10 fields incl. nested struct, slice, map) | ~160,000 | **15.0 µs/op** | 5,993 B/op | 181 allocs/op |
-| `BenchmarkJSONSchema` (static schema generation) | ~340,000 | **7.3 µs/op** | 6,716 B/op | 72 allocs/op |
+| `BenchmarkCheckStruct_Simple_Success` (3 fields, all valid) | ~1,940,000 | **1.2 µs/op** | 760 B/op | 19 allocs/op |
+| `BenchmarkCheckStruct_Simple_Failure` (3 fields, one invalid) | ~1,760,000 | **1.4 µs/op** | 1,032 B/op | 19 allocs/op |
+| `BenchmarkCheckStruct_Complex` (10 fields incl. nested struct, slice, map) | ~320,000 | **7.8 µs/op** | 3,576 B/op | 78 allocs/op |
+| `BenchmarkJSONSchema` (static schema generation) | ~315,000 | **7.3 µs/op** | 6,716 B/op | 72 allocs/op |
 
 ## Changelog
 
@@ -666,8 +713,27 @@ Anyone can contribute to Checkers library. Please make sure to read our [Contrib
 
 ## License
 
-This library is free to use, modify, and distribute under the terms of the MIT license. The full license text can be found in the [LICENSE](./LICENSE) file.
+Checker is provided under the MIT License, reproduced below and also available in the [LICENSE](./LICENSE) file.
 
-The MIT license is a permissive license that allows you to do almost anything with the library, as long as you retain the copyright notice and the license text. This means that you can use the library in commercial products, modify it, and redistribute it without having to ask for permission from the authors.
+```
+Copyright (c) 2023 Onur Cinar.
+The source code is provided under MIT License.
 
-The [LICENSE](./LICENSE) file is located in the root directory of the library. You can open it in a text editor to read the full license text.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```

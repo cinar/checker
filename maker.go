@@ -97,6 +97,7 @@ func RegisterMaker(name string, maker MakeCheckFunc) {
 	defer makersMu.Unlock()
 
 	makers[name] = maker
+	configCache.Clear()
 }
 
 // RegisterFieldMaker registers a new field-relative maker function with the given name.
@@ -105,6 +106,7 @@ func RegisterFieldMaker(name string, maker MakeCheckFieldFunc) {
 	defer makersMu.Unlock()
 
 	fieldMakers[name] = maker
+	configCache.Clear()
 }
 
 // RegisteredMakerNames returns the name of every currently registered
@@ -141,37 +143,110 @@ func RegisteredFieldMakerNames() []string {
 	return names
 }
 
-// makeChecks take a checker config and the parent struct's reflect.Value (invalid
-// unless called from CheckStruct), and returns the check functions.
-func makeChecks(config string, parent reflect.Value) []CheckFunc[reflect.Value] {
+// compiledCheck is a checkers/validate tag token already resolved to its
+// checker/normalizer closure. fieldFn is set instead of fn for a
+// field-relative check, since that still needs the enclosing struct's
+// reflect.Value bound in at call time, which varies per CheckStruct call
+// and so can't be baked in at compile time like fn can.
+type compiledCheck struct {
+	fn      CheckFunc[reflect.Value]
+	fieldFn CheckFieldFunc
+}
+
+// run executes the compiled check against value, threading parent through
+// only if the check is field-relative.
+func (c compiledCheck) run(parent, value reflect.Value) (reflect.Value, error) {
+	if c.fieldFn != nil {
+		return c.fieldFn(parent, value)
+	}
+
+	return c.fn(value)
+}
+
+// compiledConfig is the parsed, maker-resolved form of a checkers/validate
+// tag config string: the omitempty modifier extracted, and every remaining
+// token already resolved against the makers/fieldMakers registries.
+type compiledConfig struct {
+	omitEmpty bool
+	checks    []compiledCheck
+}
+
+// configCache caches *compiledConfig by its exact source config string, so
+// a given tag value (e.g. "trim required email") is only ever tokenized
+// and resolved once, no matter how many struct instances, fields, or types
+// share that exact string. RegisterMaker and RegisterFieldMaker clear it,
+// since a newly (re-)registered name can change how an already-cached
+// string resolves.
+var configCache sync.Map
+
+// getCompiledConfig returns the compiledConfig for config, compiling and
+// caching it on first use.
+func getCompiledConfig(config string) *compiledConfig {
+	if cached, ok := configCache.Load(config); ok {
+		return cached.(*compiledConfig)
+	}
+
+	// Held for the rest of the function, including the store into
+	// configCache below: RegisterMaker/RegisterFieldMaker take the write
+	// lock and then clear configCache, so as long as a compile-in-flight
+	// keeps the read lock until its result is stored, the writer can't
+	// proceed (and clear the cache) until after that store lands. That
+	// ordering guarantees a registration can never be immediately
+	// followed by a stale, pre-registration entry silently reappearing.
+	makersMu.RLock()
+	defer makersMu.RUnlock()
+
+	remaining, omitEmpty := extractOmitEmpty(config)
+
+	compiled := &compiledConfig{
+		omitEmpty: omitEmpty,
+		checks:    compileChecksLocked(remaining),
+	}
+
+	actual, _ := configCache.LoadOrStore(config, compiled)
+
+	return actual.(*compiledConfig)
+}
+
+// compileChecksLocked resolves a checkers tag config (with any omitempty
+// token already removed) into compiled checks. The caller must hold at
+// least makersMu.RLock() for the duration of the call.
+func compileChecksLocked(config string) []compiledCheck {
 	fields := strings.Fields(config)
 
-	checks := make([]CheckFunc[reflect.Value], len(fields))
+	checks := make([]compiledCheck, len(fields))
 
 	for i, field := range fields {
 		name, params, _ := strings.Cut(field, ":")
 
-		makersMu.RLock()
-		fieldMaker, isFieldMaker := fieldMakers[name]
-		maker, isMaker := makers[name]
-		makersMu.RUnlock()
-
-		if isFieldMaker {
-			fieldCheck := fieldMaker(params)
-
-			checks[i] = func(value reflect.Value) (reflect.Value, error) {
-				return fieldCheck(parent, value)
-			}
-
+		if fieldMaker, ok := fieldMakers[name]; ok {
+			checks[i] = compiledCheck{fieldFn: fieldMaker(params)}
 			continue
 		}
 
-		if !isMaker {
+		maker, ok := makers[name]
+		if !ok {
 			panic(fmt.Sprintf("check %s not found", name))
 		}
 
-		checks[i] = maker(params)
+		checks[i] = compiledCheck{fn: maker(params)}
 	}
 
 	return checks
+}
+
+// runCompiledChecks runs compiled checks against value in order, binding
+// parent for any field-relative check, and short-circuits on the first
+// error, mirroring Check's semantics.
+func runCompiledChecks(value, parent reflect.Value, checks []compiledCheck) (reflect.Value, error) {
+	var err error
+
+	for _, check := range checks {
+		value, err = check.run(parent, value)
+		if err != nil {
+			break
+		}
+	}
+
+	return value, err
 }

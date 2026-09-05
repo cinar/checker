@@ -111,6 +111,39 @@ func TestRegisterMaker(t *testing.T) {
 	}
 }
 
+func TestRegisterMakerInvalidatesConfigCache(t *testing.T) {
+	const name = "register-maker-invalidation-test"
+
+	type Person struct {
+		Name string `checkers:"register-maker-invalidation-test"`
+	}
+
+	v2.RegisterMaker(name, func(params string) v2.CheckFunc[reflect.Value] {
+		return func(value reflect.Value) (reflect.Value, error) {
+			return value, v2.NewCheckError("REJECTED_BY_OLD_MAKER")
+		}
+	})
+
+	// Validating once here, before the maker is replaced below, is the
+	// whole point of the test: it forces the "register-maker-invalidation-test"
+	// checkers tag config to be resolved and cached against the *old* maker.
+	if _, ok := v2.CheckStruct(&Person{Name: "Onur"}); ok {
+		t.Fatal("expected the old maker to reject the value")
+	}
+
+	v2.RegisterMaker(name, func(params string) v2.CheckFunc[reflect.Value] {
+		return func(value reflect.Value) (reflect.Value, error) {
+			return value, nil
+		}
+	})
+
+	// If re-registering the same name didn't invalidate the cached,
+	// already-compiled config, this would still run the old maker and fail.
+	if _, ok := v2.CheckStruct(&Person{Name: "Onur"}); !ok {
+		t.Fatal("expected the new maker to take effect after re-registration")
+	}
+}
+
 func TestRegisterFieldMaker(t *testing.T) {
 	v2.RegisterFieldMaker("eq-const", func(params string) v2.CheckFieldFunc {
 		return func(parent, value reflect.Value) (reflect.Value, error) {
