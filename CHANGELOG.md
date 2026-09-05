@@ -28,6 +28,12 @@ Changes prior to v2.0.0 are not individually documented here; see the
   panicked with `"value is not numeric"` on any value. Applying `gte`/`lte`
   to a genuinely non-numeric field (`string`, `bool`, ...) still panics, as
   before — that's an intentional, tested checker/field type mismatch.
+- `CheckStruct`'s error map keys now match `JSONSchema`'s property names for
+  the same struct. Previously `fieldName` used a field's `json` tag as-is,
+  so `json:"name,omitempty"` produced the error key `"name,omitempty"`
+  instead of `"name"`, and `json:"-"` produced the key `"-"` instead of
+  falling back to the Go field name. Both now go through the same tag
+  parsing `JSONSchema` already used internally.
 - `CheckError.Error()`/`ErrorWithLocale()` no longer HTML-escape error
   message data. They rendered messages with `html/template`, which
   contextually escapes `<`, `>`, `&`, and `"` in template data for safe
