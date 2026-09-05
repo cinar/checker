@@ -259,6 +259,31 @@ func TestJSONSchemaUUIDFormat(t *testing.T) {
 	}
 }
 
+func TestJSONSchemaContainsStartsWithEndsWithPatterns(t *testing.T) {
+	type Link struct {
+		Handle string `checkers:"contains:@"`
+		URL    string `checkers:"starts-with:https://"`
+		Domain string `checkers:"ends-with:.com"`
+	}
+
+	schema := v2.JSONSchema(&Link{})
+
+	handle, ok := schema.Properties["Handle"]
+	if !ok || handle.Pattern != ".*@.*" {
+		t.Fatalf("unexpected handle schema %+v", handle)
+	}
+
+	url, ok := schema.Properties["URL"]
+	if !ok || url.Pattern != "^https://.*" {
+		t.Fatalf("unexpected url schema %+v", url)
+	}
+
+	domain, ok := schema.Properties["Domain"]
+	if !ok || domain.Pattern != ".*\\.com$" {
+		t.Fatalf("unexpected domain schema %+v", domain)
+	}
+}
+
 func TestJSONSchemaEqConst(t *testing.T) {
 	type Status struct {
 		Value string `checkers:"eq:active"`

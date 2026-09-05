@@ -6,6 +6,7 @@
 package v2
 
 import (
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -42,21 +43,24 @@ var schemaMakersMu sync.RWMutex
 // for checkers with a direct JSON Schema equivalent. A checker with no entry
 // here is instead recorded in the Schema's XChecker list.
 var schemaMakers = map[string]SchemaMakeFunc{
-	nameEmail:  schemaFormat("email"),
-	nameEq:     schemaConst,
-	nameFQDN:   schemaFormat("hostname"),
-	nameGt:     schemaExclusiveMinimum,
-	nameGte:    schemaMinimum,
-	nameIPv4:   schemaFormat("ipv4"),
-	nameIPv6:   schemaFormat("ipv6"),
-	nameLt:     schemaExclusiveMaximum,
-	nameLte:    schemaMaximum,
-	nameMaxLen: schemaMaxLen,
-	nameMinLen: schemaMinLen,
-	nameOneOf:  schemaOneOf,
-	nameRegexp: schemaPattern,
-	nameURL:    schemaFormat("uri"),
-	nameUUID:   schemaFormat("uuid"),
+	nameContains:   schemaContains,
+	nameEmail:      schemaFormat("email"),
+	nameEndsWith:   schemaEndsWith,
+	nameEq:         schemaConst,
+	nameFQDN:       schemaFormat("hostname"),
+	nameGt:         schemaExclusiveMinimum,
+	nameGte:        schemaMinimum,
+	nameIPv4:       schemaFormat("ipv4"),
+	nameIPv6:       schemaFormat("ipv6"),
+	nameLt:         schemaExclusiveMaximum,
+	nameLte:        schemaMaximum,
+	nameMaxLen:     schemaMaxLen,
+	nameMinLen:     schemaMinLen,
+	nameOneOf:      schemaOneOf,
+	nameRegexp:     schemaPattern,
+	nameStartsWith: schemaStartsWith,
+	nameURL:        schemaFormat("uri"),
+	nameUUID:       schemaFormat("uuid"),
 }
 
 // RegisterSchemaMaker registers a SchemaMakeFunc for the given checker or
@@ -78,6 +82,24 @@ func schemaOneOf(schema *Schema, params string) {
 // schemaConst sets the Schema's Const to the checker's expected value.
 func schemaConst(schema *Schema, params string) {
 	schema.Const = &params
+}
+
+// schemaContains sets the Schema's Pattern so the value must contain the
+// checker's substring parameter anywhere in the string.
+func schemaContains(schema *Schema, params string) {
+	schema.Pattern = ".*" + regexp.QuoteMeta(params) + ".*"
+}
+
+// schemaStartsWith sets the Schema's Pattern so the value must start with
+// the checker's prefix parameter.
+func schemaStartsWith(schema *Schema, params string) {
+	schema.Pattern = "^" + regexp.QuoteMeta(params) + ".*"
+}
+
+// schemaEndsWith sets the Schema's Pattern so the value must end with the
+// checker's suffix parameter.
+func schemaEndsWith(schema *Schema, params string) {
+	schema.Pattern = ".*" + regexp.QuoteMeta(params) + "$"
 }
 
 // schemaFormat returns a SchemaMakeFunc that sets the Schema's Format.
