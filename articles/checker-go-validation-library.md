@@ -1,10 +1,10 @@
 ---
 title: Stop Hand-Rolling Validation in Go — Meet Checker
-published: false
+published: true
 description: A zero-dependency Go library that validates and normalizes input from struct tags, ships 23 translated locales, generates JSON Schema from your rules, and plugs straight into Gin and Echo.
 tags: go, golang, opensource, validation
-canonical_url:
-cover_image:
+canonical_url: https://dev.to/onurcinar/stop-hand-rolling-validation-in-go-meet-checker-nk1
+cover_image: https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/tvu8xdvg2eumm3aeq5l0.png
 ---
 
 If you've written more than one HTTP handler in Go, you've written this code:
