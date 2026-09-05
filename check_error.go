@@ -6,8 +6,8 @@
 package v2
 
 import (
-	"html/template"
 	"strings"
+	"text/template"
 
 	"github.com/cinar/checker/v2/locales"
 )

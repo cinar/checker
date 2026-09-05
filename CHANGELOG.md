@@ -11,6 +11,15 @@ Changes prior to v2.0.0 are not individually documented here; see the
 
 ## [Unreleased]
 
+### Fixed
+
+- `CheckError.Error()`/`ErrorWithLocale()` no longer HTML-escape error
+  message data. They rendered messages with `html/template`, which
+  contextually escapes `<`, `>`, `&`, and `"` in template data for safe
+  HTML embedding -- the wrong behavior for a validation error meant for a
+  plain-text or JSON API response. Switched to `text/template`, which
+  performs no such escaping.
+
 ### Added
 
 - `CheckErrors`, a structured error type returned by `CheckStruct`. It
