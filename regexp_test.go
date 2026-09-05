@@ -7,6 +7,7 @@ package v2_test
 
 import (
 	"fmt"
+	"sync"
 	"testing"
 
 	v2 "github.com/cinar/checker/v2"
@@ -57,6 +58,35 @@ func TestCheckRegexpInvalid(t *testing.T) {
 	_, ok := v2.CheckStruct(user)
 	if ok {
 		t.Fatal("expected error")
+	}
+}
+
+// TestIsRegexpConcurrentSamePattern exercises the compiled-pattern cache
+// from many goroutines using the same expression, some new to the process
+// and some already cached. Run with `go test -race`.
+func TestIsRegexpConcurrentSamePattern(t *testing.T) {
+	const expression = "^[a-z]+$"
+
+	var wg sync.WaitGroup
+
+	for i := 0; i < 50; i++ {
+		wg.Add(1)
+
+		go func() {
+			defer wg.Done()
+
+			if _, err := v2.IsRegexp(expression, "onur"); err != nil {
+				t.Error(err)
+			}
+		}()
+	}
+
+	wg.Wait()
+}
+
+func BenchmarkIsRegexp(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		_, _ = v2.IsRegexp("^[0-9a-fA-F]+$", "ABcd1234")
 	}
 }
 
