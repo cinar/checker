@@ -8,7 +8,7 @@ const (
 // FaIRMessages is the map of fa-IR messages.
 var FaIRMessages = map[string]string{
 	"NOT_AFTER":           "مقدار باید بعد از {{ .reference }} باشد.",
-	"NOT_ALPHA":           "فقط می‌تواند شامل حروف باشد.",
+	"NOT_ALPHA":           "فقط می\u200cتواند شامل حروف باشد.",
 	"NOT_ALPHANUMERIC":    "یک رشته الفبایی\u200cعددی نیست.",
 	"NOT_ASCII":           "فقط می\u200cتواند شامل کاراکترهای ASCII باشد.",
 	"NOT_BEFORE":          "مقدار باید قبل از {{ .reference }} باشد.",
