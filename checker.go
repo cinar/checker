@@ -73,7 +73,33 @@ func ReflectCheckWithConfig(value reflect.Value, config string) (reflect.Value, 
 // to the given reflect.Value, making the parent struct's reflect.Value available to any
 // field-relative checks, such as eq-field.
 func reflectCheckFieldWithConfig(value, parent reflect.Value, config string) (reflect.Value, error) {
+	config, omitEmpty := extractOmitEmpty(config)
+
+	if omitEmpty && value.IsValid() && value.IsZero() {
+		return value, nil
+	}
+
 	return Check(value, makeChecks(config, parent)...)
+}
+
+// extractOmitEmpty removes the "omitempty" token from config, if present, and
+// reports whether it was found. It follows the same space-separated token
+// convention as the rest of the checkers tag DSL.
+func extractOmitEmpty(config string) (string, bool) {
+	fields := strings.Fields(config)
+	kept := make([]string, 0, len(fields))
+	found := false
+
+	for _, field := range fields {
+		if field == nameOmitEmpty {
+			found = true
+			continue
+		}
+
+		kept = append(kept, field)
+	}
+
+	return strings.Join(kept, " "), found
 }
 
 // CheckStruct checks the given struct based on the validation rules specified in the
