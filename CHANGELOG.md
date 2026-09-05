@@ -58,6 +58,8 @@ Changes prior to v2.0.0 are not individually documented here; see the
   table of contents, added a short feature-highlight list up top, and
   switched the badge row to larger `for-the-badge`-style shields (plus a
   GitHub stars badge), matching cinar/indicator's README.
+- Removed the Go Report Card badge: the service was sunset and its badge
+  now literally renders "go report: retired".
 
 ### Removed
 
