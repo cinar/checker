@@ -1,4 +1,4 @@
-[![GoDoc](https://godoc.org/github.com/cinar/checker?status.svg)](https://godoc.org/github.com/cinar/checker)
+[![Go Reference](https://pkg.go.dev/badge/github.com/cinar/checker/v2.svg)](https://pkg.go.dev/github.com/cinar/checker/v2)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Go Report Card](https://goreportcard.com/badge/github.com/cinar/checker)](https://goreportcard.com/report/github.com/cinar/checker)
 ![Go CI](https://github.com/cinar/checker/actions/workflows/ci.yml/badge.svg)
@@ -6,9 +6,32 @@
 
 # Checker
 
-Checker is a lightweight Go library designed to validate user input efficiently. It supports validation of both struct fields and individual input values.
+Checker is a lightweight Go library for validating and normalizing user input, driven by struct tags or plain function calls, with zero external dependencies.
 
-While there are numerous validation libraries available, Checker stands out due to its simplicity and lack of external dependencies. This makes it an ideal choice for developers who prefer to minimize dependencies and maintain control over their tools. Checker is straightforward to use and effectively meets your validation needs.
+- **Zero dependencies** — the core module imports nothing beyond the Go standard library.
+- **Struct tags or plain functions** — validate a whole struct declaratively, or call checkers directly for one-off values.
+- **Checkers and normalizers together** — trim, then require; lowercase, then validate — mixed in any order, in one pass.
+- **Cross-field and conditional rules** — compare fields against each other, or require a field only when another has a given value.
+- **23 built-in locales** — opt-in, translated error messages, matching the set go-playground/validator ships.
+- **JSON Schema generation** — turn a struct's checker tags into a JSON Schema document, for API docs or frontend validation, without hand-maintaining a second copy of your rules.
+- **Framework adapters** — thin, separately-versioned `gin` and `echo` modules bind a request and validate it in one call.
+
+## Table of Contents
+
+- [Usage](#usage)
+- [Normalizers and Checkers](#normalizers-and-checkers)
+- [Checkers Provided](#checkers-provided)
+- [Normalizers Provided](#normalizers-provided)
+- [Custom Checkers and Normalizers](#custom-checkers-and-normalizers)
+- [Slice and Item Level Checkers](#slice-and-item-level-checkers)
+- [Field-Relative and Conditional Checkers](#field-relative-and-conditional-checkers)
+- [Localized Error Messages](#localized-error-messages)
+- [Structured Errors](#structured-errors)
+- [JSON Schema Generation](#json-schema-generation)
+- [Framework Integration](#framework-integration)
+- [Changelog](#changelog)
+- [Contributing to the Project](#contributing-to-the-project)
+- [License](#license)
 
 ## Usage
 
@@ -95,57 +118,57 @@ type Person struct {
 }
 ```
 
-# Checkers Provided
+## Checkers Provided
 
-- [`after`](DOC.md#IsAfter): Ensures the value is a time after the given reference time, e.g. `after:DateOnly:2024-01-01`.
-- [`after-field`](DOC.md#IsAfterField): Ensures the value is a time after the value of another field on the struct, e.g. `after-field:DateOnly:BornAt`.
-- [`ascii`](DOC.md#IsASCII): Ensures the string contains only ASCII characters.
-- [`alphanumeric`](DOC.md#IsAlphanumeric): Ensures the string contains only letters and numbers.
-- [`before`](DOC.md#IsBefore): Ensures the value is a time before the given reference time, e.g. `before:DateOnly:2024-01-01`.
-- [`before-field`](DOC.md#IsBeforeField): Ensures the value is a time before the value of another field on the struct, e.g. `before-field:DateOnly:ReturnAt`.
-- [`credit-card`](DOC.md#IsAnyCreditCard): Ensures the string is a valid credit card number.
-- [`cidr`](DOC.md#IsCIDR): Ensures the string is a valid CIDR notation.
-- [`digits`](DOC.md#IsDigits): Ensures the string contains only digits.
-- [`email`](DOC.md#IsEmail): Ensures the string is a valid email address.
-- [`eoa`](DOC.md#IsEOA): Ensures the string is a valid externally owned address (EOA), i.e. an Ethereum address.
-- [`eq-field`](DOC.md#IsEqField): Ensures the value is equal to the value of another field on the struct.
-- [`fqdn`](DOC.md#IsFQDN): Ensures the string is a valid fully qualified domain name.
-- [`gte`](DOC.md#IsGte): Ensures the value is greater than or equal to the specified number.
-- [`hash`](DOC.md#IsHash): Ensures the string is a valid hex-encoded hash for the given algorithm (`md5`, `sha1`, `sha256`, `sha384`, or `sha512`), e.g. `hash:sha256`.
-- [`hex`](DOC.md#IsHex): Ensures the string contains only hexadecimal digits.
-- [`ip`](DOC.md#IsIP): Ensures the string is a valid IP address.
-- [`ipv4`](DOC.md#IsIPv4): Ensures the string is a valid IPv4 address.
-- [`ipv6`](DOC.md#IsIPv6): Ensures the string is a valid IPv6 address.
-- [`isbn`](DOC.md#IsISBN): Ensures the string is a valid ISBN.
-- [`iso3166-1-alpha-2`](DOC.md#IsISO31661Alpha2): Ensures the string is a valid two-letter ISO 3166-1 alpha-2 country code, e.g. `US`.
-- [`iso3166-1-alpha-3`](DOC.md#IsISO31661Alpha3): Ensures the string is a valid three-letter ISO 3166-1 alpha-3 country code, e.g. `USA`.
-- [`iso639-1`](DOC.md#IsISO6391): Ensures the string is a valid two-letter ISO 639-1 language code, e.g. `en`.
-- [`lte`](DOC.md#ISLte): Ensures the value is less than or equal to the specified number.
-- [`luhn`](DOC.md#IsLUHN): Ensures the string is a valid LUHN number.
-- [`mac`](DOC.md#IsMAC): Ensures the string is a valid MAC address.
-- [`max-len`](DOC.md#func-maxlen): Ensures the length of the given value (string, slice, or map) is at most n.
-- [`min-len`](DOC.md#func-minlen): Ensures the length of the given value (string, slice, or map) is at least n.
-- [`required`](DOC.md#func-required) Ensures the value is provided.
-- [`required-if`](DOC.md#IsRequiredIf): Ensures the value is provided when another field is equal to a given value.
-- [`required-unless`](DOC.md#IsRequiredUnless): Ensures the value is provided unless another field is equal to a given value.
-- [`regexp`](DOC.md#func-makeregexpchecker) Ensured the string matches the pattern.
-- [`time`](DOC.md#func-istime) Ensured the string matches the provided time layout.
-- [`url`](DOC.md#IsURL): Ensures the string is a valid URL.
+- [`after`](https://pkg.go.dev/github.com/cinar/checker/v2#IsAfter): Ensures the value is a time after the given reference time, e.g. `after:DateOnly:2024-01-01`.
+- [`after-field`](https://pkg.go.dev/github.com/cinar/checker/v2#IsAfterField): Ensures the value is a time after the value of another field on the struct, e.g. `after-field:DateOnly:BornAt`.
+- [`ascii`](https://pkg.go.dev/github.com/cinar/checker/v2#IsASCII): Ensures the string contains only ASCII characters.
+- [`alphanumeric`](https://pkg.go.dev/github.com/cinar/checker/v2#IsAlphanumeric): Ensures the string contains only letters and numbers.
+- [`before`](https://pkg.go.dev/github.com/cinar/checker/v2#IsBefore): Ensures the value is a time before the given reference time, e.g. `before:DateOnly:2024-01-01`.
+- [`before-field`](https://pkg.go.dev/github.com/cinar/checker/v2#IsBeforeField): Ensures the value is a time before the value of another field on the struct, e.g. `before-field:DateOnly:ReturnAt`.
+- [`credit-card`](https://pkg.go.dev/github.com/cinar/checker/v2#IsAnyCreditCard): Ensures the string is a valid credit card number.
+- [`cidr`](https://pkg.go.dev/github.com/cinar/checker/v2#IsCIDR): Ensures the string is a valid CIDR notation.
+- [`digits`](https://pkg.go.dev/github.com/cinar/checker/v2#IsDigits): Ensures the string contains only digits.
+- [`email`](https://pkg.go.dev/github.com/cinar/checker/v2#IsEmail): Ensures the string is a valid email address.
+- [`eoa`](https://pkg.go.dev/github.com/cinar/checker/v2#IsEOA): Ensures the string is a valid externally owned address (EOA), i.e. an Ethereum address.
+- [`eq-field`](https://pkg.go.dev/github.com/cinar/checker/v2#IsEqField): Ensures the value is equal to the value of another field on the struct.
+- [`fqdn`](https://pkg.go.dev/github.com/cinar/checker/v2#IsFQDN): Ensures the string is a valid fully qualified domain name.
+- [`gte`](https://pkg.go.dev/github.com/cinar/checker/v2#IsGte): Ensures the value is greater than or equal to the specified number.
+- [`hash`](https://pkg.go.dev/github.com/cinar/checker/v2#IsHash): Ensures the string is a valid hex-encoded hash for the given algorithm (`md5`, `sha1`, `sha256`, `sha384`, or `sha512`), e.g. `hash:sha256`.
+- [`hex`](https://pkg.go.dev/github.com/cinar/checker/v2#IsHex): Ensures the string contains only hexadecimal digits.
+- [`ip`](https://pkg.go.dev/github.com/cinar/checker/v2#IsIP): Ensures the string is a valid IP address.
+- [`ipv4`](https://pkg.go.dev/github.com/cinar/checker/v2#IsIPv4): Ensures the string is a valid IPv4 address.
+- [`ipv6`](https://pkg.go.dev/github.com/cinar/checker/v2#IsIPv6): Ensures the string is a valid IPv6 address.
+- [`isbn`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISBN): Ensures the string is a valid ISBN.
+- [`iso3166-1-alpha-2`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO31661Alpha2): Ensures the string is a valid two-letter ISO 3166-1 alpha-2 country code, e.g. `US`.
+- [`iso3166-1-alpha-3`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO31661Alpha3): Ensures the string is a valid three-letter ISO 3166-1 alpha-3 country code, e.g. `USA`.
+- [`iso639-1`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO6391): Ensures the string is a valid two-letter ISO 639-1 language code, e.g. `en`.
+- [`lte`](https://pkg.go.dev/github.com/cinar/checker/v2#IsLte): Ensures the value is less than or equal to the specified number.
+- [`luhn`](https://pkg.go.dev/github.com/cinar/checker/v2#IsLUHN): Ensures the string is a valid LUHN number.
+- [`mac`](https://pkg.go.dev/github.com/cinar/checker/v2#IsMAC): Ensures the string is a valid MAC address.
+- [`max-len`](https://pkg.go.dev/github.com/cinar/checker/v2#MaxLen): Ensures the length of the given value (string, slice, or map) is at most n.
+- [`min-len`](https://pkg.go.dev/github.com/cinar/checker/v2#MinLen): Ensures the length of the given value (string, slice, or map) is at least n.
+- [`required`](https://pkg.go.dev/github.com/cinar/checker/v2#Required) Ensures the value is provided.
+- [`required-if`](https://pkg.go.dev/github.com/cinar/checker/v2#IsRequiredIf): Ensures the value is provided when another field is equal to a given value.
+- [`required-unless`](https://pkg.go.dev/github.com/cinar/checker/v2#IsRequiredUnless): Ensures the value is provided unless another field is equal to a given value.
+- [`regexp`](https://pkg.go.dev/github.com/cinar/checker/v2#MakeRegexpChecker) Ensured the string matches the pattern.
+- [`time`](https://pkg.go.dev/github.com/cinar/checker/v2#IsTime) Ensured the string matches the provided time layout.
+- [`url`](https://pkg.go.dev/github.com/cinar/checker/v2#IsURL): Ensures the string is a valid URL.
 
-# Normalizers Provided
+## Normalizers Provided
 
-- [`lower`](DOC.md#Lower): Converts the string to lowercase.
-- [`title`](DOC.md#Title): Converts the string to title case.
-- [`trim-left`](DOC.md#TrimLeft): Trims whitespace from the left side of the string.
-- [`trim-right`](DOC.md#TrimRight): Trims whitespace from the right side of the string.
-- [`trim`](DOC.md#TrimSpace): Trims whitespace from both sides of the string.
-- [`upper`](DOC.md#Upper): Converts the string to uppercase.
-- [`html-escape`](DOC.md#HTMLEscape): Escapes special characters in the string for HTML.
-- [`html-unescape`](DOC.md#HTMLUnescape): Unescapes special characters in the string for HTML.
-- [`url-escape`](DOC.md#URLEscape): Escapes special characters in the string for URLs.
-- [`url-unescape`](DOC.md#URLUnescape): Unescapes special characters in the string for URLs.
+- [`lower`](https://pkg.go.dev/github.com/cinar/checker/v2#Lower): Converts the string to lowercase.
+- [`title`](https://pkg.go.dev/github.com/cinar/checker/v2#Title): Converts the string to title case.
+- [`trim-left`](https://pkg.go.dev/github.com/cinar/checker/v2#TrimLeft): Trims whitespace from the left side of the string.
+- [`trim-right`](https://pkg.go.dev/github.com/cinar/checker/v2#TrimRight): Trims whitespace from the right side of the string.
+- [`trim`](https://pkg.go.dev/github.com/cinar/checker/v2#TrimSpace): Trims whitespace from both sides of the string.
+- [`upper`](https://pkg.go.dev/github.com/cinar/checker/v2#Upper): Converts the string to uppercase.
+- [`html-escape`](https://pkg.go.dev/github.com/cinar/checker/v2#HTMLEscape): Escapes special characters in the string for HTML.
+- [`html-unescape`](https://pkg.go.dev/github.com/cinar/checker/v2#HTMLUnescape): Unescapes special characters in the string for HTML.
+- [`url-escape`](https://pkg.go.dev/github.com/cinar/checker/v2#URLEscape): Escapes special characters in the string for URLs.
+- [`url-unescape`](https://pkg.go.dev/github.com/cinar/checker/v2#URLUnescape): Unescapes special characters in the string for URLs.
 
-# Custom Checkers and Normalizers
+## Custom Checkers and Normalizers
 
 You can define custom checkers or normalizers and register them for use in your validation logic. Here is an example of how to create and register a custom checker:
 
@@ -184,7 +207,7 @@ if !valid {
 
 In this example, the `is-fruit` checker is used to validate that the `Name` field of the `Item` struct is either "apple" or "banana".
 
-# Slice and Item Level Checkers
+## Slice and Item Level Checkers
 
 When adding checker struct tags to a slice, you can use the `@` prefix to indicate that the checker should be applied to the slice itself. Checkers without the `@` prefix will be applied to the individual items within the slice. Here is an example:
 
@@ -208,7 +231,7 @@ type Person struct {
 }
 ```
 
-# Field-Relative and Conditional Checkers
+## Field-Relative and Conditional Checkers
 
 Some checkers compare a field's value against another field on the same struct. These are only available through `CheckStruct`, since they rely on the parent struct being known.
 
@@ -232,9 +255,9 @@ type Trip struct {
 }
 ```
 
-# Localized Error Messages
+## Localized Error Messages
 
-When validation fails, Checker returns an error. By default, the [Error()](DOC.md#CheckError.Error) function provides a human-readable error message in `en-US` locale.
+When validation fails, Checker returns an error. By default, the [Error()](https://pkg.go.dev/github.com/cinar/checker/v2#CheckError.Error) function provides a human-readable error message in `en-US` locale.
 
 ```golang
 _, err := checker.IsEmail("abcd")
@@ -244,7 +267,7 @@ if err != nil {
 }
 ```
 
-To get error messages in other languages, use the [ErrorWithLocale()](DOC.md#CheckError.ErrorWithLocale) function. By default, only `en-US` is registered; the rest ship as data in the `locales` package and are opt-in via [RegisterLocale](DOC.md#RegisterLocale), so importing `checker` never pulls in translations you don't use. Checker ships translations for:
+To get error messages in other languages, use the [ErrorWithLocale()](https://pkg.go.dev/github.com/cinar/checker/v2#CheckError.ErrorWithLocale) function. By default, only `en-US` is registered; the rest ship as data in the `locales` package and are opt-in via [RegisterLocale](https://pkg.go.dev/github.com/cinar/checker/v2#RegisterLocale), so importing `checker` never pulls in translations you don't use. Checker ships translations for:
 
 `ar-SA`, `de-DE`, `en-US`, `es-ES`, `fa-IR`, `fr-FR`, `hy-AM`, `id-ID`, `it-IT`, `ja-JP`, `ko-KR`, `lv-LV`, `nl-NL`, `pl-PL`, `pt-BR`, `pt-PT`, `ru-RU`, `th-TH`, `tr-TR`, `uk-UA`, `vi-VN`, `zh-CN`, `zh-TW`
 
@@ -295,9 +318,9 @@ if !valid {
 }
 ```
 
-# Structured Errors
+## Structured Errors
 
-`CheckStruct` returns [CheckErrors](DOC.md#CheckErrors), a `map[string]error` that also implements the `error` interface, so it can be returned or wrapped directly like any other error.
+`CheckStruct` returns [CheckErrors](https://pkg.go.dev/github.com/cinar/checker/v2#CheckErrors), a `map[string]error` that also implements the `error` interface, so it can be returned or wrapped directly like any other error.
 
 ```golang
 errs, valid := checker.CheckStruct(person)
@@ -306,7 +329,7 @@ if !valid {
 }
 ```
 
-To respond to an API request, use [JSON()](DOC.md#CheckErrors.JSON) to marshal the errors into a field name to `{code, message}` object, ready to be written directly as the response body:
+To respond to an API request, use [JSON()](https://pkg.go.dev/github.com/cinar/checker/v2#CheckErrors.JSON) to marshal the errors into a field name to `{code, message}` object, ready to be written directly as the response body:
 
 ```golang
 errs, valid := checker.CheckStruct(person)
@@ -319,13 +342,13 @@ if !valid {
 }
 ```
 
-Use [JSONWithLocale()](DOC.md#CheckErrors.JSONWithLocale) to localize the messages in the response, the same way `ErrorWithLocale()` works for a single error.
+Use [JSONWithLocale()](https://pkg.go.dev/github.com/cinar/checker/v2#CheckErrors.JSONWithLocale) to localize the messages in the response, the same way `ErrorWithLocale()` works for a single error.
 
 ```golang
 data, _ := errs.JSONWithLocale(locales.DeDE)
 ```
 
-# JSON Schema Generation
+## JSON Schema Generation
 
 `JSONSchema` generates a [JSON Schema](https://json-schema.org/) document describing the shape and validation rules declared in a struct's `checkers` tags — useful for documenting an API, or handing a frontend enough information to mirror your validation rules without duplicating them by hand. It's a static, type-level operation: it reads a struct's type and tags, never its field values, so a zero value works as well as a populated one.
 
@@ -369,7 +392,7 @@ type Registration struct {
 }
 ```
 
-Register a [SchemaMakeFunc](DOC.md#SchemaMakeFunc) with [RegisterSchemaMaker](DOC.md#RegisterSchemaMaker) to teach `JSONSchema` how to translate a custom checker instead:
+Register a [SchemaMakeFunc](https://pkg.go.dev/github.com/cinar/checker/v2#SchemaMakeFunc) with [RegisterSchemaMaker](https://pkg.go.dev/github.com/cinar/checker/v2#RegisterSchemaMaker) to teach `JSONSchema` how to translate a custom checker instead:
 
 ```golang
 checker.RegisterSchemaMaker("is-fruit", func(schema *checker.Schema, _ string) {
@@ -377,11 +400,11 @@ checker.RegisterSchemaMaker("is-fruit", func(schema *checker.Schema, _ string) {
 })
 ```
 
-# Framework Integration
+## Framework Integration
 
 Checker ships thin, separately-versioned adapter modules that bind a request and run `CheckStruct` in a single call, writing a JSON `400` response automatically when binding or validation fails. Each adapter is its own Go module, so the framework it wraps is only pulled in if you actually `go get` that adapter; the core `checker` module stays dependency-free either way.
 
-## Gin
+### Gin
 
 ```bash
 go get github.com/cinar/checker/v2/gin
@@ -409,7 +432,7 @@ router.POST("/register", func(c *gin.Context) {
 
 See [gin/README.md](gin/README.md) for the full example, including how to call `checkergin.Check` directly when the struct is assembled from more than just the request body.
 
-## Echo
+### Echo
 
 ```bash
 go get github.com/cinar/checker/v2/echo
@@ -437,15 +460,15 @@ e.POST("/register", func(c echo.Context) error {
 
 See [echo/README.md](echo/README.md) for the full example, including how to call `checkerecho.Check` directly when the struct is assembled from more than just the request body.
 
-# Changelog
+## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for a history of notable changes to this project.
 
-# Contributing to the Project
+## Contributing to the Project
 
 Anyone can contribute to Checkers library. Please make sure to read our [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md) guide first. Follow the [How to Contribute to Checker](./CONTRIBUTING.md) to contribute.
 
-# License
+## License
 
 This library is free to use, modify, and distribute under the terms of the MIT license. The full license text can be found in the [LICENSE](./LICENSE) file.
 
