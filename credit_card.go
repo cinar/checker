@@ -129,11 +129,7 @@ func makeCreditCard(config string) CheckFunc[reflect.Value] {
 	}
 
 	return func(value reflect.Value) (reflect.Value, error) {
-		if value.Kind() != reflect.String {
-			panic("string expected")
-		}
-
-		number := value.String()
+		number := reflectString(value)
 
 		for _, pattern := range patterns {
 			_, err := isCreditCard(number, pattern)

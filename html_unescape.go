@@ -20,8 +20,8 @@ func HTMLUnescape(value string) (string, error) {
 
 // reflectHTMLUnescape applies HTML unescaping to special characters.
 func reflectHTMLUnescape(value reflect.Value) (reflect.Value, error) {
-	newValue, err := HTMLUnescape(value.Interface().(string))
-	return reflect.ValueOf(newValue), err
+	newValue, err := HTMLUnescape(reflectString(value))
+	return reflect.ValueOf(newValue).Convert(value.Type()), err
 }
 
 // makeHTMLUnescape returns the HTML unescape normalizer function.
