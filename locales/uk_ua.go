@@ -36,4 +36,5 @@ var UkUAMessages = map[string]string{
 	"NOT_TIME":            "Недійсний час.",
 	"REQUIRED":            "Відсутнє обов'язкове значення.",
 	"NOT_URL":             "Недійсна URL-адреса.",
+	"NOT_UUID":            "Недійсний UUID.",
 }

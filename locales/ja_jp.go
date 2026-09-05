@@ -36,4 +36,5 @@ var JaJPMessages = map[string]string{
 	"NOT_TIME":            "有効な時刻ではありません。",
 	"REQUIRED":            "必須の値がありません。",
 	"NOT_URL":             "有効なURLではありません。",
+	"NOT_UUID":            "有効なUUIDではありません。",
 }

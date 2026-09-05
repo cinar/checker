@@ -246,6 +246,19 @@ func TestJSONSchemaXChecker(t *testing.T) {
 	}
 }
 
+func TestJSONSchemaUUIDFormat(t *testing.T) {
+	type Resource struct {
+		ID string `checkers:"uuid"`
+	}
+
+	schema := v2.JSONSchema(&Resource{})
+
+	id, ok := schema.Properties["ID"]
+	if !ok || id.Format != "uuid" {
+		t.Fatalf("unexpected id schema %+v", id)
+	}
+}
+
 func TestJSONSchemaIgnoresNormalizers(t *testing.T) {
 	type Person struct {
 		Name string `checkers:"trim lower upper title trim-left trim-right html-escape html-unescape url-escape url-unescape omitempty required"`

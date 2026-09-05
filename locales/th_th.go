@@ -36,4 +36,5 @@ var ThTHMessages = map[string]string{
 	"NOT_TIME":            "ไม่ใช่เวลาที่ถูกต้อง",
 	"REQUIRED":            "ค่าที่จำเป็นหายไป",
 	"NOT_URL":             "ไม่ใช่ URL ที่ถูกต้อง",
+	"NOT_UUID":            "ไม่ใช่ UUID ที่ถูกต้อง",
 }

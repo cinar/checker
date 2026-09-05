@@ -36,4 +36,5 @@ var RuRUMessages = map[string]string{
 	"NOT_TIME":            "Неверное время.",
 	"REQUIRED":            "Отсутствует обязательное значение.",
 	"NOT_URL":             "Неверный URL-адрес.",
+	"NOT_UUID":            "Неверный UUID.",
 }

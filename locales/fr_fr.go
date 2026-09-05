@@ -36,4 +36,5 @@ var FrFRMessages = map[string]string{
 	"NOT_TIME":            "N'est pas une heure valide.",
 	"REQUIRED":            "Valeur obligatoire manquante.",
 	"NOT_URL":             "N'est pas une URL valide.",
+	"NOT_UUID":            "N'est pas un UUID valide.",
 }

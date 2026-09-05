@@ -36,4 +36,5 @@ var PlPLMessages = map[string]string{
 	"NOT_TIME":            "Nieprawidłowy czas.",
 	"REQUIRED":            "Brak wymaganej wartości.",
 	"NOT_URL":             "Nieprawidłowy adres URL.",
+	"NOT_UUID":            "Nieprawidłowy UUID.",
 }

@@ -36,4 +36,5 @@ var ZhTWMessages = map[string]string{
 	"NOT_TIME":            "不是有效的時間。",
 	"REQUIRED":            "缺少必填值。",
 	"NOT_URL":             "不是有效的URL。",
+	"NOT_UUID":            "不是有效的UUID。",
 }

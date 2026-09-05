@@ -36,4 +36,5 @@ var EnUSMessages = map[string]string{
 	"NOT_TIME":            "Not a valid time.",
 	"REQUIRED":            "Required value is missing.",
 	"NOT_URL":             "Not a valid URL.",
+	"NOT_UUID":            "Not a valid UUID.",
 }

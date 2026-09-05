@@ -36,4 +36,5 @@ var ArSAMessages = map[string]string{
 	"NOT_TIME":            "ليس وقتًا صالحًا.",
 	"REQUIRED":            "القيمة المطلوبة مفقودة.",
 	"NOT_URL":             "ليس رابط URL صالحًا.",
+	"NOT_UUID":            "ليس UUID صالحًا.",
 }

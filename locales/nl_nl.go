@@ -36,4 +36,5 @@ var NlNLMessages = map[string]string{
 	"NOT_TIME":            "Geen geldige tijd.",
 	"REQUIRED":            "Verplichte waarde ontbreekt.",
 	"NOT_URL":             "Geen geldige URL.",
+	"NOT_UUID":            "Geen geldige UUID.",
 }

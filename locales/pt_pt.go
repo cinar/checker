@@ -36,4 +36,5 @@ var PtPTMessages = map[string]string{
 	"NOT_TIME":            "Não é uma hora válida.",
 	"REQUIRED":            "Falta um valor obrigatório.",
 	"NOT_URL":             "Não é um URL válido.",
+	"NOT_UUID":            "Não é um UUID válido.",
 }

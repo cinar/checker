@@ -36,4 +36,5 @@ var ViVNMessages = map[string]string{
 	"NOT_TIME":            "Không phải là thời gian hợp lệ.",
 	"REQUIRED":            "Thiếu giá trị bắt buộc.",
 	"NOT_URL":             "Không phải là URL hợp lệ.",
+	"NOT_UUID":            "Không phải là UUID hợp lệ.",
 }

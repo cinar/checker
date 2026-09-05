@@ -36,4 +36,5 @@ var IDIDMessages = map[string]string{
 	"NOT_TIME":            "Bukan waktu yang valid.",
 	"REQUIRED":            "Nilai yang wajib diisi tidak ada.",
 	"NOT_URL":             "Bukan URL yang valid.",
+	"NOT_UUID":            "Bukan UUID yang valid.",
 }

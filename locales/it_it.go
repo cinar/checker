@@ -36,4 +36,5 @@ var ItITMessages = map[string]string{
 	"NOT_TIME":            "Non è un orario valido.",
 	"REQUIRED":            "Manca un valore obbligatorio.",
 	"NOT_URL":             "Non è un URL valido.",
+	"NOT_UUID":            "Non è un UUID valido.",
 }

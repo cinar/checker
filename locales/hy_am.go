@@ -36,4 +36,5 @@ var HyAMMessages = map[string]string{
 	"NOT_TIME":            "Վավեր ժամանակ չէ:",
 	"REQUIRED":            "Պարտադիր արժեքը բացակայում է:",
 	"NOT_URL":             "Վավեր URL չէ:",
+	"NOT_UUID":            "Վավեր UUID չէ:",
 }
