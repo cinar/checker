@@ -338,6 +338,34 @@ router.POST("/register", func(c *gin.Context) {
 
 See [gin/README.md](gin/README.md) for the full example, including how to call `checkergin.Check` directly when the struct is assembled from more than just the request body.
 
+## Echo
+
+```bash
+go get github.com/cinar/checker/v2/echo
+```
+
+```golang
+import checkerecho "github.com/cinar/checker/v2/echo"
+
+type Registration struct {
+	Name  string `json:"name" checkers:"trim required"`
+	Email string `json:"email" checkers:"required email"`
+}
+
+e.POST("/register", func(c echo.Context) error {
+	var registration Registration
+
+	if !checkerecho.Bind(c, &registration) {
+		// The 400 response has already been written by Bind.
+		return nil
+	}
+
+	return c.JSON(http.StatusOK, registration)
+})
+```
+
+See [echo/README.md](echo/README.md) for the full example, including how to call `checkerecho.Check` directly when the struct is assembled from more than just the request body.
+
 # Contributing to the Project
 
 Anyone can contribute to Checkers library. Please make sure to read our [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md) guide first. Follow the [How to Contribute to Checker](./CONTRIBUTING.md) to contribute.
