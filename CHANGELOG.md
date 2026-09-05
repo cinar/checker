@@ -11,6 +11,15 @@ Changes prior to v2.0.0 are not individually documented here; see the
 
 ## [Unreleased]
 
+### Fixed
+
+- `gte`/`lte` no longer panic on unsigned integer fields (`uint`, `uint8`,
+  `uint16`, `uint32`, `uint64`, `uintptr`). Previously only `CanInt()`/
+  `CanFloat()` were handled, so e.g. `Quantity uint64 \`checkers:"gte:1"\``
+  panicked with `"value is not numeric"` on any value. Applying `gte`/`lte`
+  to a genuinely non-numeric field (`string`, `bool`, ...) still panics, as
+  before — that's an intentional, tested checker/field type mismatch.
+
 ### Added
 
 - `CheckErrors`, a structured error type returned by `CheckStruct`. It

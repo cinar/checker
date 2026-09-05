@@ -46,6 +46,10 @@ func makeLte(params string) CheckFunc[reflect.Value] {
 			_, err := IsLte(float64(v.Int()), n)
 			return v, err
 
+		case v.CanUint():
+			_, err := IsLte(float64(v.Uint()), n)
+			return v, err
+
 		case v.CanFloat():
 			_, err := IsLte(v.Float(), n)
 			return v, err
