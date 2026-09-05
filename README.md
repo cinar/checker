@@ -325,6 +325,58 @@ Use [JSONWithLocale()](DOC.md#CheckErrors.JSONWithLocale) to localize the messag
 data, _ := errs.JSONWithLocale(locales.DeDE)
 ```
 
+# JSON Schema Generation
+
+`JSONSchema` generates a [JSON Schema](https://json-schema.org/) document describing the shape and validation rules declared in a struct's `checkers` tags — useful for documenting an API, or handing a frontend enough information to mirror your validation rules without duplicating them by hand. It's a static, type-level operation: it reads a struct's type and tags, never its field values, so a zero value works as well as a populated one.
+
+```golang
+type Person struct {
+	Name  string `json:"name" checkers:"trim required"`
+	Email string `json:"email" checkers:"required email"`
+}
+
+schema := checker.JSONSchema(&Person{})
+
+data, _ := json.MarshalIndent(schema, "", "  ")
+fmt.Println(string(data))
+```
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Person",
+  "type": "object",
+  "properties": {
+    "email": { "type": "string", "format": "email" },
+    "name": { "type": "string" }
+  },
+  "required": ["email", "name"]
+}
+```
+
+Most checkers map directly onto a JSON Schema keyword: `required` becomes an entry in `required`, `min-len`/`max-len` become `minLength`/`maxLength` (or `minItems`/`maxItems` for a slice, `minProperties`/`maxProperties` for a map), `gte`/`lte` become `minimum`/`maximum`, `email`/`url`/`ipv4`/`ipv6`/`fqdn` become a `format`, and `regexp:pattern` becomes `pattern`. Normalizers (`trim`, `lower`, `upper`, ...) are skipped, since they transform data rather than constrain its shape. A checker with no JSON Schema equivalent — a custom checker, or one like `eq-field` that compares against another field — is recorded in an `x-checker` vendor extension instead of being silently dropped:
+
+```golang
+type Registration struct {
+	Password        string `checkers:"required"`
+	ConfirmPassword string `checkers:"eq-field:Password"`
+}
+```
+
+```json
+{
+  "ConfirmPassword": { "type": "string", "x-checker": ["eq-field:Password"] }
+}
+```
+
+Register a [SchemaMakeFunc](DOC.md#SchemaMakeFunc) with [RegisterSchemaMaker](DOC.md#RegisterSchemaMaker) to teach `JSONSchema` how to translate a custom checker instead:
+
+```golang
+checker.RegisterSchemaMaker("is-fruit", func(schema *checker.Schema, _ string) {
+	schema.Enum = []string{"apple", "banana"}
+})
+```
+
 # Framework Integration
 
 Checker ships thin, separately-versioned adapter modules that bind a request and run `CheckStruct` in a single call, writing a JSON `400` response automatically when binding or validation fails. Each adapter is its own Go module, so the framework it wraps is only pulled in if you actually `go get` that adapter; the core `checker` module stays dependency-free either way.
