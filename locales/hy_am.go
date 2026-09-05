@@ -1,0 +1,39 @@
+package locales
+
+const (
+	// HyAM is the hy_am locale.
+	HyAM = "hy-AM"
+)
+
+// HyAMMessages is the map of hy-AM messages.
+var HyAMMessages = map[string]string{
+	"NOT_AFTER":           "Արժեքը պետք է լինի {{ .reference }}-ից հետո:",
+	"NOT_ALPHANUMERIC":    "Տառաթվային տող չէ:",
+	"NOT_ASCII":           "Կարող է պարունակել միայն ASCII նիշեր:",
+	"NOT_BEFORE":          "Արժեքը պետք է լինի {{ .reference }}-ից առաջ:",
+	"NOT_CIDR":            "Վավեր CIDR նշում չէ:",
+	"NOT_CREDIT_CARD":     "Վավեր վարկային քարտի համար չէ:",
+	"NOT_DIGITS":          "Կարող է պարունակել միայն թվանշաններ:",
+	"NOT_EMAIL":           "Վավեր էլ. փոստի հասցե չէ:",
+	"NOT_EOA":             "Վավեր արտաքին սեփականության հասցե (EOA) չէ:",
+	"NOT_EQ_FIELD":        "Արժեքը պետք է համընկնի {{ .field }} դաշտի հետ:",
+	"NOT_FQDN":            "Ամբողջովին որակավորված տիրույթի անուն (FQDN) չէ:",
+	"NOT_GTE":             "Արժեքը չի կարող փոքր լինել {{ .n }}-ից:",
+	"NOT_HASH":            "Վավեր {{ .algorithm }} հեշ չէ:",
+	"NOT_HEX":             "Կարող է պարունակել միայն տասնվեցական նիշեր:",
+	"NOT_IP":              "Վավեր IP հասցե չէ:",
+	"NOT_IPV4":            "Վավեր IPv4 հասցե չէ:",
+	"NOT_IPV6":            "Վավեր IPv6 հասցե չէ:",
+	"NOT_ISBN":            "Վավեր ISBN համար չէ:",
+	"NOT_ISO31661_ALPHA2": "Վավեր ISO 3166-1 alpha-2 երկրի կոդ չէ:",
+	"NOT_ISO31661_ALPHA3": "Վավեր ISO 3166-1 alpha-3 երկրի կոդ չէ:",
+	"NOT_ISO6391":         "Վավեր ISO 639-1 լեզվի կոդ չէ:",
+	"NOT_LTE":             "Արժեքը չի կարող փոքր լինել {{ .n }}-ից:",
+	"NOT_LUHN":            "Վավեր LUHN համար չէ:",
+	"NOT_MAC":             "Վավեր MAC հասցե չէ:",
+	"NOT_MAX_LEN":         "Արժեքը չի կարող մեծ լինել {{ .max }}-ից:",
+	"NOT_MIN_LEN":         "Արժեքը չի կարող փոքր լինել {{ .min }}-ից:",
+	"NOT_TIME":            "Վավեր ժամանակ չէ:",
+	"REQUIRED":            "Պարտադիր արժեքը բացակայում է:",
+	"NOT_URL":             "Վավեր URL չէ:",
+}

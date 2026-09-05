@@ -236,7 +236,11 @@ if err != nil {
 }
 ```
 
-To get error messages in other languages, use the [ErrorWithLocale()](DOC.md#CheckError.ErrorWithLocale) function. By default, only `en-US` is registered. You can register additional languages by calling [RegisterLocale](DOC.md#RegisterLocale).
+To get error messages in other languages, use the [ErrorWithLocale()](DOC.md#CheckError.ErrorWithLocale) function. By default, only `en-US` is registered; the rest ship as data in the `locales` package and are opt-in via [RegisterLocale](DOC.md#RegisterLocale), so importing `checker` never pulls in translations you don't use. Checker ships translations for:
+
+`ar-SA`, `de-DE`, `en-US`, `es-ES`, `fa-IR`, `fr-FR`, `hy-AM`, `id-ID`, `it-IT`, `ja-JP`, `ko-KR`, `lv-LV`, `nl-NL`, `pl-PL`, `pt-BR`, `pt-PT`, `ru-RU`, `th-TH`, `tr-TR`, `uk-UA`, `vi-VN`, `zh-CN`, `zh-TW`
+
+Register any of these the same way:
 
 ```golang
 // Register de-DE localized error messages.

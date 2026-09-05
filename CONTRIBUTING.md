@@ -32,4 +32,8 @@ The test cases for the library can be found in the _test.go files. These files c
 
 If you are planning to make a pull request to this project, please make sure to add enough test cases to ensure that the code coverage remains at 100%. This will help to ensure that the library remains reliable and that user data is handled correctly.
 
+### Translations
+
+Every locale in the `locales` package must define a message for every error code, using the same `{{ .placeholder }}` variables as the `en-US` message for that code — `locales/locales_test.go` enforces this and will fail if a locale falls out of sync. If your pull request adds a new checker (and therefore a new error code) or changes an existing message's placeholders, update every file in `locales/`, not just `locales/en_us.go`.
+
 Thank you for contributing! We appreciate your help in making Checkers library better.
