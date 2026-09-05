@@ -155,6 +155,64 @@ func TestCheckStructRequiredMissing(t *testing.T) {
 	}
 }
 
+func TestCheckStructNilPointerFieldSkipsChildFields(t *testing.T) {
+	type Address struct {
+		Street string `checkers:"required"`
+	}
+
+	type Person struct {
+		Name    string `checkers:"required"`
+		Address *Address
+	}
+
+	person := &Person{
+		Name: "Onur Cinar",
+	}
+
+	if _, ok := v2.CheckStruct(person); !ok {
+		t.Fatal("expected valid, nil Address has nothing to check")
+	}
+}
+
+func TestCheckStructNilPointerFieldRequired(t *testing.T) {
+	type Address struct {
+		Street string `checkers:"required"`
+	}
+
+	type Person struct {
+		Name    string   `checkers:"required"`
+		Address *Address `checkers:"required"`
+	}
+
+	person := &Person{
+		Name: "Onur Cinar",
+	}
+
+	errs, ok := v2.CheckStruct(person)
+	if ok {
+		t.Fatal("expected errors")
+	}
+
+	if !errors.Is(errs["Address"], v2.ErrRequired) {
+		t.Fatalf("expected Address required %v", errs)
+	}
+}
+
+func TestCheckStructPassedByValueDoesNotPanic(t *testing.T) {
+	type Person struct {
+		Name string `checkers:"trim required"`
+	}
+
+	person := Person{
+		Name: "  Onur Cinar  ",
+	}
+
+	//nolint:staticcheck // deliberately passing by value to exercise the unaddressable path
+	if _, ok := v2.CheckStruct(person); !ok {
+		t.Fatal("expected valid")
+	}
+}
+
 func TestCheckStructCustomName(t *testing.T) {
 	type Person struct {
 		Name string `json:"name" checkers:"required"`
