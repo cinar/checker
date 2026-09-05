@@ -174,6 +174,44 @@ func TestCheckStructCustomName(t *testing.T) {
 	}
 }
 
+func TestCheckStructCustomNameWithOptions(t *testing.T) {
+	type Person struct {
+		Name string `json:"name,omitempty" checkers:"required"`
+	}
+
+	person := &Person{
+		Name: "",
+	}
+
+	errs, ok := v2.CheckStruct(person)
+	if ok {
+		t.Fatal("expected errors")
+	}
+
+	if !errors.Is(errs["name"], v2.ErrRequired) {
+		t.Fatalf("expected name required %v", errs)
+	}
+}
+
+func TestCheckStructJSONIgnoredFieldFallsBackToFieldName(t *testing.T) {
+	type Person struct {
+		Name string `json:"-" checkers:"required"`
+	}
+
+	person := &Person{
+		Name: "",
+	}
+
+	errs, ok := v2.CheckStruct(person)
+	if ok {
+		t.Fatal("expected errors")
+	}
+
+	if !errors.Is(errs["Name"], v2.ErrRequired) {
+		t.Fatalf("expected Name required %v", errs)
+	}
+}
+
 func TestCheckStructSlice(t *testing.T) {
 	type Person struct {
 		Name   string   `checkers:"required"`

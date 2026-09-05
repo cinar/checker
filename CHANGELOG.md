@@ -11,6 +11,15 @@ Changes prior to v2.0.0 are not individually documented here; see the
 
 ## [Unreleased]
 
+### Fixed
+
+- `CheckStruct`'s error map keys now match `JSONSchema`'s property names for
+  the same struct. Previously `fieldName` used a field's `json` tag as-is,
+  so `json:"name,omitempty"` produced the error key `"name,omitempty"`
+  instead of `"name"`, and `json:"-"` produced the key `"-"` instead of
+  falling back to the Go field name. Both now go through the same tag
+  parsing `JSONSchema` already used internally.
+
 ### Added
 
 - `CheckErrors`, a structured error type returned by `CheckStruct`. It
