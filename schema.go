@@ -270,7 +270,11 @@ func applyConfig(schema *Schema, config string, field *schemaField) {
 			// Normalizers transform data; they don't constrain its shape.
 
 		default:
-			if maker, ok := schemaMakers[name]; ok {
+			schemaMakersMu.RLock()
+			maker, ok := schemaMakers[name]
+			schemaMakersMu.RUnlock()
+
+			if ok {
 				maker(schema, params)
 			} else {
 				schema.XChecker = append(schema.XChecker, token)

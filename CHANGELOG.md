@@ -57,6 +57,13 @@ Changes prior to v2.0.0 are not individually documented here; see the
   skipped when the field isn't addressable, since there's no caller-owned
   memory to normalize in place. Validation errors are still reported as
   before -- only the (impossible) write-back is skipped.
+- The package-level checker/normalizer registries (`makers`, `fieldMakers`,
+  `schemaMakers`, `errorMessages`) are now guarded by `sync.RWMutex`.
+  `RegisterMaker`/`RegisterFieldMaker`/`RegisterSchemaMaker`/`RegisterLocale`
+  wrote to these maps with no synchronization, so registering a custom
+  checker or locale concurrently with `CheckStruct`/`JSONSchema` calls
+  already in flight (e.g. during server startup) could trip Go's fatal,
+  unrecoverable `concurrent map read and map write` error.
 
 ### Added
 
