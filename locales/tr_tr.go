@@ -36,4 +36,5 @@ var TrTRMessages = map[string]string{
 	"NOT_TIME":            "Geçerli bir saat değil.",
 	"REQUIRED":            "Gerekli değer eksik.",
 	"NOT_URL":             "Geçerli bir URL değil.",
+	"NOT_UUID":            "Geçerli bir UUID değil.",
 }

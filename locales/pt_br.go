@@ -36,4 +36,5 @@ var PtBRMessages = map[string]string{
 	"NOT_TIME":            "Não é um horário válido.",
 	"REQUIRED":            "Falta um valor obrigatório.",
 	"NOT_URL":             "Não é uma URL válida.",
+	"NOT_UUID":            "Não é um UUID válido.",
 }

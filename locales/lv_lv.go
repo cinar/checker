@@ -36,4 +36,5 @@ var LvLVMessages = map[string]string{
 	"NOT_TIME":            "Nav derīga laika.",
 	"REQUIRED":            "Trūkst obligātās vērtības.",
 	"NOT_URL":             "Nav derīga URL.",
+	"NOT_UUID":            "Nav derīga UUID.",
 }

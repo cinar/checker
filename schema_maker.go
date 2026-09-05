@@ -51,6 +51,7 @@ var schemaMakers = map[string]SchemaMakeFunc{
 	nameMinLen: schemaMinLen,
 	nameRegexp: schemaPattern,
 	nameURL:    schemaFormat("uri"),
+	nameUUID:   schemaFormat("uuid"),
 }
 
 // RegisterSchemaMaker registers a SchemaMakeFunc for the given checker or

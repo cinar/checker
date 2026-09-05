@@ -288,6 +288,7 @@ Checkers validate that a value conforms to expected criteria, returning an error
 | [`IsISO31661Alpha2`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO31661Alpha2) | `iso3166-1-alpha-2` | Ensures the string is a valid 2-letter ISO 3166-1 alpha-2 country code |
 | [`IsISO31661Alpha3`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO31661Alpha3) | `iso3166-1-alpha-3` | Ensures the string is a valid 3-letter ISO 3166-1 alpha-3 country code |
 | [`IsISO6391`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO6391) | `iso639-1` | Ensures the string is a valid 2-letter ISO 639-1 language code |
+| [`IsUUID`](https://pkg.go.dev/github.com/cinar/checker/v2#IsUUID) | `uuid` | Ensures the string is a valid RFC 4122 UUID (any version), case-insensitive |
 
 ## Custom Checkers and Normalizers
 

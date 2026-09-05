@@ -36,4 +36,5 @@ var KoKRMessages = map[string]string{
 	"NOT_TIME":            "유효한 시간이 아닙니다.",
 	"REQUIRED":            "필수 값이 없습니다.",
 	"NOT_URL":             "유효한 URL이 아닙니다.",
+	"NOT_UUID":            "유효한 UUID가 아닙니다.",
 }

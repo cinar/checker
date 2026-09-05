@@ -36,4 +36,5 @@ var DeDEMessages = map[string]string{
 	"NOT_TIME":            "Keine gültige Uhrzeit.",
 	"REQUIRED":            "Erforderlicher Wert fehlt.",
 	"NOT_URL":             "Keine gültige URL.",
+	"NOT_UUID":            "Keine gültige UUID.",
 }

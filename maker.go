@@ -77,6 +77,7 @@ var makers = map[string]MakeCheckFunc{
 	nameURL:            makeURL,
 	nameURLEscape:      makeURLEscape,
 	nameURLUnescape:    makeURLUnescape,
+	nameUUID:           makeUUID,
 }
 
 // RegisterMaker registers a new maker function with the given name.

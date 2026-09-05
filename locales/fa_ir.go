@@ -36,4 +36,5 @@ var FaIRMessages = map[string]string{
 	"NOT_TIME":            "زمان معتبر نیست.",
 	"REQUIRED":            "مقدار الزامی وجود ندارد.",
 	"NOT_URL":             "URL معتبر نیست.",
+	"NOT_UUID":            "UUID معتبر نیست.",
 }

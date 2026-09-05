@@ -36,4 +36,5 @@ var EsESMessages = map[string]string{
 	"NOT_TIME":            "No es una hora válida.",
 	"REQUIRED":            "Falta un valor obligatorio.",
 	"NOT_URL":             "No es una URL válida.",
+	"NOT_UUID":            "No es un UUID válido.",
 }
