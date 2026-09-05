@@ -157,6 +157,8 @@ if !valid {
 }
 ```
 
+If a field has no `checkers` tag, `CheckStruct` and `JSONSchema` both fall back to reading a `validate` tag instead — the conventional tag name from `go-playground/validator`. This doesn't give Checker any understanding of `validator`'s own tag syntax (only the tag *name* is a fallback, not its contents), but it means a codebase already tagged `validate:"required"` with Checker-compatible rules picks up validation without renaming every tag. An explicit, empty `checkers:""` tag is respected as "no checks" rather than falling back.
+
 ### Validating Individual Values
 
 You can also validate individual user input by calling checker functions directly:

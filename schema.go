@@ -183,7 +183,7 @@ func structSchema(t reflect.Type) *Schema {
 			continue
 		}
 
-		property := typeSchema(field.Type, field.Tag.Get(checkerTag))
+		property := typeSchema(field.Type, fieldConfig(field))
 
 		schema.Properties[name] = property.schema
 
