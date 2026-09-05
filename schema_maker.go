@@ -15,12 +15,14 @@ import (
 // itself for a scalar, or the array/map Schema for an "@"-prefixed check.
 type SchemaMakeFunc func(schema *Schema, params string)
 
-// ignoredForSchema is the set of normalizer names that don't constrain a
-// Schema, so they're silently skipped rather than recorded in XChecker.
+// ignoredForSchema is the set of normalizer and pipeline-modifier names that
+// don't constrain a Schema, so they're silently skipped rather than
+// recorded in XChecker.
 var ignoredForSchema = map[string]bool{
 	nameHTMLEscape:   true,
 	nameHTMLUnescape: true,
 	nameLower:        true,
+	nameOmitEmpty:    true,
 	nameTitle:        true,
 	nameTrimLeft:     true,
 	nameTrimRight:    true,

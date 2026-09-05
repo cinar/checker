@@ -31,6 +31,7 @@ Checker is a lightweight Go library for validating and normalizing user input, d
 - [Checkers Provided](#checkers-provided)
 - [Custom Checkers and Normalizers](#custom-checkers-and-normalizers)
 - [Slice and Item Level Checkers](#slice-and-item-level-checkers)
+- [Optional Fields with `omitempty`](#optional-fields-with-omitempty)
 - [Field-Relative and Conditional Checkers](#field-relative-and-conditional-checkers)
 - [Localized Error Messages](#localized-error-messages)
 - [Structured Errors](#structured-errors)
@@ -350,6 +351,22 @@ type Person struct {
 	Emails map[string]string `checkers:"@max-len:2 trim max-len:64"`
 }
 ```
+
+## Optional Fields with `omitempty`
+
+Add `omitempty` to a field's tag to skip every other checker in that tag when the field is its zero value (`""`, `0`, `nil`, an empty slice/map, ...), while still validating it normally when a value is provided:
+
+```golang
+type Profile struct {
+	Website string `checkers:"omitempty url"`
+}
+```
+
+An empty `Website` is left alone; a non-empty one still has to be a valid URL. `omitempty` looks at the field's original value, not a value already transformed by an earlier normalizer in the same tag, so `trim omitempty required` on `"   "` still fails `required` after trimming — a whitespace-only string isn't the zero value to begin with.
+
+With the `@` prefix, `omitempty` applies to a slice or map container itself rather than its items, e.g. `@omitempty @min-len:1` skips the container-level check on a nil slice.
+
+Pairing `omitempty` with `required` on the same field is a contradiction — "optional" and "required" can't both hold — so pipeline-wise `omitempty` wins and `required` never runs on a zero value; avoid writing the two together.
 
 ## Field-Relative and Conditional Checkers
 
