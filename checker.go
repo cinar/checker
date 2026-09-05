@@ -16,6 +16,14 @@ const (
 	// checkerTag is the name of the field tag used for checker.
 	checkerTag = "checkers"
 
+	// validateTag is a fallback field tag name, checked when checkerTag is
+	// absent. It doesn't give this package any understanding of
+	// go-playground/validator's own tag syntax -- only the tag *name* is a
+	// fallback, not its contents -- but it lowers the switching cost for a
+	// codebase that already writes checker-compatible rules under the
+	// conventional `validate:"..."` tag name.
+	validateTag = "validate"
+
 	// sliceConfigPrefix is the prefix used to distinguish slice or map-level checks from item-level checks.
 	sliceConfigPrefix = "@"
 )
@@ -131,7 +139,7 @@ func CheckStruct(st any) (CheckErrors, bool) {
 					Name:    name,
 					Value:   value,
 					Parent:  job.Value,
-					Config:  field.Tag.Get(checkerTag),
+					Config:  fieldConfig(field),
 					SetFunc: safeSetFunc(value),
 				})
 			}
@@ -218,6 +226,18 @@ func safeSetFunc(value reflect.Value) func(reflect.Value) {
 			value.Set(newValue)
 		}
 	}
+}
+
+// fieldConfig returns the checkers tag config for the given field, falling
+// back to the validate tag if checkerTag is absent, so a struct already
+// tagged for go-playground/validator-style migration doesn't need every tag
+// renamed just to pick up Checker.
+func fieldConfig(field reflect.StructField) string {
+	if config, ok := field.Tag.Lookup(checkerTag); ok {
+		return config
+	}
+
+	return field.Tag.Get(validateTag)
 }
 
 // fieldName returns the field name. If a "json" tag is present, it uses the
