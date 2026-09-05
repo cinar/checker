@@ -22,8 +22,8 @@ func Lower(value string) (string, error) {
 
 // reflectLower maps all Unicode letters in the given value to their lower case.
 func reflectLower(value reflect.Value) (reflect.Value, error) {
-	newValue, err := Lower(value.Interface().(string))
-	return reflect.ValueOf(newValue), err
+	newValue, err := Lower(reflectString(value))
+	return reflect.ValueOf(newValue).Convert(value.Type()), err
 }
 
 // makeLower returns the lower normalizer function.

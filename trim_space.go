@@ -22,8 +22,8 @@ func TrimSpace(value string) (string, error) {
 
 // reflectTrimSpace returns the value of the string with whitespace removed from both ends.
 func reflectTrimSpace(value reflect.Value) (reflect.Value, error) {
-	newValue, err := TrimSpace(value.Interface().(string))
-	return reflect.ValueOf(newValue), err
+	newValue, err := TrimSpace(reflectString(value))
+	return reflect.ValueOf(newValue).Convert(value.Type()), err
 }
 
 // makeTrimSpace returns the trim space normalizer function.

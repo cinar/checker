@@ -48,6 +48,18 @@ Changes prior to v2.0.0 are not individually documented here; see the
   being silently dropped. `RegisterSchemaMaker` lets a custom checker
   register its own translation.
 
+### Fixed
+
+- String checkers and normalizers (`email`, `alphanumeric`, `lower`, `trim`,
+  `hex`, `url`, and others) no longer panic when applied to a defined type
+  whose underlying kind is `string` (e.g. `type Email string`). They
+  previously asserted `value.Interface().(string)` directly, which only
+  matches the literal `string` type; normalizers also now convert the
+  normalized value back to the field's original type before writing it,
+  instead of panicking on `value.Set` with a plain `string`. Applying a
+  string-only checker to a genuinely non-string field (e.g. `int`) still
+  panics, as before, since that's a checker/field type mismatch.
+
 ### Changed
 
 - README links to API docs now point to [pkg.go.dev](https://pkg.go.dev/github.com/cinar/checker/v2)

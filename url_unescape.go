@@ -21,8 +21,8 @@ func URLUnescape(value string) (string, error) {
 
 // reflectURLUnescape applies URL unescaping to special characters.
 func reflectURLUnescape(value reflect.Value) (reflect.Value, error) {
-	newValue, err := URLUnescape(value.Interface().(string))
-	return reflect.ValueOf(newValue), err
+	newValue, err := URLUnescape(reflectString(value))
+	return reflect.ValueOf(newValue).Convert(value.Type()), err
 }
 
 // makeURLUnescape returns the URL unescape normalizer function.

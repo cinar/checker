@@ -33,7 +33,7 @@ func IsISBN(value string) (string, error) {
 
 // checkISBN checks if the value is a valid ISBN-10 or ISBN-13.
 func checkISBN(value reflect.Value) (reflect.Value, error) {
-	_, err := IsISBN(value.Interface().(string))
+	_, err := IsISBN(reflectString(value))
 	return value, err
 }
 

@@ -51,7 +51,7 @@ func IsLUHN(value string) (string, error) {
 
 // checkLUHN checks if the value is a valid LUHN number.
 func checkLUHN(value reflect.Value) (reflect.Value, error) {
-	_, err := IsLUHN(value.Interface().(string))
+	_, err := IsLUHN(reflectString(value))
 	return value, err
 }
 

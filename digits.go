@@ -32,7 +32,7 @@ func IsDigits(value string) (string, error) {
 
 // checkDigits checks if the value contains only digit characters.
 func checkDigits(value reflect.Value) (reflect.Value, error) {
-	_, err := IsDigits(value.Interface().(string))
+	_, err := IsDigits(reflectString(value))
 	return value, err
 }
 

@@ -22,8 +22,8 @@ func TrimLeft(value string) (string, error) {
 
 // reflectTrimLeft returns the value of the string with whitespace removed from the beginning.
 func reflectTrimLeft(value reflect.Value) (reflect.Value, error) {
-	newValue, err := TrimLeft(value.Interface().(string))
-	return reflect.ValueOf(newValue), err
+	newValue, err := TrimLeft(reflectString(value))
+	return reflect.ValueOf(newValue).Convert(value.Type()), err
 }
 
 // makeTrimLeft returns the trim left normalizer function.
