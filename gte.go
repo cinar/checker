@@ -46,6 +46,10 @@ func makeGte(params string) CheckFunc[reflect.Value] {
 			_, err := IsGte(float64(v.Int()), n)
 			return v, err
 
+		case v.CanUint():
+			_, err := IsGte(float64(v.Uint()), n)
+			return v, err
+
 		case v.CanFloat():
 			_, err := IsGte(v.Float(), n)
 			return v, err

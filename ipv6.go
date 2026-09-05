@@ -30,7 +30,7 @@ func IsIPv6(value string) (string, error) {
 
 // checkIPv6 checks if the value is a valid IPv6 address.
 func checkIPv6(value reflect.Value) (reflect.Value, error) {
-	_, err := IsIPv6(value.Interface().(string))
+	_, err := IsIPv6(reflectString(value))
 	return value, err
 }
 

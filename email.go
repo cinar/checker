@@ -31,7 +31,7 @@ func IsEmail(value string) (string, error) {
 
 // checkEmail checks if the value is a valid email address.
 func checkEmail(value reflect.Value) (reflect.Value, error) {
-	_, err := IsEmail(value.Interface().(string))
+	_, err := IsEmail(reflectString(value))
 	return value, err
 }
 

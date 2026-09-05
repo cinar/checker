@@ -31,7 +31,7 @@ func IsURL(value string) (string, error) {
 
 // checkURL checks if the value is a valid URL.
 func checkURL(value reflect.Value) (reflect.Value, error) {
-	_, err := IsURL(value.Interface().(string))
+	_, err := IsURL(reflectString(value))
 	return value, err
 }
 

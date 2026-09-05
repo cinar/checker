@@ -28,11 +28,7 @@ func IsRegexp(expression, value string) (string, error) {
 // MakeRegexpChecker makes a regexp checker for the given regexp expression with the given invalid result.
 func MakeRegexpChecker(expression string, invalidError error) CheckFunc[reflect.Value] {
 	return func(value reflect.Value) (reflect.Value, error) {
-		if value.Kind() != reflect.String {
-			panic("string expected")
-		}
-
-		_, err := IsRegexp(expression, value.String())
+		_, err := IsRegexp(expression, reflectString(value))
 		if err != nil {
 			return value, invalidError
 		}
