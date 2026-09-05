@@ -29,6 +29,7 @@
 - **23 built-in locales** — opt-in, translated error messages, matching the set go-playground/validator ships.
 - **JSON Schema generation** — turn a struct's checker tags into a JSON Schema document, for API docs or frontend validation, without hand-maintaining a second copy of your rules.
 - **Framework adapters** — thin, separately-versioned `gin` and `echo` modules bind a request and validate it in one call.
+- **Static analysis** — the separate `checkerlint` module catches unknown checker names, type mismatches, and dangling cross-field targets at build time, not runtime.
 
 ## Table of Contents
 
@@ -49,6 +50,7 @@
 - [Structured Errors](#structured-errors)
 - [JSON Schema Generation](#json-schema-generation)
 - [Framework Integration](#framework-integration)
+- [Static Analysis](#static-analysis)
 - [Performance](#performance)
 - [Changelog](#changelog)
 - [Contributing to the Project](#contributing-to-the-project)
@@ -623,6 +625,17 @@ e.POST("/register", func(c echo.Context) error {
 ```
 
 See [echo/README.md](echo/README.md) for the full example, including how to call `checkerecho.Check` directly when the struct is assembled from more than just the request body.
+
+## Static Analysis
+
+`checkers`/`validate` struct tags are string literals, so a typo'd checker name, a checker applied to a field of the wrong type, or a renamed cross-field target (`eq-field`, `after-field`, ...) all compile fine and only fail at runtime. [`checkerlint`](checkerlint/), a separate module, is a `go/analysis`-based static analyzer that catches all three at build/lint time instead:
+
+```bash
+go install github.com/cinar/checker/v2/checkerlint/cmd/checkerlint@latest
+checkerlint ./...
+```
+
+See [checkerlint/README.md](checkerlint/README.md) for `go vet -vettool` and `golangci-lint` module-plugin integration.
 
 ## Performance
 

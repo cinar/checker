@@ -107,6 +107,40 @@ func RegisterFieldMaker(name string, maker MakeCheckFieldFunc) {
 	fieldMakers[name] = maker
 }
 
+// RegisteredMakerNames returns the name of every currently registered
+// non-field-relative checker/normalizer maker, including built-ins and any
+// custom makers added via RegisterMaker. The order is not significant.
+// Intended for tooling built on top of checker, such as the checkerlint
+// static analyzer, that needs to know the current checker vocabulary.
+func RegisteredMakerNames() []string {
+	makersMu.RLock()
+	defer makersMu.RUnlock()
+
+	names := make([]string, 0, len(makers))
+	for name := range makers {
+		names = append(names, name)
+	}
+
+	return names
+}
+
+// RegisteredFieldMakerNames returns the name of every currently registered
+// field-relative checker maker, including built-ins and any custom makers
+// added via RegisterFieldMaker. The order is not significant. Intended for
+// tooling built on top of checker, such as the checkerlint static
+// analyzer, that needs to know the current checker vocabulary.
+func RegisteredFieldMakerNames() []string {
+	makersMu.RLock()
+	defer makersMu.RUnlock()
+
+	names := make([]string, 0, len(fieldMakers))
+	for name := range fieldMakers {
+		names = append(names, name)
+	}
+
+	return names
+}
+
 // makeChecks take a checker config and the parent struct's reflect.Value (invalid
 // unless called from CheckStruct), and returns the check functions.
 func makeChecks(config string, parent reflect.Value) []CheckFunc[reflect.Value] {

@@ -14,15 +14,21 @@ This is a multi-module repo:
 - `.` — the core `checker` module (`go.mod`, go 1.23.2). No external dependencies.
 - `gin/` — `github.com/cinar/checker/v2/gin`, its own `go.mod`/`taskfile.yml`, `replace`s the core module with `../`.
 - `echo/` — `github.com/cinar/checker/v2/echo`, same pattern as `gin/`.
+- `checkerlint/` — `github.com/cinar/checker/v2/checkerlint`, a `go/analysis` static analyzer for `checkers`/
+  `validate` struct tags, plus its `cmd/checkerlint` standalone binary. Same `replace ../` pattern as `gin`/`echo`,
+  but pins newer linter versions in its own `taskfile.yml` (it needs a newer Go toolchain than the core module's
+  `go 1.23.2` for its `golang.org/x/tools` dependency). Its `testdata/src/...` tree stands in for the real
+  `github.com/cinar/checker/v2` import path so `analysistest` fixtures can exercise custom-checker detection
+  without pulling in the real module — don't confuse it with an actual dependency.
 - `locales/` — the `locales` package, one file per locale (e.g. `en_us.go`) plus `locales.go` and `locales_test.go`.
 
 Each module has its own `taskfile.yml` and is built/linted/tested independently (see `.github/workflows/ci.yml`,
-which runs three parallel jobs: root, `gin/`, `echo/`).
+which runs parallel jobs per module: root, `gin/`, `echo/`, `checkerlint/`).
 
 ## Commands
 
 All commands use [Task](https://taskfile.dev) (`go run github.com/go-task/task/v3/cmd/task@v3.38.0`), run from
-the module's own directory (root, `gin/`, or `echo/`):
+the module's own directory (root, `gin/`, `echo/`, or `checkerlint/`):
 
 - `task` (default) — runs `fmt`, `lint`, then `test`, in that order.
 - `task fmt` — `go fix ./...`
