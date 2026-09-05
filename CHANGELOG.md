@@ -55,7 +55,9 @@ Changes prior to v2.0.0 are not individually documented here; see the
   pkg.go.dev instead of the retired godoc.org.
 - README face lift: normalized heading levels (previously most major
   sections were `#`, the same level as the page title itself), added a
-  table of contents, and added a short feature-highlight list up top.
+  table of contents, added a short feature-highlight list up top, and
+  switched the badge row to larger `for-the-badge`-style shields (plus a
+  GitHub stars badge), matching cinar/indicator's README.
 
 ### Removed
 
