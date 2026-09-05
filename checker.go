@@ -99,14 +99,14 @@ func CheckStruct(st any) (CheckErrors, bool) {
 				field := job.Value.Type().Field(i)
 
 				name := fieldName(job.Name, field)
-				value := reflect.Indirect(job.Value.FieldByIndex(field.Index))
+				value := indirectOrNilPointer(job.Value.FieldByIndex(field.Index))
 
 				jobs = append(jobs, &checkStructJob{
 					Name:    name,
 					Value:   value,
 					Parent:  job.Value,
 					Config:  field.Tag.Get(checkerTag),
-					SetFunc: value.Set,
+					SetFunc: safeSetFunc(value),
 				})
 			}
 
@@ -116,13 +116,13 @@ func CheckStruct(st any) (CheckErrors, bool) {
 
 			for i := 0; i < job.Value.Len(); i++ {
 				name := fmt.Sprintf("%s[%d]", job.Name, i)
-				value := reflect.Indirect(job.Value.Index(i))
+				value := indirectOrNilPointer(job.Value.Index(i))
 
 				jobs = append(jobs, &checkStructJob{
 					Name:    name,
 					Value:   value,
 					Config:  itemConfig,
-					SetFunc: value.Set,
+					SetFunc: safeSetFunc(value),
 				})
 			}
 
@@ -134,7 +134,7 @@ func CheckStruct(st any) (CheckErrors, bool) {
 
 			for _, key := range mapValue.MapKeys() {
 				name := fmt.Sprintf("%s[%v]", job.Name, key.Interface())
-				value := reflect.Indirect(mapValue.MapIndex(key))
+				value := indirectOrNilPointer(mapValue.MapIndex(key))
 
 				jobs = append(jobs, &checkStructJob{
 					Name:   name,
@@ -165,6 +165,33 @@ func CheckStruct(st any) (CheckErrors, bool) {
 	}
 
 	return errs, len(errs) == 0
+}
+
+// indirectOrNilPointer returns the pointed-to value, like reflect.Indirect,
+// except a nil pointer is returned as-is instead of an invalid zero Value.
+// This lets a nil pointer field still be checked (e.g. required, which
+// reports IsZero() on the pointer itself), while a non-nil pointer is
+// dereferenced as before so its pointee can be checked or descended into.
+func indirectOrNilPointer(value reflect.Value) reflect.Value {
+	if value.Kind() == reflect.Pointer && value.IsNil() {
+		return value
+	}
+
+	return reflect.Indirect(value)
+}
+
+// safeSetFunc returns a SetFunc that writes back through value.Set, but
+// only if value is valid and addressable. A nil pointer field indirected by
+// indirectOrNilPointer stays valid and addressable, so this only actually
+// skips the write when CheckStruct was called with a struct passed by
+// value instead of by pointer, in which case fields aren't addressable and
+// there's nothing to normalize back into.
+func safeSetFunc(value reflect.Value) func(reflect.Value) {
+	return func(newValue reflect.Value) {
+		if value.IsValid() && value.CanSet() {
+			value.Set(newValue)
+		}
+	}
 }
 
 // fieldName returns the field name. If a "json" tag is present, it uses the

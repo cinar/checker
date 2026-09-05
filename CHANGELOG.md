@@ -40,6 +40,23 @@ Changes prior to v2.0.0 are not individually documented here; see the
   HTML embedding -- the wrong behavior for a validation error meant for a
   plain-text or JSON API response. Switched to `text/template`, which
   performs no such escaping.
+- `CheckStruct` no longer panics on a nil pointer struct field that itself
+  carries a checker tag (e.g. `Address *Address \`checkers:"required"\``);
+  it previously indirected the pointer before checking it, turning the nil
+  pointer into an invalid `reflect.Value` and panicking inside the checker
+  (e.g. `reflect: call of reflect.Value.IsZero on zero Value`). A nil
+  pointer field is now checked directly against its own tag (so `required`
+  correctly reports it missing) and, having nothing to descend into, its
+  child fields are simply skipped rather than queued for checks that could
+  never run.
+- `CheckStruct` no longer panics when passed a struct by value (e.g.
+  `CheckStruct(person)` instead of `CheckStruct(&person)`) if any field has
+  a normalizer tag. Struct fields obtained this way aren't addressable, so
+  writing a normalized value back previously panicked with `reflect:
+  reflect.Value.Set using unaddressable value`; the write-back is now
+  skipped when the field isn't addressable, since there's no caller-owned
+  memory to normalize in place. Validation errors are still reported as
+  before -- only the (impossible) write-back is skipped.
 
 ### Added
 
