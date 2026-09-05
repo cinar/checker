@@ -8,6 +8,7 @@ const (
 // TrTRMessages is the map of tr-TR messages.
 var TrTRMessages = map[string]string{
 	"NOT_AFTER":           "Değer {{ .reference }} tarihinden sonra olmalıdır.",
+	"NOT_ALPHA":           "Yalnızca harf içerebilir.",
 	"NOT_ALPHANUMERIC":    "Alfanümerik bir dize değil.",
 	"NOT_ASCII":           "Yalnızca ASCII karakterleri içerebilir.",
 	"NOT_BEFORE":          "Değer {{ .reference }} tarihinden önce olmalıdır.",
@@ -37,6 +38,7 @@ var TrTRMessages = map[string]string{
 	"NOT_MAC":             "Geçerli bir MAC adresi değil.",
 	"NOT_MAX_LEN":         "Değer {{ .max }} değerinden büyük olamaz.",
 	"NOT_MIN_LEN":         "Değer {{ .min }} değerinden küçük olamaz.",
+	"NOT_NUMERIC":         "Geçerli bir sayısal dize değil.",
 	"NOT_ONE_OF":          "Değer şunlardan biri olmalı: {{ .allowed }}.",
 	"NOT_TIME":            "Geçerli bir saat değil.",
 	"REQUIRED":            "Gerekli değer eksik.",

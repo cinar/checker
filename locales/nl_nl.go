@@ -8,6 +8,7 @@ const (
 // NlNLMessages is the map of nl-NL messages.
 var NlNLMessages = map[string]string{
 	"NOT_AFTER":           "De waarde moet na {{ .reference }} liggen.",
+	"NOT_ALPHA":           "Mag alleen letters bevatten.",
 	"NOT_ALPHANUMERIC":    "Geen alfanumerieke tekenreeks.",
 	"NOT_ASCII":           "Mag alleen ASCII-tekens bevatten.",
 	"NOT_BEFORE":          "De waarde moet vóór {{ .reference }} liggen.",
@@ -37,6 +38,7 @@ var NlNLMessages = map[string]string{
 	"NOT_MAC":             "Geen geldig MAC-adres.",
 	"NOT_MAX_LEN":         "De waarde mag niet groter zijn dan {{ .max }}.",
 	"NOT_MIN_LEN":         "De waarde mag niet kleiner zijn dan {{ .min }}.",
+	"NOT_NUMERIC":         "Geen geldige numerieke tekenreeks.",
 	"NOT_ONE_OF":          "De waarde moet een van {{ .allowed }} zijn.",
 	"NOT_TIME":            "Geen geldige tijd.",
 	"REQUIRED":            "Verplichte waarde ontbreekt.",

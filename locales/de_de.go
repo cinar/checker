@@ -8,6 +8,7 @@ const (
 // DeDEMessages is the map of de-DE messages.
 var DeDEMessages = map[string]string{
 	"NOT_AFTER":           "Der Wert muss nach {{ .reference }} liegen.",
+	"NOT_ALPHA":           "Darf nur Buchstaben enthalten.",
 	"NOT_ALPHANUMERIC":    "Keine alphanumerische Zeichenfolge.",
 	"NOT_ASCII":           "Darf nur ASCII-Zeichen enthalten.",
 	"NOT_BEFORE":          "Der Wert muss vor {{ .reference }} liegen.",
@@ -37,6 +38,7 @@ var DeDEMessages = map[string]string{
 	"NOT_MAC":             "Keine gültige MAC-Adresse.",
 	"NOT_MAX_LEN":         "Der Wert darf nicht größer als {{ .max }} sein.",
 	"NOT_MIN_LEN":         "Der Wert darf nicht kleiner als {{ .min }} sein.",
+	"NOT_NUMERIC":         "Keine gültige numerische Zeichenfolge.",
 	"NOT_ONE_OF":          "Der Wert muss einer der folgenden sein: {{ .allowed }}.",
 	"NOT_TIME":            "Keine gültige Uhrzeit.",
 	"REQUIRED":            "Erforderlicher Wert fehlt.",

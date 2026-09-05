@@ -8,6 +8,7 @@ const (
 // UkUAMessages is the map of uk-UA messages.
 var UkUAMessages = map[string]string{
 	"NOT_AFTER":           "Значення має бути пізніше {{ .reference }}.",
+	"NOT_ALPHA":           "Може містити лише літери.",
 	"NOT_ALPHANUMERIC":    "Рядок має бути буквено-цифровим.",
 	"NOT_ASCII":           "Може містити лише символи ASCII.",
 	"NOT_BEFORE":          "Значення має бути раніше {{ .reference }}.",
@@ -37,6 +38,7 @@ var UkUAMessages = map[string]string{
 	"NOT_MAC":             "Недійсна MAC-адреса.",
 	"NOT_MAX_LEN":         "Значення не може бути більшим за {{ .max }}.",
 	"NOT_MIN_LEN":         "Значення не може бути меншим за {{ .min }}.",
+	"NOT_NUMERIC":         "Недійсний числовий рядок.",
 	"NOT_ONE_OF":          "Значення має бути одним із {{ .allowed }}.",
 	"NOT_TIME":            "Недійсний час.",
 	"REQUIRED":            "Відсутнє обов'язкове значення.",

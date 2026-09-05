@@ -8,6 +8,7 @@ const (
 // ViVNMessages is the map of vi-VN messages.
 var ViVNMessages = map[string]string{
 	"NOT_AFTER":           "Giá trị phải sau {{ .reference }}.",
+	"NOT_ALPHA":           "Chỉ được chứa chữ cái.",
 	"NOT_ALPHANUMERIC":    "Không phải là chuỗi chữ và số.",
 	"NOT_ASCII":           "Chỉ được chứa ký tự ASCII.",
 	"NOT_BEFORE":          "Giá trị phải trước {{ .reference }}.",
@@ -37,6 +38,7 @@ var ViVNMessages = map[string]string{
 	"NOT_MAC":             "Không phải là địa chỉ MAC hợp lệ.",
 	"NOT_MAX_LEN":         "Giá trị không được lớn hơn {{ .max }}.",
 	"NOT_MIN_LEN":         "Giá trị không được nhỏ hơn {{ .min }}.",
+	"NOT_NUMERIC":         "Không phải là chuỗi số hợp lệ.",
 	"NOT_ONE_OF":          "Giá trị phải là một trong {{ .allowed }}.",
 	"NOT_TIME":            "Không phải là thời gian hợp lệ.",
 	"REQUIRED":            "Thiếu giá trị bắt buộc.",

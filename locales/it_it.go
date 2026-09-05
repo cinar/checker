@@ -8,6 +8,7 @@ const (
 // ItITMessages is the map of it-IT messages.
 var ItITMessages = map[string]string{
 	"NOT_AFTER":           "Il valore deve essere successivo a {{ .reference }}.",
+	"NOT_ALPHA":           "Può contenere solo lettere.",
 	"NOT_ALPHANUMERIC":    "Non è una stringa alfanumerica.",
 	"NOT_ASCII":           "Può contenere solo caratteri ASCII.",
 	"NOT_BEFORE":          "Il valore deve essere precedente a {{ .reference }}.",
@@ -37,6 +38,7 @@ var ItITMessages = map[string]string{
 	"NOT_MAC":             "Non è un indirizzo MAC valido.",
 	"NOT_MAX_LEN":         "Il valore non può essere superiore a {{ .max }}.",
 	"NOT_MIN_LEN":         "Il valore non può essere inferiore a {{ .min }}.",
+	"NOT_NUMERIC":         "Non è una stringa numerica valida.",
 	"NOT_ONE_OF":          "Il valore deve essere uno tra {{ .allowed }}.",
 	"NOT_TIME":            "Non è un orario valido.",
 	"REQUIRED":            "Manca un valore obbligatorio.",

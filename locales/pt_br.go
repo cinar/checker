@@ -8,6 +8,7 @@ const (
 // PtBRMessages is the map of pt-BR messages.
 var PtBRMessages = map[string]string{
 	"NOT_AFTER":           "O valor deve ser posterior a {{ .reference }}.",
+	"NOT_ALPHA":           "Só pode conter letras.",
 	"NOT_ALPHANUMERIC":    "Não é uma string alfanumérica.",
 	"NOT_ASCII":           "Só pode conter caracteres ASCII.",
 	"NOT_BEFORE":          "O valor deve ser anterior a {{ .reference }}.",
@@ -37,6 +38,7 @@ var PtBRMessages = map[string]string{
 	"NOT_MAC":             "Não é um endereço MAC válido.",
 	"NOT_MAX_LEN":         "O valor não pode ser maior que {{ .max }}.",
 	"NOT_MIN_LEN":         "O valor não pode ser menor que {{ .min }}.",
+	"NOT_NUMERIC":         "Não é uma string numérica válida.",
 	"NOT_ONE_OF":          "O valor deve ser um dos seguintes: {{ .allowed }}.",
 	"NOT_TIME":            "Não é um horário válido.",
 	"REQUIRED":            "Falta um valor obrigatório.",

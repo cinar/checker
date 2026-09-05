@@ -8,6 +8,7 @@ const (
 // RuRUMessages is the map of ru-RU messages.
 var RuRUMessages = map[string]string{
 	"NOT_AFTER":           "Значение должно быть позже {{ .reference }}.",
+	"NOT_ALPHA":           "Может содержать только буквы.",
 	"NOT_ALPHANUMERIC":    "Строка должна быть буквенно-цифровой.",
 	"NOT_ASCII":           "Может содержать только символы ASCII.",
 	"NOT_BEFORE":          "Значение должно быть раньше {{ .reference }}.",
@@ -37,6 +38,7 @@ var RuRUMessages = map[string]string{
 	"NOT_MAC":             "Неверный MAC-адрес.",
 	"NOT_MAX_LEN":         "Значение не может быть больше {{ .max }}.",
 	"NOT_MIN_LEN":         "Значение не может быть меньше {{ .min }}.",
+	"NOT_NUMERIC":         "Недопустимая числовая строка.",
 	"NOT_ONE_OF":          "Значение должно быть одним из следующих: {{ .allowed }}.",
 	"NOT_TIME":            "Неверное время.",
 	"REQUIRED":            "Отсутствует обязательное значение.",

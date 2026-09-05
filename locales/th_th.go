@@ -8,6 +8,7 @@ const (
 // ThTHMessages is the map of th-TH messages.
 var ThTHMessages = map[string]string{
 	"NOT_AFTER":           "ค่าต้องอยู่หลัง {{ .reference }}",
+	"NOT_ALPHA":           "สามารถมีได้เฉพาะตัวอักษรเท่านั้น",
 	"NOT_ALPHANUMERIC":    "ไม่ใช่สตริงตัวอักษรและตัวเลข",
 	"NOT_ASCII":           "สามารถมีได้เฉพาะอักขระ ASCII เท่านั้น",
 	"NOT_BEFORE":          "ค่าต้องอยู่ก่อน {{ .reference }}",
@@ -37,6 +38,7 @@ var ThTHMessages = map[string]string{
 	"NOT_MAC":             "ไม่ใช่ที่อยู่ MAC ที่ถูกต้อง",
 	"NOT_MAX_LEN":         "ค่าต้องไม่มากกว่า {{ .max }}",
 	"NOT_MIN_LEN":         "ค่าต้องไม่น้อยกว่า {{ .min }}",
+	"NOT_NUMERIC":         "ไม่ใช่สตริงตัวเลขที่ถูกต้อง",
 	"NOT_ONE_OF":          "ค่าต้องเป็นหนึ่งใน {{ .allowed }}",
 	"NOT_TIME":            "ไม่ใช่เวลาที่ถูกต้อง",
 	"REQUIRED":            "ค่าที่จำเป็นหายไป",

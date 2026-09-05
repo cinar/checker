@@ -39,6 +39,7 @@ var fieldMakers = map[string]MakeCheckFieldFunc{
 // makers provides a mapping of maker functions keyed by the check name.
 var makers = map[string]MakeCheckFunc{
 	nameAfter:          makeAfter,
+	nameAlpha:          makeAlpha,
 	nameAlphanumeric:   makeAlphanumeric,
 	nameASCII:          makeASCII,
 	nameBefore:         makeBefore,
@@ -70,6 +71,7 @@ var makers = map[string]MakeCheckFunc{
 	nameMaxLen:         makeMaxLen,
 	nameMinLen:         makeMinLen,
 	nameNe:             makeNe,
+	nameNumeric:        makeNumeric,
 	nameOneOf:          makeOneOf,
 	nameRegexp:         makeRegexp,
 	nameRequired:       makeRequired,

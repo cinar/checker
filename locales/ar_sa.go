@@ -8,6 +8,7 @@ const (
 // ArSAMessages is the map of ar-SA messages.
 var ArSAMessages = map[string]string{
 	"NOT_AFTER":           "يجب أن تكون القيمة بعد {{ .reference }}.",
+	"NOT_ALPHA":           "يمكن أن تحتوي على أحرف فقط.",
 	"NOT_ALPHANUMERIC":    "ليست سلسلة أبجدية رقمية.",
 	"NOT_ASCII":           "يمكن أن تحتوي على أحرف ASCII فقط.",
 	"NOT_BEFORE":          "يجب أن تكون القيمة قبل {{ .reference }}.",
@@ -37,6 +38,7 @@ var ArSAMessages = map[string]string{
 	"NOT_MAC":             "ليس عنوان MAC صالحًا.",
 	"NOT_MAX_LEN":         "لا يمكن أن تكون القيمة أكبر من {{ .max }}.",
 	"NOT_MIN_LEN":         "لا يمكن أن تكون القيمة أقل من {{ .min }}.",
+	"NOT_NUMERIC":         "ليست سلسلة رقمية صالحة.",
 	"NOT_ONE_OF":          "يجب أن تكون القيمة واحدة من {{ .allowed }}.",
 	"NOT_TIME":            "ليس وقتًا صالحًا.",
 	"REQUIRED":            "القيمة المطلوبة مفقودة.",

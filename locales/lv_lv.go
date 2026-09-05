@@ -8,6 +8,7 @@ const (
 // LvLVMessages is the map of lv-LV messages.
 var LvLVMessages = map[string]string{
 	"NOT_AFTER":           "Vērtībai jābūt pēc {{ .reference }}.",
+	"NOT_ALPHA":           "Var saturēt tikai burtus.",
 	"NOT_ALPHANUMERIC":    "Nav burtciparu virkne.",
 	"NOT_ASCII":           "Var saturēt tikai ASCII rakstzīmes.",
 	"NOT_BEFORE":          "Vērtībai jābūt pirms {{ .reference }}.",
@@ -37,6 +38,7 @@ var LvLVMessages = map[string]string{
 	"NOT_MAC":             "Nav derīgas MAC adreses.",
 	"NOT_MAX_LEN":         "Vērtība nedrīkst būt lielāka par {{ .max }}.",
 	"NOT_MIN_LEN":         "Vērtība nedrīkst būt mazāka par {{ .min }}.",
+	"NOT_NUMERIC":         "Nav derīga skaitliska virkne.",
 	"NOT_ONE_OF":          "Vērtībai jābūt vienai no {{ .allowed }}.",
 	"NOT_TIME":            "Nav derīga laika.",
 	"REQUIRED":            "Trūkst obligātās vērtības.",
