@@ -32,7 +32,10 @@ the module's own directory (root, `gin/`, `echo/`, or `checkerlint/`):
 
 - `task` (default) — runs `fmt`, `lint`, then `test`, in that order.
 - `task fmt` — `go fix ./...`
-- `task lint` — `go vet`, `gosec` (excludes `gin`/`echo` dirs when run from root), `staticcheck`, and `revive`
+- `task lint` — `go vet`, `gosec` (excludes `gin`/`echo`/`examples`/`checkerlint` dirs when run from root — `gosec` doesn't
+  respect Go module boundaries or the `testdata` convention the way `go build`/`go vet`/`go test` do, so any
+  subdirectory with its own `go.mod`, or a `testdata` tree with fixtures that don't type-check against the root
+  module, needs an explicit `-exclude-dir`), `staticcheck`, and `revive`
   (config in `revive.toml`).
 - `task test` — `go test -cover -coverprofile=coverage.out ./...` then prints per-func coverage.
 
