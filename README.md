@@ -98,9 +98,11 @@ type Person struct {
 # Checkers Provided
 
 - [`after`](DOC.md#IsAfter): Ensures the value is a time after the given reference time, e.g. `after:DateOnly:2024-01-01`.
+- [`after-field`](DOC.md#IsAfterField): Ensures the value is a time after the value of another field on the struct, e.g. `after-field:DateOnly:BornAt`.
 - [`ascii`](DOC.md#IsASCII): Ensures the string contains only ASCII characters.
 - [`alphanumeric`](DOC.md#IsAlphanumeric): Ensures the string contains only letters and numbers.
 - [`before`](DOC.md#IsBefore): Ensures the value is a time before the given reference time, e.g. `before:DateOnly:2024-01-01`.
+- [`before-field`](DOC.md#IsBeforeField): Ensures the value is a time before the value of another field on the struct, e.g. `before-field:DateOnly:ReturnAt`.
 - [`credit-card`](DOC.md#IsAnyCreditCard): Ensures the string is a valid credit card number.
 - [`cidr`](DOC.md#IsCIDR): Ensures the string is a valid CIDR notation.
 - [`digits`](DOC.md#IsDigits): Ensures the string contains only digits.
@@ -213,6 +215,7 @@ Some checkers compare a field's value against another field on the same struct. 
 - `eq-field:FieldName` ensures the value is equal to the named sibling field's value. This is useful for a password confirmation field.
 - `required-if:FieldName:Value` ensures the value is provided when the named sibling field is equal to the given value.
 - `required-unless:FieldName:Value` ensures the value is provided unless the named sibling field is equal to the given value.
+- `before-field:Layout:FieldName` / `after-field:Layout:FieldName` ensure the value, parsed using the given time layout, is before/after the named sibling field's value, parsed using the same layout — the field-relative equivalent of `before`/`after`. Unlike `before`/`after`, an unparsable sibling value returns an error rather than panicking, since it's struct data rather than checker configuration.
 
 ```golang
 type Registration struct {
@@ -221,6 +224,11 @@ type Registration struct {
 
 	Country string `checkers:"required"`
 	State   string `checkers:"required-if:Country:US"`
+}
+
+type Trip struct {
+	ReturnAt string `checkers:"required"`
+	DepartAt string `checkers:"before-field:DateOnly:ReturnAt"`
 }
 ```
 

@@ -21,6 +21,8 @@ type MakeCheckFieldFunc func(params string) CheckFieldFunc
 // fieldMakers provides a mapping of maker functions for field-relative checks
 // keyed by the check name.
 var fieldMakers = map[string]MakeCheckFieldFunc{
+	nameAfterField:     makeAfterField,
+	nameBeforeField:    makeBeforeField,
 	nameEqField:        makeEqField,
 	nameRequiredIf:     makeRequiredIf,
 	nameRequiredUnless: makeRequiredUnless,
