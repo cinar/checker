@@ -29,6 +29,7 @@
 - **23 built-in locales** — opt-in, translated error messages, matching the set go-playground/validator ships.
 - **JSON Schema generation** — turn a struct's checker tags into a JSON Schema document, for API docs or frontend validation, without hand-maintaining a second copy of your rules.
 - **Framework adapters** — thin, separately-versioned `gin` and `echo` modules bind a request and validate it in one call.
+- **Context-aware pipelines** — `Pipeline[T]` reuses the same checkers for domain rules that need a `context.Context` (a DB lookup, a tenant claim) struct tags can't carry.
 
 ## Table of Contents
 
@@ -45,6 +46,7 @@
 - [Slice and Item Level Checkers](#slice-and-item-level-checkers)
 - [Optional Fields with `omitempty`](#optional-fields-with-omitempty)
 - [Field-Relative and Conditional Checkers](#field-relative-and-conditional-checkers)
+- [Programmatic Pipelines (Context-Aware Validation)](#programmatic-pipelines-context-aware-validation)
 - [Localized Error Messages](#localized-error-messages)
 - [Structured Errors](#structured-errors)
 - [JSON Schema Generation](#json-schema-generation)
@@ -418,6 +420,34 @@ type Trip struct {
 	DepartAt string `checkers:"before-field:DateOnly:ReturnAt"`
 }
 ```
+
+## Programmatic Pipelines (Context-Aware Validation)
+
+Struct tags are great for a flat DTO's shape, but they can't express rules that need request-scoped state — a database uniqueness check, a tenant boundary, an auth claim — since there's no way to pass a `context.Context` through a tag. `Pipeline[T]` is a small, fully opt-in, generic builder for exactly that: it reuses the same checker/normalizer functions as struct tags via `Field`, and adds `Rule` for whole-value, context-aware domain checks. Combine it with `CheckStruct` freely on the same type — one validates shape, the other validates domain rules that need `ctx`.
+
+```golang
+type User struct {
+	Email         string
+	Role          string
+	HasMFAEnabled bool
+}
+
+pipeline := checker.NewPipeline[User]().Step(
+	checker.Field("Email", func(u *User) *string { return &u.Email },
+		checker.TrimSpace, checker.Lower, checker.Required, checker.IsEmail,
+	),
+	checker.Rule("MFA", func(ctx context.Context, u *User) error {
+		if u.Role == "admin" && !u.HasMFAEnabled {
+			return checker.NewCheckError("MFA_REQUIRED_FOR_ADMIN")
+		}
+		return nil
+	}),
+)
+
+errs, ok := pipeline.Validate(ctx, user)
+```
+
+`Field` normalizes and validates one field in place, exactly like a `checkers` tag chain: checks run in order and stop at the first error, and any normalizer among them writes its result back before the next check runs. `Rule` runs against the whole value with `ctx`, for anything a single field's tag can't express. `Validate` runs every step regardless of earlier failures — matching `CheckStruct`'s field-independent error collection — and returns the same `CheckErrors` type, so both validation styles produce API-ready errors the same way.
 
 ## Localized Error Messages
 
