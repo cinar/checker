@@ -65,9 +65,10 @@ Checker provides a **single, zero-dependency pipeline** designed around three co
 | **JSON Schema Generation** | **Built-in (`checker.JSONSchema`)** | Requires external tooling | Not supported |
 | **Cross-field Validation** | **Built-in (`eq-field`, `required-if`, ...)** | Built-in (`eqfield`, etc.) | Custom rules |
 | **Slice / Container Rules** | **Container (`@max-len`) + Items** | Items only | Custom loops |
-| **Internationalization** | **23 Locales (Opt-in import)** | 30+ Locales (Always linked) | Manual translation |
-| **Test Coverage** | **100% Coverage** | ~85% | ~90% |
+| **Internationalization** | **23 Locales (Opt-in import)** | 23 Locales (Opt-in, per-language package) | Manual translation |
 | **API Error Payloads** | **Built-in (`errs.JSON()`)** | Manual formatting | Manual formatting |
+
+Checker's own test coverage is enforced at 100% in CI (see the badge above); third-party coverage numbers change too often to be worth restating here — check each project's own CI badge for its current figure.
 
 ## Usage
 
