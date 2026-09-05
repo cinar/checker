@@ -8,6 +8,7 @@ const (
 // FrFRMessages is the map of fr-FR messages.
 var FrFRMessages = map[string]string{
 	"NOT_AFTER":           "La valeur doit être postérieure à {{ .reference }}.",
+	"NOT_ALPHA":           "Ne peut contenir que des lettres.",
 	"NOT_ALPHANUMERIC":    "N'est pas une chaîne alphanumérique.",
 	"NOT_ASCII":           "Ne peut contenir que des caractères ASCII.",
 	"NOT_BEFORE":          "La valeur doit être antérieure à {{ .reference }}.",
@@ -37,6 +38,7 @@ var FrFRMessages = map[string]string{
 	"NOT_MAC":             "N'est pas une adresse MAC valide.",
 	"NOT_MAX_LEN":         "La valeur ne peut pas être supérieure à {{ .max }}.",
 	"NOT_MIN_LEN":         "La valeur ne peut pas être inférieure à {{ .min }}.",
+	"NOT_NUMERIC":         "N'est pas une chaîne numérique valide.",
 	"NOT_ONE_OF":          "La valeur doit être l'une des suivantes : {{ .allowed }}.",
 	"NOT_TIME":            "N'est pas une heure valide.",
 	"REQUIRED":            "Valeur obligatoire manquante.",

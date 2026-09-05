@@ -8,6 +8,7 @@ const (
 // KoKRMessages is the map of ko-KR messages.
 var KoKRMessages = map[string]string{
 	"NOT_AFTER":           "값은 {{ .reference }} 이후여야 합니다.",
+	"NOT_ALPHA":           "문자만 포함할 수 있습니다.",
 	"NOT_ALPHANUMERIC":    "영숫자 문자열이 아닙니다.",
 	"NOT_ASCII":           "ASCII 문자만 포함할 수 있습니다.",
 	"NOT_BEFORE":          "값은 {{ .reference }} 이전이어야 합니다.",
@@ -37,6 +38,7 @@ var KoKRMessages = map[string]string{
 	"NOT_MAC":             "유효한 MAC 주소가 아닙니다.",
 	"NOT_MAX_LEN":         "값은 {{ .max }}보다 클 수 없습니다.",
 	"NOT_MIN_LEN":         "값은 {{ .min }}보다 작을 수 없습니다.",
+	"NOT_NUMERIC":         "유효한 숫자 문자열이 아닙니다.",
 	"NOT_ONE_OF":          "값은 {{ .allowed }} 중 하나여야 합니다.",
 	"NOT_TIME":            "유효한 시간이 아닙니다.",
 	"REQUIRED":            "필수 값이 없습니다.",

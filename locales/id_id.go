@@ -8,6 +8,7 @@ const (
 // IDIDMessages is the map of id-ID messages.
 var IDIDMessages = map[string]string{
 	"NOT_AFTER":           "Nilai harus setelah {{ .reference }}.",
+	"NOT_ALPHA":           "Hanya boleh berisi huruf.",
 	"NOT_ALPHANUMERIC":    "Bukan string alfanumerik.",
 	"NOT_ASCII":           "Hanya boleh berisi karakter ASCII.",
 	"NOT_BEFORE":          "Nilai harus sebelum {{ .reference }}.",
@@ -37,6 +38,7 @@ var IDIDMessages = map[string]string{
 	"NOT_MAC":             "Bukan alamat MAC yang valid.",
 	"NOT_MAX_LEN":         "Nilai tidak boleh lebih besar dari {{ .max }}.",
 	"NOT_MIN_LEN":         "Nilai tidak boleh kurang dari {{ .min }}.",
+	"NOT_NUMERIC":         "Bukan string numerik yang valid.",
 	"NOT_ONE_OF":          "Nilai harus salah satu dari {{ .allowed }}.",
 	"NOT_TIME":            "Bukan waktu yang valid.",
 	"REQUIRED":            "Nilai yang wajib diisi tidak ada.",

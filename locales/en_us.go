@@ -8,6 +8,7 @@ const (
 // EnUSMessages is the map of en-US messages.
 var EnUSMessages = map[string]string{
 	"NOT_AFTER":           "Value must be after {{ .reference }}.",
+	"NOT_ALPHA":           "Can only contain letters.",
 	"NOT_ALPHANUMERIC":    "Not an alphanumeric string.",
 	"NOT_ASCII":           "Can only contain ASCII characters.",
 	"NOT_BEFORE":          "Value must be before {{ .reference }}.",
@@ -37,6 +38,7 @@ var EnUSMessages = map[string]string{
 	"NOT_MAC":             "Not a valid MAC address.",
 	"NOT_MAX_LEN":         "Value cannot be greater than {{ .max }}.",
 	"NOT_MIN_LEN":         "Value cannot be less than {{ .min }}.",
+	"NOT_NUMERIC":         "Not a valid numeric string.",
 	"NOT_ONE_OF":          "Value must be one of {{ .allowed }}.",
 	"NOT_TIME":            "Not a valid time.",
 	"REQUIRED":            "Required value is missing.",

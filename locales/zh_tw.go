@@ -8,6 +8,7 @@ const (
 // ZhTWMessages is the map of zh-TW messages.
 var ZhTWMessages = map[string]string{
 	"NOT_AFTER":           "值必須在{{ .reference }}之後。",
+	"NOT_ALPHA":           "只能包含字母。",
 	"NOT_ALPHANUMERIC":    "不是字母數字字串。",
 	"NOT_ASCII":           "只能包含ASCII字元。",
 	"NOT_BEFORE":          "值必須在{{ .reference }}之前。",
@@ -37,6 +38,7 @@ var ZhTWMessages = map[string]string{
 	"NOT_MAC":             "不是有效的MAC位址。",
 	"NOT_MAX_LEN":         "值不能大於{{ .max }}。",
 	"NOT_MIN_LEN":         "值不能小於{{ .min }}。",
+	"NOT_NUMERIC":         "不是有效的數字字符串。",
 	"NOT_ONE_OF":          "值必須是{{ .allowed }}之一。",
 	"NOT_TIME":            "不是有效的時間。",
 	"REQUIRED":            "缺少必填值。",

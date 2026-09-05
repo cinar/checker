@@ -8,6 +8,7 @@ const (
 // JaJPMessages is the map of ja-JP messages.
 var JaJPMessages = map[string]string{
 	"NOT_AFTER":           "値は{{ .reference }}より後である必要があります。",
+	"NOT_ALPHA":           "文字のみを使用できます。",
 	"NOT_ALPHANUMERIC":    "英数字の文字列ではありません。",
 	"NOT_ASCII":           "ASCII文字のみを使用できます。",
 	"NOT_BEFORE":          "値は{{ .reference }}より前である必要があります。",
@@ -37,6 +38,7 @@ var JaJPMessages = map[string]string{
 	"NOT_MAC":             "有効なMACアドレスではありません。",
 	"NOT_MAX_LEN":         "値は{{ .max }}を超えることはできません。",
 	"NOT_MIN_LEN":         "値は{{ .min }}未満にはできません。",
+	"NOT_NUMERIC":         "有効な数値文字列ではありません。",
 	"NOT_ONE_OF":          "値は次のいずれかである必要があります: {{ .allowed }}。",
 	"NOT_TIME":            "有効な時刻ではありません。",
 	"REQUIRED":            "必須の値がありません。",

@@ -8,6 +8,7 @@ const (
 // ZhCNMessages is the map of zh-CN messages.
 var ZhCNMessages = map[string]string{
 	"NOT_AFTER":           "值必须在{{ .reference }}之后。",
+	"NOT_ALPHA":           "只能包含字母。",
 	"NOT_ALPHANUMERIC":    "不是字母数字字符串。",
 	"NOT_ASCII":           "只能包含ASCII字符。",
 	"NOT_BEFORE":          "值必须在{{ .reference }}之前。",
@@ -37,6 +38,7 @@ var ZhCNMessages = map[string]string{
 	"NOT_MAC":             "不是有效的MAC地址。",
 	"NOT_MAX_LEN":         "值不能大于{{ .max }}。",
 	"NOT_MIN_LEN":         "值不能小于{{ .min }}。",
+	"NOT_NUMERIC":         "不是有效的数字字符串。",
 	"NOT_ONE_OF":          "值必须是{{ .allowed }}之一。",
 	"NOT_TIME":            "不是有效的时间。",
 	"REQUIRED":            "缺少必填值。",

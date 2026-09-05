@@ -231,6 +231,8 @@ Checkers validate that a value conforms to expected criteria, returning an error
 | :--- | :--- | :--- |
 | [`IsASCII`](https://pkg.go.dev/github.com/cinar/checker/v2#IsASCII) | `ascii` | Ensures the string contains only ASCII characters |
 | [`IsAlphanumeric`](https://pkg.go.dev/github.com/cinar/checker/v2#IsAlphanumeric) | `alphanumeric` | Ensures the string contains only letters and numbers |
+| [`IsAlpha`](https://pkg.go.dev/github.com/cinar/checker/v2#IsAlpha) | `alpha` | Ensures the string contains only letters |
+| [`IsNumeric`](https://pkg.go.dev/github.com/cinar/checker/v2#IsNumeric) | `numeric` | Ensures the string is a valid numeric string, e.g. `"-3.14"` (unlike `digits`, allows a leading sign and a decimal point) |
 | [`IsDigits`](https://pkg.go.dev/github.com/cinar/checker/v2#IsDigits) | `digits` | Ensures the string contains only digits |
 | [`IsHex`](https://pkg.go.dev/github.com/cinar/checker/v2#IsHex) | `hex` | Ensures the string contains only hexadecimal digits |
 | [`MakeRegexpChecker`](https://pkg.go.dev/github.com/cinar/checker/v2#MakeRegexpChecker) | `regexp:<pattern>` | Ensures the string matches the pattern |

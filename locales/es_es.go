@@ -8,6 +8,7 @@ const (
 // EsESMessages is the map of es-ES messages.
 var EsESMessages = map[string]string{
 	"NOT_AFTER":           "El valor debe ser posterior a {{ .reference }}.",
+	"NOT_ALPHA":           "Solo puede contener letras.",
 	"NOT_ALPHANUMERIC":    "No es una cadena alfanumérica.",
 	"NOT_ASCII":           "Solo puede contener caracteres ASCII.",
 	"NOT_BEFORE":          "El valor debe ser anterior a {{ .reference }}.",
@@ -37,6 +38,7 @@ var EsESMessages = map[string]string{
 	"NOT_MAC":             "No es una dirección MAC válida.",
 	"NOT_MAX_LEN":         "El valor no puede ser mayor que {{ .max }}.",
 	"NOT_MIN_LEN":         "El valor no puede ser menor que {{ .min }}.",
+	"NOT_NUMERIC":         "No es una cadena numérica válida.",
 	"NOT_ONE_OF":          "El valor debe ser uno de {{ .allowed }}.",
 	"NOT_TIME":            "No es una hora válida.",
 	"REQUIRED":            "Falta un valor obligatorio.",
