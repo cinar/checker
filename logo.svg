@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240" role="img" aria-label="Checker logo: a tag with a punched checkmark">
+  <title>Checker</title>
+  <defs>
+    <linearGradient id="tagGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00ADD8"/>
+      <stop offset="100%" stop-color="#3ddc97"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.22"/>
+      <stop offset="45%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <path d="M 66 34
+           L 150 34
+           L 206 120
+           L 150 206
+           L 66 206
+           Q 34 206 34 174
+           L 34 66
+           Q 34 34 66 34
+           Z"
+        fill="url(#tagGrad)"
+        stroke="#072430"
+        stroke-opacity="0.28"
+        stroke-width="4"/>
+
+  <path d="M 66 34
+           L 150 34
+           L 206 120
+           L 150 206
+           L 66 206
+           Q 34 206 34 174
+           L 34 66
+           Q 34 34 66 34
+           Z"
+        fill="url(#sheen)"/>
+
+  <circle cx="166" cy="120" r="11" fill="none" stroke="#0a1420" stroke-width="6"/>
+
+  <path d="M 66 122 L 98 156 L 156 84"
+        fill="none"
+        stroke="#0a1420"
+        stroke-width="20"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+</svg>
