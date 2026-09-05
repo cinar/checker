@@ -36,9 +36,25 @@ type BenchmarkComplex struct {
 	Address         BenchmarkAddress
 }
 
-func BenchmarkCheckStruct_Simple(b *testing.B) {
+func BenchmarkCheckStruct_Simple_Success(b *testing.B) {
 	user := BenchmarkSimple{
 		Name:  "  Alice Smith  ",
+		Email: "alice@example.com",
+		Age:   25,
+	}
+
+	b.ResetTimer()
+	b.ReportAllocs()
+
+	for i := 0; i < b.N; i++ {
+		u := user
+		_, _ = checker.CheckStruct(&u)
+	}
+}
+
+func BenchmarkCheckStruct_Simple_Failure(b *testing.B) {
+	user := BenchmarkSimple{
+		Name:  "",
 		Email: "alice@example.com",
 		Age:   25,
 	}
