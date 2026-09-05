@@ -716,7 +716,7 @@ Anyone can contribute to Checkers library. Please make sure to read our [Contrib
 Checker is provided under the MIT License, reproduced below and also available in the [LICENSE](./LICENSE) file.
 
 ```
-Copyright (c) 2023 Onur Cinar.
+Copyright (c) 2023-2026 Onur Cinar.
 The source code is provided under MIT License.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
