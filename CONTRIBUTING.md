@@ -32,4 +32,8 @@ The test cases for the library can be found in the _test.go files. These files c
 
 If you are planning to make a pull request to this project, please make sure to add enough test cases to ensure that the code coverage remains at 100%. This will help to ensure that the library remains reliable and that user data is handled correctly.
 
+### Changelog
+
+Add an entry under `## [Unreleased]` in [CHANGELOG.md](CHANGELOG.md) for any pull request that changes behavior visible to users of the library (a new checker, a new field on an existing type, a bug fix, a breaking change). Documentation-only or internal refactoring changes don't need an entry.
+
 Thank you for contributing! We appreciate your help in making Checkers library better.

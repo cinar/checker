@@ -373,6 +373,10 @@ e.POST("/register", func(c echo.Context) error {
 
 See [echo/README.md](echo/README.md) for the full example, including how to call `checkerecho.Check` directly when the struct is assembled from more than just the request body.
 
+# Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a history of notable changes to this project.
+
 # Contributing to the Project
 
 Anyone can contribute to Checkers library. Please make sure to read our [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md) guide first. Follow the [How to Contribute to Checker](./CONTRIBUTING.md) to contribute.
