@@ -23,6 +23,7 @@ Checker is a lightweight Go library for validating and normalizing user input, d
 - [Why Checker?](#why-checker)
 - [Usage](#usage)
   - [Quickstart Example](#quickstart-example)
+  - [Interactive Playgrounds & Examples](#interactive-playgrounds--examples)
   - [Validating Structs](#validating-structs)
   - [Validating Individual Values](#validating-individual-values)
 - [Normalizers and Checkers](#normalizers-and-checkers)
@@ -122,6 +123,19 @@ func main() {
 	fmt.Println(req.Roles) // ["admin", "editor"]
 }
 ```
+
+> 🎮 **[Try this example live on the Go Playground](https://go.dev/play/p/c9ohvThGz1D)**
+
+### Interactive Playgrounds & Examples
+
+Try Checker immediately in your browser via the official Go Playground:
+
+- 🎮 [**Quickstart & Normalization Playground**](https://go.dev/play/p/c9ohvThGz1D) — In-place normalization, validation, and JSON error responses.
+- 🎮 [**JSON Schema Generation Playground**](https://go.dev/play/p/U04Du4M6spX) — Generate Draft 2020-12 schemas from struct tags.
+- 🎮 [**Locales (i18n) Playground**](https://go.dev/play/p/GQEENYcQPgD) — Multilingual error messages in German, Spanish, French, and Japanese.
+- 🎮 [**Standard net/http Handler Playground**](https://go.dev/play/p/M_tKEKwL38G) — Zero-dependency HTTP request validation.
+
+Explore the [**examples/**](examples/) directory for full standalone project templates, including [Gin](examples/gin/) and [Echo](examples/echo/) integrations.
 
 ### Validating Structs
 
