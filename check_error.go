@@ -37,6 +37,29 @@ var errorMessages = map[string]map[string]string{
 	locales.EnUS: locales.EnUSMessages,
 }
 
+// errorTemplateCache holds parsed *template.Template values keyed by their
+// source message string, so a given message is only ever parsed once. Like
+// regexpCache, the key space is bounded by the (locale, code) message pairs
+// baked into the code, not by request data.
+var errorTemplateCache sync.Map
+
+// compileErrorTemplate returns the parsed *template.Template for message,
+// parsing and caching it on first use.
+func compileErrorTemplate(message string) (*template.Template, error) {
+	if cached, ok := errorTemplateCache.Load(message); ok {
+		return cached.(*template.Template), nil
+	}
+
+	tmpl, err := template.New("error").Parse(message)
+	if err != nil {
+		return nil, err
+	}
+
+	cached, _ := errorTemplateCache.LoadOrStore(message, tmpl)
+
+	return cached.(*template.Template), nil
+}
+
 // NewCheckError creates a new check error with the given code.
 func NewCheckError(code string) *CheckError {
 	return NewCheckErrorWithData(
@@ -69,17 +92,26 @@ func (c *CheckError) Is(target error) bool {
 
 // ErrorWithLocale returns the localized error message for the check with the given locale.
 func (c *CheckError) ErrorWithLocale(locale string) string {
-	tmpl, err := template.New("error").Parse(getLocalizedErrorMessage(locale, c.Code))
+	message := getLocalizedErrorMessage(locale, c.Code)
+
+	// Fast path: most messages ("Required value is missing.", "Not a valid
+	// email address.", ...) have no {{ }} placeholders at all, so they need
+	// no template parsing or execution.
+	if !strings.Contains(message, "{{") {
+		return message
+	}
+
+	tmpl, err := compileErrorTemplate(message)
 	if err != nil {
 		return c.Code
 	}
 
-	var message strings.Builder
-	if err := tmpl.Execute(&message, c.Data); err != nil {
+	var rendered strings.Builder
+	if err := tmpl.Execute(&rendered, c.Data); err != nil {
 		return c.Code
 	}
 
-	return message.String()
+	return rendered.String()
 }
 
 // RegisterLocale registers the localized error messages for the given locale.

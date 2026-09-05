@@ -7,6 +7,7 @@ package v2_test
 
 import (
 	"io/fs"
+	"sync"
 	"testing"
 
 	v2 "github.com/cinar/checker/v2"
@@ -63,6 +64,54 @@ func TestCheckErrorWithDataAndLocalizedCode(t *testing.T) {
 
 	if err.Error() != expected {
 		t.Fatalf("actual %s expected %s", err.Error(), expected)
+	}
+}
+
+// TestCheckErrorWithDataConcurrentSameTemplate exercises the parsed-template
+// cache from many goroutines rendering the same templated message
+// concurrently. Run with `go test -race`.
+func TestCheckErrorWithDataConcurrentSameTemplate(t *testing.T) {
+	code := "TEST_CONCURRENT"
+	message := "Test message {{.Name}}"
+
+	locales.EnUSMessages[code] = message
+
+	var wg sync.WaitGroup
+
+	for i := 0; i < 50; i++ {
+		wg.Add(1)
+
+		go func() {
+			defer wg.Done()
+
+			err := v2.NewCheckErrorWithData(code, map[string]interface{}{
+				"Name": "Onur",
+			})
+
+			if err.Error() != "Test message Onur" {
+				t.Error(err)
+			}
+		}()
+	}
+
+	wg.Wait()
+}
+
+func BenchmarkErrorWithLocaleStatic(b *testing.B) {
+	err := v2.NewCheckError("REQUIRED")
+
+	for i := 0; i < b.N; i++ {
+		_ = err.Error()
+	}
+}
+
+func BenchmarkErrorWithLocaleTemplated(b *testing.B) {
+	err := v2.NewCheckErrorWithData("NOT_MIN_LEN", map[string]interface{}{
+		"min": 8,
+	})
+
+	for i := 0; i < b.N; i++ {
+		_ = err.Error()
 	}
 }
 
