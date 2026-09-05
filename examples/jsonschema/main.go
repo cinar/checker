@@ -3,7 +3,7 @@
 //
 // https://github.com/cinar/checker
 //
-// Try this on Go Playground: https://go.dev/play/p/U04Du4M6spX
+// Try this on Go Playground: https://go.dev/play/p/MkBT8QVY5-c
 
 package main
 
