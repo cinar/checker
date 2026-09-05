@@ -33,6 +33,7 @@ var LvLVMessages = map[string]string{
 	"NOT_MAC":             "Nav derīgas MAC adreses.",
 	"NOT_MAX_LEN":         "Vērtība nedrīkst būt lielāka par {{ .max }}.",
 	"NOT_MIN_LEN":         "Vērtība nedrīkst būt mazāka par {{ .min }}.",
+	"NOT_ONE_OF":          "Vērtībai jābūt vienai no {{ .allowed }}.",
 	"NOT_TIME":            "Nav derīga laika.",
 	"REQUIRED":            "Trūkst obligātās vērtības.",
 	"NOT_URL":             "Nav derīga URL.",

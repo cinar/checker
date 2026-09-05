@@ -33,6 +33,7 @@ var TrTRMessages = map[string]string{
 	"NOT_MAC":             "Geçerli bir MAC adresi değil.",
 	"NOT_MAX_LEN":         "Değer {{ .max }} değerinden büyük olamaz.",
 	"NOT_MIN_LEN":         "Değer {{ .min }} değerinden küçük olamaz.",
+	"NOT_ONE_OF":          "Değer şunlardan biri olmalı: {{ .allowed }}.",
 	"NOT_TIME":            "Geçerli bir saat değil.",
 	"REQUIRED":            "Gerekli değer eksik.",
 	"NOT_URL":             "Geçerli bir URL değil.",

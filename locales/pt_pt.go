@@ -33,6 +33,7 @@ var PtPTMessages = map[string]string{
 	"NOT_MAC":             "Não é um endereço MAC válido.",
 	"NOT_MAX_LEN":         "O valor não pode ser superior a {{ .max }}.",
 	"NOT_MIN_LEN":         "O valor não pode ser inferior a {{ .min }}.",
+	"NOT_ONE_OF":          "O valor deve ser um dos seguintes: {{ .allowed }}.",
 	"NOT_TIME":            "Não é uma hora válida.",
 	"REQUIRED":            "Falta um valor obrigatório.",
 	"NOT_URL":             "Não é um URL válido.",

@@ -33,6 +33,7 @@ var KoKRMessages = map[string]string{
 	"NOT_MAC":             "유효한 MAC 주소가 아닙니다.",
 	"NOT_MAX_LEN":         "값은 {{ .max }}보다 클 수 없습니다.",
 	"NOT_MIN_LEN":         "값은 {{ .min }}보다 작을 수 없습니다.",
+	"NOT_ONE_OF":          "값은 {{ .allowed }} 중 하나여야 합니다.",
 	"NOT_TIME":            "유효한 시간이 아닙니다.",
 	"REQUIRED":            "필수 값이 없습니다.",
 	"NOT_URL":             "유효한 URL이 아닙니다.",

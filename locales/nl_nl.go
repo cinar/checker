@@ -33,6 +33,7 @@ var NlNLMessages = map[string]string{
 	"NOT_MAC":             "Geen geldig MAC-adres.",
 	"NOT_MAX_LEN":         "De waarde mag niet groter zijn dan {{ .max }}.",
 	"NOT_MIN_LEN":         "De waarde mag niet kleiner zijn dan {{ .min }}.",
+	"NOT_ONE_OF":          "De waarde moet een van {{ .allowed }} zijn.",
 	"NOT_TIME":            "Geen geldige tijd.",
 	"REQUIRED":            "Verplichte waarde ontbreekt.",
 	"NOT_URL":             "Geen geldige URL.",

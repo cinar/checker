@@ -33,6 +33,7 @@ var PlPLMessages = map[string]string{
 	"NOT_MAC":             "Nieprawidłowy adres MAC.",
 	"NOT_MAX_LEN":         "Wartość nie może być większa niż {{ .max }}.",
 	"NOT_MIN_LEN":         "Wartość nie może być mniejsza niż {{ .min }}.",
+	"NOT_ONE_OF":          "Wartość musi być jedną z {{ .allowed }}.",
 	"NOT_TIME":            "Nieprawidłowy czas.",
 	"REQUIRED":            "Brak wymaganej wartości.",
 	"NOT_URL":             "Nieprawidłowy adres URL.",

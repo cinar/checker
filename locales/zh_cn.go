@@ -33,6 +33,7 @@ var ZhCNMessages = map[string]string{
 	"NOT_MAC":             "不是有效的MAC地址。",
 	"NOT_MAX_LEN":         "值不能大于{{ .max }}。",
 	"NOT_MIN_LEN":         "值不能小于{{ .min }}。",
+	"NOT_ONE_OF":          "值必须是{{ .allowed }}之一。",
 	"NOT_TIME":            "不是有效的时间。",
 	"REQUIRED":            "缺少必填值。",
 	"NOT_URL":             "不是有效的URL。",

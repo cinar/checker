@@ -33,6 +33,7 @@ var IDIDMessages = map[string]string{
 	"NOT_MAC":             "Bukan alamat MAC yang valid.",
 	"NOT_MAX_LEN":         "Nilai tidak boleh lebih besar dari {{ .max }}.",
 	"NOT_MIN_LEN":         "Nilai tidak boleh kurang dari {{ .min }}.",
+	"NOT_ONE_OF":          "Nilai harus salah satu dari {{ .allowed }}.",
 	"NOT_TIME":            "Bukan waktu yang valid.",
 	"REQUIRED":            "Nilai yang wajib diisi tidak ada.",
 	"NOT_URL":             "Bukan URL yang valid.",

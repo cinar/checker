@@ -33,6 +33,7 @@ var ThTHMessages = map[string]string{
 	"NOT_MAC":             "ไม่ใช่ที่อยู่ MAC ที่ถูกต้อง",
 	"NOT_MAX_LEN":         "ค่าต้องไม่มากกว่า {{ .max }}",
 	"NOT_MIN_LEN":         "ค่าต้องไม่น้อยกว่า {{ .min }}",
+	"NOT_ONE_OF":          "ค่าต้องเป็นหนึ่งใน {{ .allowed }}",
 	"NOT_TIME":            "ไม่ใช่เวลาที่ถูกต้อง",
 	"REQUIRED":            "ค่าที่จำเป็นหายไป",
 	"NOT_URL":             "ไม่ใช่ URL ที่ถูกต้อง",

@@ -259,6 +259,31 @@ func TestJSONSchemaUUIDFormat(t *testing.T) {
 	}
 }
 
+func TestJSONSchemaOneOfEnum(t *testing.T) {
+	type Role struct {
+		Name string `checkers:"oneof:admin,user,guest"`
+	}
+
+	schema := v2.JSONSchema(&Role{})
+
+	name, ok := schema.Properties["Name"]
+	if !ok {
+		t.Fatal("expected Name property")
+	}
+
+	expected := []string{"admin", "user", "guest"}
+
+	if len(name.Enum) != len(expected) {
+		t.Fatalf("actual %v expected %v", name.Enum, expected)
+	}
+
+	for i, v := range expected {
+		if name.Enum[i] != v {
+			t.Fatalf("actual %v expected %v", name.Enum, expected)
+		}
+	}
+}
+
 func TestJSONSchemaIgnoresNormalizers(t *testing.T) {
 	type Person struct {
 		Name string `checkers:"trim lower upper title trim-left trim-right html-escape html-unescape url-escape url-unescape omitempty required"`

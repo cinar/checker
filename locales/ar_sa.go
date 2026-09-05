@@ -33,6 +33,7 @@ var ArSAMessages = map[string]string{
 	"NOT_MAC":             "ليس عنوان MAC صالحًا.",
 	"NOT_MAX_LEN":         "لا يمكن أن تكون القيمة أكبر من {{ .max }}.",
 	"NOT_MIN_LEN":         "لا يمكن أن تكون القيمة أقل من {{ .min }}.",
+	"NOT_ONE_OF":          "يجب أن تكون القيمة واحدة من {{ .allowed }}.",
 	"NOT_TIME":            "ليس وقتًا صالحًا.",
 	"REQUIRED":            "القيمة المطلوبة مفقودة.",
 	"NOT_URL":             "ليس رابط URL صالحًا.",
