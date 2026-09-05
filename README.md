@@ -6,9 +6,30 @@
 
 # Checker
 
-Checker is a lightweight Go library designed to validate user input efficiently. It supports validation of both struct fields and individual input values.
+Checker is a lightweight Go library for validating and normalizing user input, driven by struct tags or plain function calls, with zero external dependencies.
 
-While there are numerous validation libraries available, Checker stands out due to its simplicity and lack of external dependencies. This makes it an ideal choice for developers who prefer to minimize dependencies and maintain control over their tools. Checker is straightforward to use and effectively meets your validation needs.
+- **Zero dependencies** — the core module imports nothing beyond the Go standard library.
+- **Struct tags or plain functions** — validate a whole struct declaratively, or call checkers directly for one-off values.
+- **Checkers and normalizers together** — trim, then require; lowercase, then validate — mixed in any order, in one pass.
+- **Cross-field and conditional rules** — compare fields against each other, or require a field only when another has a given value.
+- **23 built-in locales** — opt-in, translated error messages, matching the set go-playground/validator ships.
+- **Framework adapters** — thin, separately-versioned `gin` and `echo` modules bind a request and validate it in one call.
+
+## Table of Contents
+
+- [Usage](#usage)
+- [Normalizers and Checkers](#normalizers-and-checkers)
+- [Checkers Provided](#checkers-provided)
+- [Normalizers Provided](#normalizers-provided)
+- [Custom Checkers and Normalizers](#custom-checkers-and-normalizers)
+- [Slice and Item Level Checkers](#slice-and-item-level-checkers)
+- [Field-Relative and Conditional Checkers](#field-relative-and-conditional-checkers)
+- [Localized Error Messages](#localized-error-messages)
+- [Structured Errors](#structured-errors)
+- [Framework Integration](#framework-integration)
+- [Changelog](#changelog)
+- [Contributing to the Project](#contributing-to-the-project)
+- [License](#license)
 
 ## Usage
 
@@ -95,7 +116,7 @@ type Person struct {
 }
 ```
 
-# Checkers Provided
+## Checkers Provided
 
 - [`after`](https://pkg.go.dev/github.com/cinar/checker/v2#IsAfter): Ensures the value is a time after the given reference time, e.g. `after:DateOnly:2024-01-01`.
 - [`after-field`](https://pkg.go.dev/github.com/cinar/checker/v2#IsAfterField): Ensures the value is a time after the value of another field on the struct, e.g. `after-field:DateOnly:BornAt`.
@@ -132,7 +153,7 @@ type Person struct {
 - [`time`](https://pkg.go.dev/github.com/cinar/checker/v2#IsTime) Ensured the string matches the provided time layout.
 - [`url`](https://pkg.go.dev/github.com/cinar/checker/v2#IsURL): Ensures the string is a valid URL.
 
-# Normalizers Provided
+## Normalizers Provided
 
 - [`lower`](https://pkg.go.dev/github.com/cinar/checker/v2#Lower): Converts the string to lowercase.
 - [`title`](https://pkg.go.dev/github.com/cinar/checker/v2#Title): Converts the string to title case.
@@ -145,7 +166,7 @@ type Person struct {
 - [`url-escape`](https://pkg.go.dev/github.com/cinar/checker/v2#URLEscape): Escapes special characters in the string for URLs.
 - [`url-unescape`](https://pkg.go.dev/github.com/cinar/checker/v2#URLUnescape): Unescapes special characters in the string for URLs.
 
-# Custom Checkers and Normalizers
+## Custom Checkers and Normalizers
 
 You can define custom checkers or normalizers and register them for use in your validation logic. Here is an example of how to create and register a custom checker:
 
@@ -184,7 +205,7 @@ if !valid {
 
 In this example, the `is-fruit` checker is used to validate that the `Name` field of the `Item` struct is either "apple" or "banana".
 
-# Slice and Item Level Checkers
+## Slice and Item Level Checkers
 
 When adding checker struct tags to a slice, you can use the `@` prefix to indicate that the checker should be applied to the slice itself. Checkers without the `@` prefix will be applied to the individual items within the slice. Here is an example:
 
@@ -208,7 +229,7 @@ type Person struct {
 }
 ```
 
-# Field-Relative and Conditional Checkers
+## Field-Relative and Conditional Checkers
 
 Some checkers compare a field's value against another field on the same struct. These are only available through `CheckStruct`, since they rely on the parent struct being known.
 
@@ -232,7 +253,7 @@ type Trip struct {
 }
 ```
 
-# Localized Error Messages
+## Localized Error Messages
 
 When validation fails, Checker returns an error. By default, the [Error()](https://pkg.go.dev/github.com/cinar/checker/v2#CheckError.Error) function provides a human-readable error message in `en-US` locale.
 
@@ -295,7 +316,7 @@ if !valid {
 }
 ```
 
-# Structured Errors
+## Structured Errors
 
 `CheckStruct` returns [CheckErrors](https://pkg.go.dev/github.com/cinar/checker/v2#CheckErrors), a `map[string]error` that also implements the `error` interface, so it can be returned or wrapped directly like any other error.
 
@@ -325,11 +346,11 @@ Use [JSONWithLocale()](https://pkg.go.dev/github.com/cinar/checker/v2#CheckError
 data, _ := errs.JSONWithLocale(locales.DeDE)
 ```
 
-# Framework Integration
+## Framework Integration
 
 Checker ships thin, separately-versioned adapter modules that bind a request and run `CheckStruct` in a single call, writing a JSON `400` response automatically when binding or validation fails. Each adapter is its own Go module, so the framework it wraps is only pulled in if you actually `go get` that adapter; the core `checker` module stays dependency-free either way.
 
-## Gin
+### Gin
 
 ```bash
 go get github.com/cinar/checker/v2/gin
@@ -357,7 +378,7 @@ router.POST("/register", func(c *gin.Context) {
 
 See [gin/README.md](gin/README.md) for the full example, including how to call `checkergin.Check` directly when the struct is assembled from more than just the request body.
 
-## Echo
+### Echo
 
 ```bash
 go get github.com/cinar/checker/v2/echo
@@ -385,15 +406,15 @@ e.POST("/register", func(c echo.Context) error {
 
 See [echo/README.md](echo/README.md) for the full example, including how to call `checkerecho.Check` directly when the struct is assembled from more than just the request body.
 
-# Changelog
+## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for a history of notable changes to this project.
 
-# Contributing to the Project
+## Contributing to the Project
 
 Anyone can contribute to Checkers library. Please make sure to read our [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md) guide first. Follow the [How to Contribute to Checker](./CONTRIBUTING.md) to contribute.
 
-# License
+## License
 
 This library is free to use, modify, and distribute under the terms of the MIT license. The full license text can be found in the [LICENSE](./LICENSE) file.
 
