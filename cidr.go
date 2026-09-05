@@ -32,7 +32,7 @@ func IsCIDR(value string) (string, error) {
 
 // checkCIDR checks if the value is a valid CIDR notation IP address and prefix length.
 func checkCIDR(value reflect.Value) (reflect.Value, error) {
-	_, err := IsCIDR(value.Interface().(string))
+	_, err := IsCIDR(reflectString(value))
 	return value, err
 }
 

@@ -91,6 +91,39 @@ func TestReflectGteIntInvalidType(t *testing.T) {
 	v2.CheckStruct(person)
 }
 
+func TestReflectGteUintError(t *testing.T) {
+	type Order struct {
+		Quantity uint64 `checkers:"gte:1"`
+	}
+
+	order := &Order{
+		Quantity: 0,
+	}
+
+	errs, ok := v2.CheckStruct(order)
+	if ok {
+		t.Fatalf("expected errors")
+	}
+
+	if !errors.Is(errs["Quantity"], v2.ErrGte) {
+		t.Fatalf("expected ErrGte")
+	}
+}
+
+func TestReflectGteUintSuccess(t *testing.T) {
+	type Order struct {
+		Quantity uint64 `checkers:"gte:1"`
+	}
+
+	order := &Order{
+		Quantity: 5,
+	}
+
+	if _, ok := v2.CheckStruct(order); !ok {
+		t.Fatal("expected valid")
+	}
+}
+
 func TestReflectGteFloatError(t *testing.T) {
 	type Person struct {
 		Weight float64 `checkers:"gte:165.0"`

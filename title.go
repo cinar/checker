@@ -41,8 +41,8 @@ func Title(value string) (string, error) {
 
 // reflectTitle returns the value of the string with the first letter of each word in upper case.
 func reflectTitle(value reflect.Value) (reflect.Value, error) {
-	newValue, err := Title(value.Interface().(string))
-	return reflect.ValueOf(newValue), err
+	newValue, err := Title(reflectString(value))
+	return reflect.ValueOf(newValue).Convert(value.Type()), err
 }
 
 // makeTitle returns the title normalizer function.

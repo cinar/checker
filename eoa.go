@@ -36,7 +36,7 @@ func IsEOA(value string) (string, error) {
 
 // checkEOA checks if the value is a valid externally owned address (EOA).
 func checkEOA(value reflect.Value) (reflect.Value, error) {
-	_, err := IsEOA(value.Interface().(string))
+	_, err := IsEOA(reflectString(value))
 	return value, err
 }
 

@@ -6,10 +6,10 @@ This directory contains standalone, runnable examples demonstrating the capabili
 
 | Example | Description | Run Locally | In-Browser Playground |
 | :--- | :--- | :--- | :---: |
-| [**Basic**](./basic/main.go) | Normalization in-place (`trim`, `lower`), cross-field validation (`eq-field`), slice rules, and JSON error output. | `go run ./basic` | [**Try on Go Playground**](https://go.dev/play/p/c9ohvThGz1D) |
-| [**JSON Schema**](./jsonschema/main.go) | Generating Draft 2020-12 JSON Schema documents directly from struct validation tags. | `go run ./jsonschema` | [**Try on Go Playground**](https://go.dev/play/p/U04Du4M6spX) |
-| [**Locales (i18n)**](./locales/main.go) | Opt-in localization supporting 23 languages without adding bloat to the core module. | `go run ./locales` | [**Try on Go Playground**](https://go.dev/play/p/GQEENYcQPgD) |
-| [**HTTP Server**](./http/main.go) | Standard library `net/http` handler validating requests and returning structured JSON errors with zero dependencies. | `go run ./http` | [**Try on Go Playground**](https://go.dev/play/p/M_tKEKwL38G) |
+| [**Basic**](./basic/main.go) | Normalization in-place (`trim`, `lower`), cross-field validation (`eq-field`), slice rules, and JSON error output. | `go run ./basic` | [**Try on Go Playground**](https://go.dev/play/p/5X8ukfSOnZ1) |
+| [**JSON Schema**](./jsonschema/main.go) | Generating Draft 2020-12 JSON Schema documents directly from struct validation tags. | `go run ./jsonschema` | [**Try on Go Playground**](https://go.dev/play/p/MkBT8QVY5-c) |
+| [**Locales (i18n)**](./locales/main.go) | Opt-in localization supporting 23 languages without adding bloat to the core module. | `go run ./locales` | [**Try on Go Playground**](https://go.dev/play/p/9j9L8nI10MR) |
+| [**HTTP Server**](./http/main.go) | Standard library `net/http` handler validating requests and returning structured JSON errors with zero dependencies. | `go run ./http` | [**Try on Go Playground**](https://go.dev/play/p/M5cPYl4eDoJ) |
 | [**Gin Integration**](./gin/main.go) | Binding and validating requests in one call with the `checker/v2/gin` adapter. | `go run ./gin` | — |
 | [**Echo Integration**](./echo/main.go) | Binding and validating requests in one call with the `checker/v2/echo` adapter. | `go run ./echo` | — |
 

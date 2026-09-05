@@ -30,7 +30,7 @@ func IsIP(value string) (string, error) {
 
 // checkIP checks if the value is a valid IP address.
 func checkIP(value reflect.Value) (reflect.Value, error) {
-	_, err := IsIP(value.Interface().(string))
+	_, err := IsIP(reflectString(value))
 	return value, err
 }
 

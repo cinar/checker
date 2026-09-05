@@ -31,7 +31,7 @@ func IsIPv4(value string) (string, error) {
 
 // checkIPv4 checks if the value is a valid IPv4 address.
 func checkIPv4(value reflect.Value) (reflect.Value, error) {
-	_, err := IsIPv4(value.Interface().(string))
+	_, err := IsIPv4(reflectString(value))
 	return value, err
 }
 

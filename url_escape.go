@@ -20,8 +20,8 @@ func URLEscape(value string) (string, error) {
 
 // reflectURLEscape applies URL escaping to special characters.
 func reflectURLEscape(value reflect.Value) (reflect.Value, error) {
-	newValue, err := URLEscape(value.Interface().(string))
-	return reflect.ValueOf(newValue), err
+	newValue, err := URLEscape(reflectString(value))
+	return reflect.ValueOf(newValue).Convert(value.Type()), err
 }
 
 // makeURLEscape returns the URL escape normalizer function.
