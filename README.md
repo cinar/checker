@@ -1,8 +1,11 @@
-[![Go Reference](https://pkg.go.dev/badge/github.com/cinar/checker/v2.svg)](https://pkg.go.dev/github.com/cinar/checker/v2)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Go Report Card](https://goreportcard.com/badge/github.com/cinar/checker)](https://goreportcard.com/report/github.com/cinar/checker)
-![Go CI](https://github.com/cinar/checker/actions/workflows/ci.yml/badge.svg)
-[![codecov](https://codecov.io/gh/cinar/checker/branch/main/graph/badge.svg?token=VO9BYBHJHE)](https://codecov.io/gh/cinar/checker)
+<p align="center">
+    <a href="https://pkg.go.dev/github.com/cinar/checker/v2"><img src="https://img.shields.io/badge/Go_Reference-007D9C?style=for-the-badge&logo=go&logoColor=white" alt="Go Reference" /></a>
+    <a href="LICENSE"><img src="https://img.shields.io/github/license/cinar/checker?style=for-the-badge" alt="License" /></a>
+    <a href="https://github.com/cinar/checker/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/cinar/checker/ci.yml?branch=main&style=for-the-badge&logo=github&label=CI" alt="Go CI" /></a>
+    <a href="https://codecov.io/gh/cinar/checker"><img src="https://img.shields.io/codecov/c/github/cinar/checker?style=for-the-badge&logo=codecov&logoColor=white" alt="Codecov" /></a>
+    <a href="https://goreportcard.com/report/github.com/cinar/checker"><img src="https://goreportcard.com/badge/github.com/cinar/checker" alt="Go Report Card" /></a>
+    <a href="https://github.com/cinar/checker/stargazers"><img src="https://img.shields.io/github/stars/cinar/checker?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Stars" /></a>
+</p>
 
 # Checker
 
