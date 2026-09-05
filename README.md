@@ -97,14 +97,19 @@ type Person struct {
 
 # Checkers Provided
 
+- [`after`](DOC.md#IsAfter): Ensures the value is a time after the given reference time, e.g. `after:DateOnly:2024-01-01`.
 - [`ascii`](DOC.md#IsASCII): Ensures the string contains only ASCII characters.
 - [`alphanumeric`](DOC.md#IsAlphanumeric): Ensures the string contains only letters and numbers.
+- [`before`](DOC.md#IsBefore): Ensures the value is a time before the given reference time, e.g. `before:DateOnly:2024-01-01`.
 - [`credit-card`](DOC.md#IsAnyCreditCard): Ensures the string is a valid credit card number.
 - [`cidr`](DOC.md#IsCIDR): Ensures the string is a valid CIDR notation.
 - [`digits`](DOC.md#IsDigits): Ensures the string contains only digits.
 - [`email`](DOC.md#IsEmail): Ensures the string is a valid email address.
+- [`eoa`](DOC.md#IsEOA): Ensures the string is a valid externally owned address (EOA), i.e. an Ethereum address.
+- [`eq-field`](DOC.md#IsEqField): Ensures the value is equal to the value of another field on the struct.
 - [`fqdn`](DOC.md#IsFQDN): Ensures the string is a valid fully qualified domain name.
 - [`gte`](DOC.md#IsGte): Ensures the value is greater than or equal to the specified number.
+- [`hash`](DOC.md#IsHash): Ensures the string is a valid hex-encoded hash for the given algorithm (`md5`, `sha1`, `sha256`, `sha384`, or `sha512`), e.g. `hash:sha256`.
 - [`hex`](DOC.md#IsHex): Ensures the string contains only hexadecimal digits.
 - [`ip`](DOC.md#IsIP): Ensures the string is a valid IP address.
 - [`ipv4`](DOC.md#IsIPv4): Ensures the string is a valid IPv4 address.
@@ -112,12 +117,15 @@ type Person struct {
 - [`isbn`](DOC.md#IsISBN): Ensures the string is a valid ISBN.
 - [`iso3166-1-alpha-2`](DOC.md#IsISO31661Alpha2): Ensures the string is a valid two-letter ISO 3166-1 alpha-2 country code, e.g. `US`.
 - [`iso3166-1-alpha-3`](DOC.md#IsISO31661Alpha3): Ensures the string is a valid three-letter ISO 3166-1 alpha-3 country code, e.g. `USA`.
+- [`iso639-1`](DOC.md#IsISO6391): Ensures the string is a valid two-letter ISO 639-1 language code, e.g. `en`.
 - [`lte`](DOC.md#ISLte): Ensures the value is less than or equal to the specified number.
 - [`luhn`](DOC.md#IsLUHN): Ensures the string is a valid LUHN number.
 - [`mac`](DOC.md#IsMAC): Ensures the string is a valid MAC address.
 - [`max-len`](DOC.md#func-maxlen): Ensures the length of the given value (string, slice, or map) is at most n.
 - [`min-len`](DOC.md#func-minlen): Ensures the length of the given value (string, slice, or map) is at least n.
 - [`required`](DOC.md#func-required) Ensures the value is provided.
+- [`required-if`](DOC.md#IsRequiredIf): Ensures the value is provided when another field is equal to a given value.
+- [`required-unless`](DOC.md#IsRequiredUnless): Ensures the value is provided unless another field is equal to a given value.
 - [`regexp`](DOC.md#func-makeregexpchecker) Ensured the string matches the pattern.
 - [`time`](DOC.md#func-istime) Ensured the string matches the provided time layout.
 - [`url`](DOC.md#IsURL): Ensures the string is a valid URL.
@@ -189,6 +197,33 @@ In this example:
 - `@max-len:2` ensures that the `Emails` slice itself has at most two items.
 - `max-len:64` ensures that each email string within the `Emails` slice has a maximum length of 64 characters.
 
+Maps are supported the same way, with the `@` prefix applying to the map itself and item-level checkers applying to each value in the map. Nested structs and pointers held in a map are also checked, and normalizers are written back into the map.
+
+```golang
+type Person struct {
+	Name   string            `checkers:"required"`
+	Emails map[string]string `checkers:"@max-len:2 trim max-len:64"`
+}
+```
+
+# Field-Relative and Conditional Checkers
+
+Some checkers compare a field's value against another field on the same struct. These are only available through `CheckStruct`, since they rely on the parent struct being known.
+
+- `eq-field:FieldName` ensures the value is equal to the named sibling field's value. This is useful for a password confirmation field.
+- `required-if:FieldName:Value` ensures the value is provided when the named sibling field is equal to the given value.
+- `required-unless:FieldName:Value` ensures the value is provided unless the named sibling field is equal to the given value.
+
+```golang
+type Registration struct {
+	Password        string `checkers:"required"`
+	ConfirmPassword string `checkers:"eq-field:Password"`
+
+	Country string `checkers:"required"`
+	State   string `checkers:"required-if:Country:US"`
+}
+```
+
 # Localized Error Messages
 
 When validation fails, Checker returns an error. By default, the [Error()](DOC.md#CheckError.Error) function provides a human-readable error message in `en-US` locale.
@@ -247,6 +282,96 @@ if !valid {
 	// Output: map[Name:Name abcd is not a fruit name.]
 }
 ```
+
+# Structured Errors
+
+`CheckStruct` returns [CheckErrors](DOC.md#CheckErrors), a `map[string]error` that also implements the `error` interface, so it can be returned or wrapped directly like any other error.
+
+```golang
+errs, valid := checker.CheckStruct(person)
+if !valid {
+	return errs // errs.Error() joins every field's message
+}
+```
+
+To respond to an API request, use [JSON()](DOC.md#CheckErrors.JSON) to marshal the errors into a field name to `{code, message}` object, ready to be written directly as the response body:
+
+```golang
+errs, valid := checker.CheckStruct(person)
+if !valid {
+	data, _ := errs.JSON()
+	w.WriteHeader(http.StatusBadRequest)
+	w.Write(data)
+	// {"Name":{"code":"REQUIRED","message":"Required value is missing."}}
+	return
+}
+```
+
+Use [JSONWithLocale()](DOC.md#CheckErrors.JSONWithLocale) to localize the messages in the response, the same way `ErrorWithLocale()` works for a single error.
+
+```golang
+data, _ := errs.JSONWithLocale(locales.DeDE)
+```
+
+# Framework Integration
+
+Checker ships thin, separately-versioned adapter modules that bind a request and run `CheckStruct` in a single call, writing a JSON `400` response automatically when binding or validation fails. Each adapter is its own Go module, so the framework it wraps is only pulled in if you actually `go get` that adapter; the core `checker` module stays dependency-free either way.
+
+## Gin
+
+```bash
+go get github.com/cinar/checker/v2/gin
+```
+
+```golang
+import checkergin "github.com/cinar/checker/v2/gin"
+
+type Registration struct {
+	Name  string `json:"name" checkers:"trim required"`
+	Email string `json:"email" checkers:"required email"`
+}
+
+router.POST("/register", func(c *gin.Context) {
+	var registration Registration
+
+	if !checkergin.Bind(c, &registration) {
+		// The 400 response has already been written by Bind.
+		return
+	}
+
+	c.JSON(http.StatusOK, registration)
+})
+```
+
+See [gin/README.md](gin/README.md) for the full example, including how to call `checkergin.Check` directly when the struct is assembled from more than just the request body.
+
+## Echo
+
+```bash
+go get github.com/cinar/checker/v2/echo
+```
+
+```golang
+import checkerecho "github.com/cinar/checker/v2/echo"
+
+type Registration struct {
+	Name  string `json:"name" checkers:"trim required"`
+	Email string `json:"email" checkers:"required email"`
+}
+
+e.POST("/register", func(c echo.Context) error {
+	var registration Registration
+
+	if !checkerecho.Bind(c, &registration) {
+		// The 400 response has already been written by Bind.
+		return nil
+	}
+
+	return c.JSON(http.StatusOK, registration)
+})
+```
+
+See [echo/README.md](echo/README.md) for the full example, including how to call `checkerecho.Check` directly when the struct is assembled from more than just the request body.
 
 # Contributing to the Project
 
