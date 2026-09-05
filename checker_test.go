@@ -196,3 +196,106 @@ func TestCheckStructSlice(t *testing.T) {
 		t.Fatalf("expected email max len")
 	}
 }
+
+func TestCheckStructMapNormalizesAndValidates(t *testing.T) {
+	type Person struct {
+		Name   string            `checkers:"required"`
+		Emails map[string]string `checkers:"@min-len:1 trim max-len:3"`
+	}
+
+	person := &Person{
+		Name: "Onur Cinar",
+		Emails: map[string]string{
+			"work": " onur ",
+		},
+	}
+
+	errs, ok := v2.CheckStruct(person)
+	if ok {
+		t.Fatal("expected errors")
+	}
+
+	if !errors.Is(errs["Emails[work]"], v2.ErrMaxLen) {
+		t.Fatalf("expected email max len %v", errs)
+	}
+
+	if person.Emails["work"] != "onur" {
+		t.Fatalf("expected trimmed value to be written back, got %q", person.Emails["work"])
+	}
+}
+
+func TestCheckStructMapEmpty(t *testing.T) {
+	type Person struct {
+		Name   string            `checkers:"required"`
+		Emails map[string]string `checkers:"@min-len:1"`
+	}
+
+	person := &Person{
+		Name: "Onur Cinar",
+	}
+
+	errs, ok := v2.CheckStruct(person)
+	if ok {
+		t.Fatal("expected errors")
+	}
+
+	if !errors.Is(errs["Emails"], v2.ErrMinLen) {
+		t.Fatalf("expected emails min len %v", errs)
+	}
+}
+
+func TestCheckStructMapOfStructPointers(t *testing.T) {
+	type Address struct {
+		Street string `checkers:"required"`
+	}
+
+	type Person struct {
+		Name      string `checkers:"required"`
+		Addresses map[string]*Address
+	}
+
+	person := &Person{
+		Name: "Onur Cinar",
+		Addresses: map[string]*Address{
+			"home": {Street: ""},
+		},
+	}
+
+	errs, ok := v2.CheckStruct(person)
+	if ok {
+		t.Fatal("expected errors")
+	}
+
+	if !errors.Is(errs["Addresses[home].Street"], v2.ErrRequired) {
+		t.Fatalf("expected street required %v", errs)
+	}
+
+	if person.Addresses["home"] == nil {
+		t.Fatal("expected the map entry pointer to be preserved")
+	}
+}
+
+func TestCheckStructMapOfPointersNormalizesInPlace(t *testing.T) {
+	type Person struct {
+		Name  string             `checkers:"required"`
+		Notes map[string]*string `checkers:"trim"`
+	}
+
+	note := "  hello  "
+
+	person := &Person{
+		Name: "Onur Cinar",
+		Notes: map[string]*string{
+			"first": &note,
+		},
+	}
+
+	errs, ok := v2.CheckStruct(person)
+	if !ok {
+		t.Fatalf("got unexpected errors %v", errs)
+	}
+
+	if *person.Notes["first"] != "hello" {
+		t.Fatalf("expected trimmed value to be written back through the pointer, got %q", *person.Notes["first"])
+	}
+}
