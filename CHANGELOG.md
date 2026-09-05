@@ -40,6 +40,13 @@ Changes prior to v2.0.0 are not individually documented here; see the
 - `before-field`/`after-field` checkers, the field-relative equivalent of
   `before`/`after`: compares a value against a named sibling field's value
   instead of a fixed reference time.
+- `JSONSchema`, which generates a JSON Schema document describing the shape
+  and validation rules declared in a struct's `checkers` tags. Most checkers
+  translate directly into a JSON Schema keyword (`required`, `minLength`/
+  `maxLength`, `minimum`/`maximum`, `format`, `pattern`, ...); a checker with
+  no equivalent is recorded in an `x-checker` vendor extension instead of
+  being silently dropped. `RegisterSchemaMaker` lets a custom checker
+  register its own translation.
 
 ### Changed
 

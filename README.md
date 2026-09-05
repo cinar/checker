@@ -13,6 +13,7 @@ Checker is a lightweight Go library for validating and normalizing user input, d
 - **Checkers and normalizers together** — trim, then require; lowercase, then validate — mixed in any order, in one pass.
 - **Cross-field and conditional rules** — compare fields against each other, or require a field only when another has a given value.
 - **23 built-in locales** — opt-in, translated error messages, matching the set go-playground/validator ships.
+- **JSON Schema generation** — turn a struct's checker tags into a JSON Schema document, for API docs or frontend validation, without hand-maintaining a second copy of your rules.
 - **Framework adapters** — thin, separately-versioned `gin` and `echo` modules bind a request and validate it in one call.
 
 ## Table of Contents
@@ -26,6 +27,7 @@ Checker is a lightweight Go library for validating and normalizing user input, d
 - [Field-Relative and Conditional Checkers](#field-relative-and-conditional-checkers)
 - [Localized Error Messages](#localized-error-messages)
 - [Structured Errors](#structured-errors)
+- [JSON Schema Generation](#json-schema-generation)
 - [Framework Integration](#framework-integration)
 - [Changelog](#changelog)
 - [Contributing to the Project](#contributing-to-the-project)
@@ -344,6 +346,58 @@ Use [JSONWithLocale()](https://pkg.go.dev/github.com/cinar/checker/v2#CheckError
 
 ```golang
 data, _ := errs.JSONWithLocale(locales.DeDE)
+```
+
+## JSON Schema Generation
+
+`JSONSchema` generates a [JSON Schema](https://json-schema.org/) document describing the shape and validation rules declared in a struct's `checkers` tags — useful for documenting an API, or handing a frontend enough information to mirror your validation rules without duplicating them by hand. It's a static, type-level operation: it reads a struct's type and tags, never its field values, so a zero value works as well as a populated one.
+
+```golang
+type Person struct {
+	Name  string `json:"name" checkers:"trim required"`
+	Email string `json:"email" checkers:"required email"`
+}
+
+schema := checker.JSONSchema(&Person{})
+
+data, _ := json.MarshalIndent(schema, "", "  ")
+fmt.Println(string(data))
+```
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Person",
+  "type": "object",
+  "properties": {
+    "email": { "type": "string", "format": "email" },
+    "name": { "type": "string" }
+  },
+  "required": ["email", "name"]
+}
+```
+
+Most checkers map directly onto a JSON Schema keyword: `required` becomes an entry in `required`, `min-len`/`max-len` become `minLength`/`maxLength` (or `minItems`/`maxItems` for a slice, `minProperties`/`maxProperties` for a map), `gte`/`lte` become `minimum`/`maximum`, `email`/`url`/`ipv4`/`ipv6`/`fqdn` become a `format`, and `regexp:pattern` becomes `pattern`. Normalizers (`trim`, `lower`, `upper`, ...) are skipped, since they transform data rather than constrain its shape. A checker with no JSON Schema equivalent — a custom checker, or one like `eq-field` that compares against another field — is recorded in an `x-checker` vendor extension instead of being silently dropped:
+
+```golang
+type Registration struct {
+	Password        string `checkers:"required"`
+	ConfirmPassword string `checkers:"eq-field:Password"`
+}
+```
+
+```json
+{
+  "ConfirmPassword": { "type": "string", "x-checker": ["eq-field:Password"] }
+}
+```
+
+Register a [SchemaMakeFunc](https://pkg.go.dev/github.com/cinar/checker/v2#SchemaMakeFunc) with [RegisterSchemaMaker](https://pkg.go.dev/github.com/cinar/checker/v2#RegisterSchemaMaker) to teach `JSONSchema` how to translate a custom checker instead:
+
+```golang
+checker.RegisterSchemaMaker("is-fruit", func(schema *checker.Schema, _ string) {
+	schema.Enum = []string{"apple", "banana"}
+})
 ```
 
 ## Framework Integration
