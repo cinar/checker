@@ -13,12 +13,27 @@ Changes prior to v2.0.0 are not individually documented here; see the
 
 ### Fixed
 
+- String checkers and normalizers (`email`, `alphanumeric`, `lower`, `trim`,
+  `hex`, `url`, and others) no longer panic when applied to a defined type
+  whose underlying kind is `string` (e.g. `type Email string`). They
+  previously asserted `value.Interface().(string)` directly, which only
+  matches the literal `string` type; normalizers also now convert the
+  normalized value back to the field's original type before writing it,
+  instead of panicking on `value.Set` with a plain `string`. Applying a
+  string-only checker to a genuinely non-string field (e.g. `int`) still
+  panics, as before, since that's a checker/field type mismatch.
 - `gte`/`lte` no longer panic on unsigned integer fields (`uint`, `uint8`,
   `uint16`, `uint32`, `uint64`, `uintptr`). Previously only `CanInt()`/
   `CanFloat()` were handled, so e.g. `Quantity uint64 \`checkers:"gte:1"\``
   panicked with `"value is not numeric"` on any value. Applying `gte`/`lte`
   to a genuinely non-numeric field (`string`, `bool`, ...) still panics, as
   before — that's an intentional, tested checker/field type mismatch.
+- `CheckStruct`'s error map keys now match `JSONSchema`'s property names for
+  the same struct. Previously `fieldName` used a field's `json` tag as-is,
+  so `json:"name,omitempty"` produced the error key `"name,omitempty"`
+  instead of `"name"`, and `json:"-"` produced the key `"-"` instead of
+  falling back to the Go field name. Both now go through the same tag
+  parsing `JSONSchema` already used internally.
 
 ### Added
 
@@ -56,18 +71,6 @@ Changes prior to v2.0.0 are not individually documented here; see the
   no equivalent is recorded in an `x-checker` vendor extension instead of
   being silently dropped. `RegisterSchemaMaker` lets a custom checker
   register its own translation.
-
-### Fixed
-
-- String checkers and normalizers (`email`, `alphanumeric`, `lower`, `trim`,
-  `hex`, `url`, and others) no longer panic when applied to a defined type
-  whose underlying kind is `string` (e.g. `type Email string`). They
-  previously asserted `value.Interface().(string)` directly, which only
-  matches the literal `string` type; normalizers also now convert the
-  normalized value back to the field's original type before writing it,
-  instead of panicking on `value.Set` with a plain `string`. Applying a
-  string-only checker to a genuinely non-string field (e.g. `int`) still
-  panics, as before, since that's a checker/field type mismatch.
 
 ### Changed
 
