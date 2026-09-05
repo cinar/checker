@@ -46,6 +46,9 @@ Changes prior to v2.0.0 are not individually documented here; see the
 - README links to API docs now point to [pkg.go.dev](https://pkg.go.dev/github.com/cinar/checker/v2)
   instead of a committed `DOC.md`, and the GoDoc badge now points to
   pkg.go.dev instead of the retired godoc.org.
+- README face lift: normalized heading levels (previously most major
+  sections were `#`, the same level as the page title itself), added a
+  table of contents, and added a short feature-highlight list up top.
 
 ### Removed
 
