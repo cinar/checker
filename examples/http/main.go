@@ -35,13 +35,13 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		data, _ := errs.JSON()
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write(data)
+		_, _ = w.Write(data)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]string{
+	_ = json.NewEncoder(w).Encode(map[string]string{
 		"message": "User registered successfully",
 		"email":   req.Email,
 	})
