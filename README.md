@@ -542,6 +542,23 @@ Use [JSONWithLocale()](https://pkg.go.dev/github.com/cinar/checker/v2#CheckError
 data, _ := errs.JSONWithLocale(locales.DeDE)
 ```
 
+For an [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) `application/problem+json` response instead, use [ProblemDetails()](https://pkg.go.dev/github.com/cinar/checker/v2#CheckErrors.ProblemDetails):
+
+```golang
+errs, valid := checker.CheckStruct(person)
+if !valid {
+	data, _ := json.Marshal(errs.ProblemDetails())
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(http.StatusBadRequest)
+	w.Write(data)
+	// {"type":"about:blank","title":"Your request parameters failed validation.","status":400,
+	//  "invalid-params":[{"name":"Name","reason":"Required value is missing.","code":"REQUIRED"}]}
+	return
+}
+```
+
+`Type`, `Title`, and `Status` are plain exported fields on the returned `*ProblemDetails` — RFC 9457 leaves their exact values to the API producer, so set them directly to override the defaults (`"about:blank"`, a generic title, `400`). `ProblemDetailsWithLocale()` localizes the messages, matching `JSONWithLocale()`.
+
 ## JSON Schema Generation
 
 `JSONSchema` generates a [JSON Schema](https://json-schema.org/) document describing the shape and validation rules declared in a struct's `checkers` tags — useful for documenting an API, or handing a frontend enough information to mirror your validation rules without duplicating them by hand. It's a static, type-level operation: it reads a struct's type and tags, never its field values, so a zero value works as well as a populated one.
