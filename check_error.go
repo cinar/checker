@@ -6,9 +6,9 @@
 package v2
 
 import (
-	"html/template"
 	"strings"
 	"sync"
+	"text/template"
 
 	"github.com/cinar/checker/v2/locales"
 )

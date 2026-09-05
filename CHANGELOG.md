@@ -34,6 +34,12 @@ Changes prior to v2.0.0 are not individually documented here; see the
   instead of `"name"`, and `json:"-"` produced the key `"-"` instead of
   falling back to the Go field name. Both now go through the same tag
   parsing `JSONSchema` already used internally.
+- `CheckError.Error()`/`ErrorWithLocale()` no longer HTML-escape error
+  message data. They rendered messages with `html/template`, which
+  contextually escapes `<`, `>`, `&`, and `"` in template data for safe
+  HTML embedding -- the wrong behavior for a validation error meant for a
+  plain-text or JSON API response. Switched to `text/template`, which
+  performs no such escaping.
 - The package-level checker/normalizer registries (`makers`, `fieldMakers`,
   `schemaMakers`, `errorMessages`) are now guarded by `sync.RWMutex`.
   `RegisterMaker`/`RegisterFieldMaker`/`RegisterSchemaMaker`/`RegisterLocale`

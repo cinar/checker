@@ -66,6 +66,23 @@ func TestCheckErrorWithDataAndLocalizedCode(t *testing.T) {
 	}
 }
 
+func TestCheckErrorWithDataDoesNotHTMLEscape(t *testing.T) {
+	code := "TEST_NO_ESCAPE"
+	message := "Got: {{.Value}}"
+
+	locales.EnUSMessages[code] = message
+
+	err := v2.NewCheckErrorWithData(code, map[string]interface{}{
+		"Value": `<script>&"'</script>`,
+	})
+
+	expected := `Got: <script>&"'</script>`
+
+	if err.Error() != expected {
+		t.Fatalf("actual %q expected %q", err.Error(), expected)
+	}
+}
+
 func TestCheckErrorWithLocalizedCodeInvalidTemplate(t *testing.T) {
 	code := "TEST"
 	message := "Test message {{}"
