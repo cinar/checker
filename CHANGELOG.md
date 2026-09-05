@@ -37,6 +37,9 @@ Changes prior to v2.0.0 are not individually documented here; see the
   `th-TH`, `tr-TR`, `uk-UA`, `vi-VN`, `zh-CN`, `zh-TW`. A new
   `locales/locales_test.go` verifies every locale defines the same message
   codes and `{{ .placeholder }}` variables as `en-US`.
+- `before-field`/`after-field` checkers, the field-relative equivalent of
+  `before`/`after`: compares a value against a named sibling field's value
+  instead of a fixed reference time.
 
 ## [2.0.1] - 2024-12-30
 
