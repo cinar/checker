@@ -36,4 +36,8 @@ If you are planning to make a pull request to this project, please make sure to 
 
 Add an entry under `## [Unreleased]` in [CHANGELOG.md](CHANGELOG.md) for any pull request that changes behavior visible to users of the library (a new checker, a new field on an existing type, a bug fix, a breaking change). Documentation-only or internal refactoring changes don't need an entry.
 
+### Translations
+
+Every locale in the `locales` package must define a message for every error code, using the same `{{ .placeholder }}` variables as the `en-US` message for that code — `locales/locales_test.go` enforces this and will fail if a locale falls out of sync. If your pull request adds a new checker (and therefore a new error code) or changes an existing message's placeholders, update every file in `locales/`, not just `locales/en_us.go`.
+
 Thank you for contributing! We appreciate your help in making Checkers library better.

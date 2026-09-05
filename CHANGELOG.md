@@ -31,6 +31,12 @@ Changes prior to v2.0.0 are not individually documented here; see the
   address shape), `before`/`after` (compare against a fixed reference time),
   `iso639-1` (language codes), `iso3166-1-alpha-2`/`iso3166-1-alpha-3`
   (country codes).
+- 22 new locales, matching the set go-playground/validator ships:
+  `ar-SA`, `de-DE`, `es-ES`, `fa-IR`, `fr-FR`, `hy-AM`, `id-ID`, `it-IT`,
+  `ja-JP`, `ko-KR`, `lv-LV`, `nl-NL`, `pl-PL`, `pt-BR`, `pt-PT`, `ru-RU`,
+  `th-TH`, `tr-TR`, `uk-UA`, `vi-VN`, `zh-CN`, `zh-TW`. A new
+  `locales/locales_test.go` verifies every locale defines the same message
+  codes and `{{ .placeholder }}` variables as `en-US`.
 
 ## [2.0.1] - 2024-12-30
 
