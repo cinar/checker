@@ -43,12 +43,20 @@ var timeLayouts = map[string]string{
 	"TimeOnly":    time.TimeOnly,
 }
 
+// resolveTimeLayout returns the time layout for the given named layout, such
+// as "DateOnly". If the name is not one of the named layouts, it is returned
+// unchanged, treating it as a literal Go reference-time layout.
+func resolveTimeLayout(name string) string {
+	if layout, ok := timeLayouts[name]; ok {
+		return layout
+	}
+
+	return name
+}
+
 // IsTime checks if the given value is a valid time based on the given layout.
 func IsTime(params, value string) (string, error) {
-	layout, ok := timeLayouts[params]
-	if !ok {
-		layout = params
-	}
+	layout := resolveTimeLayout(params)
 
 	_, err := time.Parse(layout, value)
 	if err != nil {

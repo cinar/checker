@@ -33,14 +33,18 @@ const (
 
 ```go
 var EnUSMessages = map[string]string{
+    "NOT_AFTER":        "Value must be after {{ .reference }}.",
     "NOT_ALPHANUMERIC": "Not an alphanumeric string.",
     "NOT_ASCII":        "Can only contain ASCII characters.",
+    "NOT_BEFORE":       "Value must be before {{ .reference }}.",
     "NOT_CIDR":         "Not a valid CIDR notation.",
     "NOT_CREDIT_CARD":  "Not a valid credit card number.",
     "NOT_DIGITS":       "Can only contain digits.",
     "NOT_EMAIL":        "Not a valid email address.",
+    "NOT_EQ_FIELD":     "Value must match the {{ .field }} field.",
     "NOT_FQDN":         "Not a fully qualified domain name (FQDN).",
     "NOT_GTE":          "Value cannot be less than {{ .n }}.",
+    "NOT_HASH":         "Not a valid {{ .algorithm }} hash.",
     "NOT_HEX":          "Can only contain hexadecimal characters.",
     "NOT_IP":           "Not a valid IP address.",
     "NOT_IPV4":         "Not a valid IPv4 address.",
