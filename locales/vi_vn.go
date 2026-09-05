@@ -35,6 +35,7 @@ var ViVNMessages = map[string]string{
 	"NOT_ISO31661_ALPHA3": "Không phải là mã quốc gia ISO 3166-1 alpha-3 hợp lệ.",
 	"NOT_ISO6391":         "Không phải là mã ngôn ngữ ISO 639-1 hợp lệ.",
 	"NOT_LT":              "Giá trị phải nhỏ hơn {{ .n }}.",
+	"NOT_LEN":             "Giá trị phải có độ dài {{ .len }}.",
 	"NOT_LTE":             "Giá trị không được nhỏ hơn {{ .n }}.",
 	"NOT_LUHN":            "Không phải là số LUHN hợp lệ.",
 	"NOT_MAC":             "Không phải là địa chỉ MAC hợp lệ.",

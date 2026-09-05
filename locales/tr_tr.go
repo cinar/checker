@@ -35,6 +35,7 @@ var TrTRMessages = map[string]string{
 	"NOT_ISO31661_ALPHA3": "Geçerli bir ISO 3166-1 alpha-3 ülke kodu değil.",
 	"NOT_ISO6391":         "Geçerli bir ISO 639-1 dil kodu değil.",
 	"NOT_LT":              "Değer {{ .n }} değerinden küçük olmalı.",
+	"NOT_LEN":             "Değer {{ .len }} uzunluğunda olmalı.",
 	"NOT_LTE":             "Değer {{ .n }} değerinden küçük olamaz.",
 	"NOT_LUHN":            "Geçerli bir LUHN numarası değil.",
 	"NOT_MAC":             "Geçerli bir MAC adresi değil.",

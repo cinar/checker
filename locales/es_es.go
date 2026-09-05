@@ -35,6 +35,7 @@ var EsESMessages = map[string]string{
 	"NOT_ISO31661_ALPHA3": "No es un código de país ISO 3166-1 alfa-3 válido.",
 	"NOT_ISO6391":         "No es un código de idioma ISO 639-1 válido.",
 	"NOT_LT":              "El valor debe ser menor que {{ .n }}.",
+	"NOT_LEN":             "El valor debe tener una longitud de {{ .len }}.",
 	"NOT_LTE":             "El valor no puede ser menor que {{ .n }}.",
 	"NOT_LUHN":            "No es un número LUHN válido.",
 	"NOT_MAC":             "No es una dirección MAC válida.",

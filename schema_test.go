@@ -369,6 +369,41 @@ func TestJSONSchemaNotAStruct(t *testing.T) {
 	v2.JSONSchema("not-a-struct")
 }
 
+func TestJSONSchemaLenExactLength(t *testing.T) {
+	type Person struct {
+		Zip   string            `checkers:"len:5"`
+		Codes []string          `checkers:"@len:2"`
+		Tags  map[string]string `checkers:"@len:3"`
+	}
+
+	schema := v2.JSONSchema(&Person{})
+
+	zip, ok := schema.Properties["Zip"]
+	if !ok || *zip.MinLength != 5 || *zip.MaxLength != 5 {
+		t.Fatalf("unexpected zip schema %+v", zip)
+	}
+
+	codes, ok := schema.Properties["Codes"]
+	if !ok || *codes.MinItems != 2 || *codes.MaxItems != 2 {
+		t.Fatalf("unexpected codes schema %+v", codes)
+	}
+
+	tags, ok := schema.Properties["Tags"]
+	if !ok || *tags.MinProperties != 3 || *tags.MaxProperties != 3 {
+		t.Fatalf("unexpected tags schema %+v", tags)
+	}
+}
+
+func TestJSONSchemaBadLen(t *testing.T) {
+	defer FailIfNoPanic(t, "expected panic")
+
+	type Person struct {
+		Name string `checkers:"len:abc"`
+	}
+
+	v2.JSONSchema(&Person{})
+}
+
 func TestJSONSchemaBadMinLen(t *testing.T) {
 	defer FailIfNoPanic(t, "expected panic")
 
