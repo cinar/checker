@@ -15,11 +15,11 @@
 
 <p align="center">
     <a href="#quickstart-example">Quickstart</a> &middot;
+    <a href="#normalizers-provided">Normalizers</a> &middot;
     <a href="#checkers-provided">Checkers</a> &middot;
     <a href="#json-schema-generation">JSON Schema</a> &middot;
     <a href="#localized-error-messages">Locales</a> &middot;
-    <a href="#framework-integration">Frameworks</a> &middot;
-    <a href="#contributing-to-the-project">Contributing</a>
+    <a href="#framework-integration">Frameworks</a>
 </p>
 
 - **Zero dependencies** — the core module imports nothing beyond the Go standard library.
