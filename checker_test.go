@@ -293,6 +293,27 @@ func TestCheckStructSlice(t *testing.T) {
 	}
 }
 
+func TestCheckStructSliceConfigSplitIsCached(t *testing.T) {
+	// Checking a second value of the same struct type exercises the
+	// warm-cache path of the slice/map "@"-prefix container/item config
+	// split, not just the cold, first-parse path.
+	type Person struct {
+		Name   string   `checkers:"required"`
+		Emails []string `checkers:"@max-len:1 max-len:4"`
+	}
+
+	people := []*Person{
+		{Name: "Onur Cinar", Emails: []string{"abcd"}},
+		{Name: "Jane Doe", Emails: []string{"efgh"}},
+	}
+
+	for _, person := range people {
+		if _, ok := v2.CheckStruct(person); !ok {
+			t.Fatalf("expected valid for %+v", person)
+		}
+	}
+}
+
 func TestCheckStructMapNormalizesAndValidates(t *testing.T) {
 	type Person struct {
 		Name   string            `checkers:"required"`

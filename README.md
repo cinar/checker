@@ -626,7 +626,7 @@ See [echo/README.md](echo/README.md) for the full example, including how to call
 
 ## Performance
 
-Checker is designed for low memory allocations and high throughput in HTTP request pipelines with zero external dependencies. [`benchmark_test.go`](benchmark_test.go) covers `CheckStruct` on a small struct (success and failure paths), a larger struct (nested struct, slice, map, cross-field and conditional checkers), and static `JSONSchema` generation.
+Checker is designed for low memory allocations and high throughput in HTTP request pipelines with zero external dependencies. `CheckStruct` compiles each struct type's `checkers`/`validate` tags into a resolved execution plan (field metadata, container/item splits, and maker-resolved checker chains) on first use and caches it, so repeated validation of the same struct type — or of any field sharing an identical tag string — doesn't re-parse tag strings or re-resolve checker names on every call. [`benchmark_test.go`](benchmark_test.go) covers `CheckStruct` on a small struct (success and failure paths), a larger struct (nested struct, slice, map, cross-field and conditional checkers), and static `JSONSchema` generation.
 
 Run the benchmarks on your machine:
 
@@ -638,10 +638,10 @@ Measured with `go test -bench=. -benchmem -benchtime=2s` on Linux x86_64 (Intel 
 
 | Benchmark | Iterations | Time / Op | Memory / Op | Allocs / Op |
 | :--- | :---: | :---: | :---: | :---: |
-| `BenchmarkCheckStruct_Simple_Success` (3 fields, all valid) | ~870,000 | **2.6 µs/op** | 1,176 B/op | 37 allocs/op |
-| `BenchmarkCheckStruct_Simple_Failure` (3 fields, one invalid) | ~880,000 | **2.7 µs/op** | 1,448 B/op | 37 allocs/op |
-| `BenchmarkCheckStruct_Complex` (10 fields incl. nested struct, slice, map) | ~160,000 | **15.0 µs/op** | 5,993 B/op | 181 allocs/op |
-| `BenchmarkJSONSchema` (static schema generation) | ~340,000 | **7.3 µs/op** | 6,716 B/op | 72 allocs/op |
+| `BenchmarkCheckStruct_Simple_Success` (3 fields, all valid) | ~1,940,000 | **1.2 µs/op** | 760 B/op | 19 allocs/op |
+| `BenchmarkCheckStruct_Simple_Failure` (3 fields, one invalid) | ~1,760,000 | **1.4 µs/op** | 1,032 B/op | 19 allocs/op |
+| `BenchmarkCheckStruct_Complex` (10 fields incl. nested struct, slice, map) | ~320,000 | **7.8 µs/op** | 3,576 B/op | 78 allocs/op |
+| `BenchmarkJSONSchema` (static schema generation) | ~315,000 | **7.3 µs/op** | 6,716 B/op | 72 allocs/op |
 
 ## Changelog
 

@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"sync"
 )
 
 const (
@@ -81,13 +82,13 @@ func ReflectCheckWithConfig(value reflect.Value, config string) (reflect.Value, 
 // to the given reflect.Value, making the parent struct's reflect.Value available to any
 // field-relative checks, such as eq-field.
 func reflectCheckFieldWithConfig(value, parent reflect.Value, config string) (reflect.Value, error) {
-	config, omitEmpty := extractOmitEmpty(config)
+	compiled := getCompiledConfig(config)
 
-	if omitEmpty && value.IsValid() && value.IsZero() {
+	if compiled.omitEmpty && value.IsValid() && value.IsZero() {
 		return value, nil
 	}
 
-	return Check(value, makeChecks(config, parent)...)
+	return runCompiledChecks(value, parent, compiled.checks)
 }
 
 // extractOmitEmpty removes the "omitempty" token from config, if present, and
@@ -129,24 +130,24 @@ func CheckStruct(st any) (CheckErrors, bool) {
 
 		switch job.Value.Kind() {
 		case reflect.Struct:
-			for i := 0; i < job.Value.NumField(); i++ {
-				field := job.Value.Type().Field(i)
+			meta := getStructFieldMeta(job.Value.Type())
 
-				name := fieldName(job.Name, field)
-				value := indirectOrNilPointer(job.Value.FieldByIndex(field.Index))
+			for _, fm := range meta {
+				name := joinFieldName(job.Name, fm.localName)
+				value := indirectOrNilPointer(job.Value.FieldByIndex(fm.index))
 
 				jobs = append(jobs, &checkStructJob{
 					Name:    name,
 					Value:   value,
 					Parent:  job.Value,
-					Config:  fieldConfig(field),
+					Config:  fm.rawConfig,
 					SetFunc: safeSetFunc(value),
 				})
 			}
 
 		case reflect.Slice:
-			sliceConfig, itemConfig := splitSliceConfig(job.Config)
-			job.Config = sliceConfig
+			split := getSliceSplit(job.Config)
+			job.Config = split.sliceConfig
 
 			for i := 0; i < job.Value.Len(); i++ {
 				name := fmt.Sprintf("%s[%d]", job.Name, i)
@@ -155,14 +156,15 @@ func CheckStruct(st any) (CheckErrors, bool) {
 				jobs = append(jobs, &checkStructJob{
 					Name:    name,
 					Value:   value,
-					Config:  itemConfig,
+					Config:  split.itemConfig,
 					SetFunc: safeSetFunc(value),
 				})
 			}
 
 		case reflect.Map:
-			mapConfig, itemConfig := splitSliceConfig(job.Config)
-			job.Config = mapConfig
+			split := getSliceSplit(job.Config)
+			job.Config = split.sliceConfig
+			itemConfig := split.itemConfig
 
 			mapValue := job.Value
 
@@ -240,10 +242,9 @@ func fieldConfig(field reflect.StructField) string {
 	return field.Tag.Get(validateTag)
 }
 
-// fieldName returns the field name. If a "json" tag is present, it uses the
-// tag value instead. It also prepends the parent struct's name (if any) to
-// create a fully qualified field name.
-func fieldName(prefix string, field reflect.StructField) string {
+// localFieldName returns the field's own name segment, without any parent
+// prefix. If a "json" tag is present, it uses the tag value instead.
+func localFieldName(field reflect.StructField) string {
 	// Use the json tag's property name if present, stripping any
 	// comma-separated options (e.g. ",omitempty"); fields tagged json:"-"
 	// still need an error key, so fall back to the Go field name for them,
@@ -253,12 +254,17 @@ func fieldName(prefix string, field reflect.StructField) string {
 		name = field.Name
 	}
 
-	// Prepend parent name
-	if prefix != "" {
-		name = prefix + "." + name
+	return name
+}
+
+// joinFieldName prepends the parent struct's fully qualified name (if any)
+// to a field's local name segment, to build the fully qualified field name.
+func joinFieldName(prefix, name string) string {
+	if prefix == "" {
+		return name
 	}
 
-	return name
+	return prefix + "." + name
 }
 
 // splitSliceConfig splits config string into slice/map and item-level configurations.
@@ -275,4 +281,72 @@ func splitSliceConfig(config string) (string, string) {
 	}
 
 	return strings.Join(sliceFileds, " "), strings.Join(itemFields, " ")
+}
+
+// structFieldMeta is the pre-resolved, tag-string-parsed metadata for a
+// single struct field: everything CheckStruct needs to queue that field
+// for checking, without re-walking its reflect.StructField on every call.
+type structFieldMeta struct {
+	index     []int
+	localName string
+	rawConfig string
+}
+
+// structMetaCache caches []structFieldMeta by struct reflect.Type, so a
+// given struct type's fields, JSON names, and checkers/validate tags are
+// only ever parsed once, no matter how many times a value of that type is
+// checked. Unlike configCache, this never needs invalidating: a type's own
+// field tags can't change at runtime.
+var structMetaCache sync.Map
+
+// getStructFieldMeta returns t's field metadata, computing and caching it
+// on first use.
+func getStructFieldMeta(t reflect.Type) []structFieldMeta {
+	if cached, ok := structMetaCache.Load(t); ok {
+		return cached.([]structFieldMeta)
+	}
+
+	meta := make([]structFieldMeta, t.NumField())
+
+	for i := 0; i < t.NumField(); i++ {
+		field := t.Field(i)
+
+		meta[i] = structFieldMeta{
+			index:     field.Index,
+			localName: localFieldName(field),
+			rawConfig: fieldConfig(field),
+		}
+	}
+
+	actual, _ := structMetaCache.LoadOrStore(t, meta)
+
+	return actual.([]structFieldMeta)
+}
+
+// sliceSplit is the parsed container/item split of a slice or map field's
+// checkers/validate tag config.
+type sliceSplit struct {
+	sliceConfig string
+	itemConfig  string
+}
+
+// sliceSplitCache caches sliceSplit by its exact source config string, for
+// the same reason configCache does: a given tag value only needs its
+// "@"-prefixed tokens separated out once, no matter how many slice/map
+// values (across instances, or even across unrelated fields) share it.
+var sliceSplitCache sync.Map
+
+// getSliceSplit returns the sliceSplit for config, computing and caching
+// it on first use.
+func getSliceSplit(config string) sliceSplit {
+	if cached, ok := sliceSplitCache.Load(config); ok {
+		return cached.(sliceSplit)
+	}
+
+	sliceConfig, itemConfig := splitSliceConfig(config)
+	split := sliceSplit{sliceConfig: sliceConfig, itemConfig: itemConfig}
+
+	actual, _ := sliceSplitCache.LoadOrStore(config, split)
+
+	return actual.(sliceSplit)
 }
