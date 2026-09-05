@@ -20,16 +20,15 @@ Package v2 Checker is a Go library for validating user input through checker rul
 - [func HTMLEscape\(value string\) \(string, error\)](<#HTMLEscape>)
 - [func HTMLUnescape\(value string\) \(string, error\)](<#HTMLUnescape>)
 - [func IsASCII\(value string\) \(string, error\)](<#IsASCII>)
-- [func IsAfter\(layout, reference, value string\) \(string, error\)](<#IsAfter>)
 - [func IsAlphanumeric\(value string\) \(string, error\)](<#IsAlphanumeric>)
 - [func IsAmexCreditCard\(number string\) \(string, error\)](<#IsAmexCreditCard>)
 - [func IsAnyCreditCard\(number string\) \(string, error\)](<#IsAnyCreditCard>)
-- [func IsBefore\(layout, reference, value string\) \(string, error\)](<#IsBefore>)
 - [func IsCIDR\(value string\) \(string, error\)](<#IsCIDR>)
 - [func IsDigits\(value string\) \(string, error\)](<#IsDigits>)
 - [func IsDinersCreditCard\(number string\) \(string, error\)](<#IsDinersCreditCard>)
 - [func IsDiscoverCreditCard\(number string\) \(string, error\)](<#IsDiscoverCreditCard>)
 - [func IsEmail\(value string\) \(string, error\)](<#IsEmail>)
+- [func IsEqField\(parent, value reflect.Value, name string\) \(reflect.Value, error\)](<#IsEqField>)
 - [func IsFQDN\(value string\) \(string, error\)](<#IsFQDN>)
 - [func IsGte\[T cmp.Ordered\]\(value, n T\) \(T, error\)](<#IsGte>)
 - [func IsHex\(value string\) \(string, error\)](<#IsHex>)
@@ -43,12 +42,15 @@ Package v2 Checker is a Go library for validating user input through checker rul
 - [func IsMAC\(value string\) \(string, error\)](<#IsMAC>)
 - [func IsMasterCardCreditCard\(number string\) \(string, error\)](<#IsMasterCardCreditCard>)
 - [func IsRegexp\(expression, value string\) \(string, error\)](<#IsRegexp>)
+- [func IsRequiredIf\(parent, value reflect.Value, name, expected string\) \(reflect.Value, error\)](<#IsRequiredIf>)
+- [func IsRequiredUnless\(parent, value reflect.Value, name, expected string\) \(reflect.Value, error\)](<#IsRequiredUnless>)
 - [func IsTime\(params, value string\) \(string, error\)](<#IsTime>)
 - [func IsURL\(value string\) \(string, error\)](<#IsURL>)
 - [func IsUnionPayCreditCard\(number string\) \(string, error\)](<#IsUnionPayCreditCard>)
 - [func IsVisaCreditCard\(number string\) \(string, error\)](<#IsVisaCreditCard>)
 - [func Lower\(value string\) \(string, error\)](<#Lower>)
 - [func ReflectCheckWithConfig\(value reflect.Value, config string\) \(reflect.Value, error\)](<#ReflectCheckWithConfig>)
+- [func RegisterFieldMaker\(name string, maker MakeCheckFieldFunc\)](<#RegisterFieldMaker>)
 - [func RegisterLocale\(locale string, messages map\[string\]string\)](<#RegisterLocale>)
 - [func RegisterMaker\(name string, maker MakeCheckFunc\)](<#RegisterMaker>)
 - [func Required\[T any\]\(value T\) \(T, error\)](<#Required>)
@@ -65,10 +67,12 @@ Package v2 Checker is a Go library for validating user input through checker rul
   - [func \(c \*CheckError\) Error\(\) string](<#CheckError.Error>)
   - [func \(c \*CheckError\) ErrorWithLocale\(locale string\) string](<#CheckError.ErrorWithLocale>)
   - [func \(c \*CheckError\) Is\(target error\) bool](<#CheckError.Is>)
+- [type CheckFieldFunc](<#CheckFieldFunc>)
 - [type CheckFunc](<#CheckFunc>)
   - [func MakeRegexpChecker\(expression string, invalidError error\) CheckFunc\[reflect.Value\]](<#MakeRegexpChecker>)
   - [func MaxLen\[T any\]\(n int\) CheckFunc\[T\]](<#MaxLen>)
   - [func MinLen\[T any\]\(n int\) CheckFunc\[T\]](<#MinLen>)
+- [type MakeCheckFieldFunc](<#MakeCheckFieldFunc>)
 - [type MakeCheckFunc](<#MakeCheckFunc>)
 
 
@@ -84,6 +88,15 @@ const (
 ```
 
 ## Variables
+
+<a name="ErrEqField"></a>
+
+```go
+var (
+    // ErrEqField indicates that the value is not equal to the given field's value.
+    ErrEqField = NewCheckError("NOT_EQ_FIELD")
+)
+```
 
 <a name="ErrGte"></a>
 
@@ -130,30 +143,12 @@ var (
 )
 ```
 
-<a name="ErrNotAfter"></a>
-
-```go
-var (
-    // ErrNotAfter indicates that the value is not after the given reference time.
-    ErrNotAfter = NewCheckError("NOT_AFTER")
-)
-```
-
 <a name="ErrNotAlphanumeric"></a>
 
 ```go
 var (
     // ErrNotAlphanumeric indicates that the given string contains non-alphanumeric characters.
     ErrNotAlphanumeric = NewCheckError("NOT_ALPHANUMERIC")
-)
-```
-
-<a name="ErrNotBefore"></a>
-
-```go
-var (
-    // ErrNotBefore indicates that the value is not before the given reference time.
-    ErrNotBefore = NewCheckError("NOT_BEFORE")
 )
 ```
 
@@ -299,7 +294,7 @@ var (
 ```
 
 <a name="Check"></a>
-## func [Check](<https://github.com/cinar/checker/blob/main/checker.go#L32>)
+## func [Check](<https://github.com/cinar/checker/blob/main/checker.go#L45>)
 
 ```go
 func Check[T any](value T, checks ...CheckFunc[T]) (T, error)
@@ -344,7 +339,7 @@ Onur Cinar
 </details>
 
 <a name="CheckStruct"></a>
-## func [CheckStruct](<https://github.com/cinar/checker/blob/main/checker.go#L62>)
+## func [CheckStruct](<https://github.com/cinar/checker/blob/main/checker.go#L82>)
 
 ```go
 func CheckStruct(st any) (map[string]error, bool)
@@ -395,7 +390,7 @@ Onur Cinar
 </details>
 
 <a name="CheckWithConfig"></a>
-## func [CheckWithConfig](<https://github.com/cinar/checker/blob/main/checker.go#L47>)
+## func [CheckWithConfig](<https://github.com/cinar/checker/blob/main/checker.go#L60>)
 
 ```go
 func CheckWithConfig[T any](value T, config string) (T, error)
@@ -454,15 +449,6 @@ func main() {
 
 </p>
 </details>
-
-<a name="IsAfter"></a>
-## func [IsAfter](<https://github.com/cinar/checker/blob/main/after.go#L29>)
-
-```go
-func IsAfter(layout, reference, value string) (string, error)
-```
-
-IsAfter checks if the value, parsed using the given layout, is after the given reference time, which is parsed using the same layout. Panics if the reference cannot be parsed, as that indicates a configuration error. If the value itself cannot be parsed, ErrTime is returned.
 
 <a name="IsAlphanumeric"></a>
 ## func [IsAlphanumeric](<https://github.com/cinar/checker/blob/main/alphanumeric.go#L24>)
@@ -563,15 +549,6 @@ func main() {
 
 </p>
 </details>
-
-<a name="IsBefore"></a>
-## func [IsBefore](<https://github.com/cinar/checker/blob/main/before.go#L29>)
-
-```go
-func IsBefore(layout, reference, value string) (string, error)
-```
-
-IsBefore checks if the value, parsed using the given layout, is before the given reference time, which is parsed using the same layout. Panics if the reference cannot be parsed, as that indicates a configuration error. If the value itself cannot be parsed, ErrTime is returned.
 
 <a name="IsCIDR"></a>
 ## func [IsCIDR](<https://github.com/cinar/checker/blob/main/cidr.go#L24>)
@@ -740,6 +717,15 @@ func main() {
 
 </p>
 </details>
+
+<a name="IsEqField"></a>
+## func [IsEqField](<https://github.com/cinar/checker/blob/main/eq_field.go#L22>)
+
+```go
+func IsEqField(parent, value reflect.Value, name string) (reflect.Value, error)
+```
+
+IsEqField checks if the value is equal to the value of the named field on the parent struct. It returns an error if the two values are not equal.
 
 <a name="IsFQDN"></a>
 ## func [IsFQDN](<https://github.com/cinar/checker/blob/main/fqdn.go#L27>)
@@ -1131,8 +1117,26 @@ func main() {
 </p>
 </details>
 
+<a name="IsRequiredIf"></a>
+## func [IsRequiredIf](<https://github.com/cinar/checker/blob/main/required_if.go#L22>)
+
+```go
+func IsRequiredIf(parent, value reflect.Value, name, expected string) (reflect.Value, error)
+```
+
+IsRequiredIf checks if the value is required, given that the named field on the parent struct is equal to the expected value. It returns an error if the value is missing while the condition is met.
+
+<a name="IsRequiredUnless"></a>
+## func [IsRequiredUnless](<https://github.com/cinar/checker/blob/main/required_unless.go#L22>)
+
+```go
+func IsRequiredUnless(parent, value reflect.Value, name, expected string) (reflect.Value, error)
+```
+
+IsRequiredUnless checks if the value is required, unless the named field on the parent struct is equal to the expected value. It returns an error if the value is missing while the condition is not met.
+
 <a name="IsTime"></a>
-## func [IsTime](<https://github.com/cinar/checker/blob/main/time.go#L58>)
+## func [IsTime](<https://github.com/cinar/checker/blob/main/time.go#L47>)
 
 ```go
 func IsTime(params, value string) (string, error)
@@ -1302,13 +1306,22 @@ func Lower(value string) (string, error)
 Lower maps all Unicode letters in the given value to their lower case.
 
 <a name="ReflectCheckWithConfig"></a>
-## func [ReflectCheckWithConfig](<https://github.com/cinar/checker/blob/main/checker.go#L55>)
+## func [ReflectCheckWithConfig](<https://github.com/cinar/checker/blob/main/checker.go#L68>)
 
 ```go
 func ReflectCheckWithConfig(value reflect.Value, config string) (reflect.Value, error)
 ```
 
 ReflectCheckWithConfig applies the check functions specified by the config string to the given reflect.Value. It returns the modified reflect.Value and the first encountered error, if any.
+
+<a name="RegisterFieldMaker"></a>
+## func [RegisterFieldMaker](<https://github.com/cinar/checker/blob/main/maker.go#L71>)
+
+```go
+func RegisterFieldMaker(name string, maker MakeCheckFieldFunc)
+```
+
+RegisterFieldMaker registers a new field\-relative maker function with the given name.
 
 <a name="RegisterLocale"></a>
 ## func [RegisterLocale](<https://github.com/cinar/checker/blob/main/check_error.go#L80>)
@@ -1320,7 +1333,7 @@ func RegisterLocale(locale string, messages map[string]string)
 RegisterLocale registers the localized error messages for the given locale.
 
 <a name="RegisterMaker"></a>
-## func [RegisterMaker](<https://github.com/cinar/checker/blob/main/maker.go#L56>)
+## func [RegisterMaker](<https://github.com/cinar/checker/blob/main/maker.go#L66>)
 
 ```go
 func RegisterMaker(name string, maker MakeCheckFunc)
@@ -1510,6 +1523,15 @@ func (c *CheckError) Is(target error) bool
 
 Is reports whether the check error is the same as the target error.
 
+<a name="CheckFieldFunc"></a>
+## type [CheckFieldFunc](<https://github.com/cinar/checker/blob/main/check_field_func.go#L17>)
+
+CheckFieldFunc is a function that takes the parent struct's reflect.Value along with the current field's reflect.Value, performs a check that may depend on a sibling field, and returns the resulting value and any error that occurred. The parent is only valid when the check is run through CheckStruct.
+
+```go
+type CheckFieldFunc func(parent, value reflect.Value) (reflect.Value, error)
+```
+
 <a name="CheckFunc"></a>
 ## type [CheckFunc](<https://github.com/cinar/checker/blob/main/check_func.go#L11>)
 
@@ -1545,6 +1567,15 @@ func MinLen[T any](n int) CheckFunc[T]
 ```
 
 MinLen checks if the length of the given value \(string, slice, or map\) is at least n. Returns an error if the length is less than n.
+
+<a name="MakeCheckFieldFunc"></a>
+## type [MakeCheckFieldFunc](<https://github.com/cinar/checker/blob/main/maker.go#L19>)
+
+MakeCheckFieldFunc is a function that returns a field\-relative check function using the given params.
+
+```go
+type MakeCheckFieldFunc func(params string) CheckFieldFunc
+```
 
 <a name="MakeCheckFunc"></a>
 ## type [MakeCheckFunc](<https://github.com/cinar/checker/blob/main/maker.go#L15>)
