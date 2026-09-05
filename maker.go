@@ -34,6 +34,7 @@ var makers = map[string]MakeCheckFunc{
 	nameCreditCard:   makeCreditCard,
 	nameDigits:       makeDigits,
 	nameEmail:        makeEmail,
+	nameEOA:          makeEOA,
 	nameFQDN:         makeFQDN,
 	nameGte:          makeGte,
 	nameHash:         makeHash,
