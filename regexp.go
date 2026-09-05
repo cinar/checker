@@ -8,6 +8,7 @@ package v2
 import (
 	"reflect"
 	"regexp"
+	"sync"
 )
 
 // nameRegexp is the name of the regexp check.
@@ -16,9 +17,29 @@ const nameRegexp = "regexp"
 // ErrNotMatch indicates that the given string does not match the regexp pattern.
 var ErrNotMatch = NewCheckError("REGEXP")
 
+// regexpCache holds compiled *regexp.Regexp values keyed by their source
+// expression, so a given expression is only ever compiled once. Checker
+// tags are static and developer-authored, so the set of distinct
+// expressions a process ever compiles is bounded by the code, not by
+// request input -- unlike, say, caching on a raw user-supplied string.
+var regexpCache sync.Map
+
+// compileRegexp returns the compiled *regexp.Regexp for expression, compiling
+// and caching it on first use. Panics if expression doesn't compile, same as
+// regexp.MustCompile.
+func compileRegexp(expression string) *regexp.Regexp {
+	if compiled, ok := regexpCache.Load(expression); ok {
+		return compiled.(*regexp.Regexp)
+	}
+
+	compiled, _ := regexpCache.LoadOrStore(expression, regexp.MustCompile(expression))
+
+	return compiled.(*regexp.Regexp)
+}
+
 // IsRegexp checks if the given string matches the given regexp expression.
 func IsRegexp(expression, value string) (string, error) {
-	if !regexp.MustCompile(expression).MatchString(value) {
+	if !compileRegexp(expression).MatchString(value) {
 		return value, ErrNotMatch
 	}
 
