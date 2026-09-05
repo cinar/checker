@@ -41,6 +41,21 @@ Changes prior to v2.0.0 are not individually documented here; see the
   `before`/`after`: compares a value against a named sibling field's value
   instead of a fixed reference time.
 
+### Changed
+
+- README links to API docs now point to [pkg.go.dev](https://pkg.go.dev/github.com/cinar/checker/v2)
+  instead of a committed `DOC.md`, and the GoDoc badge now points to
+  pkg.go.dev instead of the retired godoc.org.
+
+### Removed
+
+- `DOC.md` and `locales/DOC.md`, the committed `gomarkdoc`-generated API
+  reference. It embedded source-line links that shifted on any unrelated
+  code change, which made it a near-guaranteed merge conflict on every
+  concurrent pull request; pkg.go.dev already serves the same reference
+  live from source, with no regeneration step and no committed file to
+  conflict on.
+
 ## [2.0.1] - 2024-12-30
 
 ### Added
