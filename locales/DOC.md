@@ -33,8 +33,10 @@ const (
 
 ```go
 var EnUSMessages = map[string]string{
+    "NOT_AFTER":        "Value must be after {{ .reference }}.",
     "NOT_ALPHANUMERIC": "Not an alphanumeric string.",
     "NOT_ASCII":        "Can only contain ASCII characters.",
+    "NOT_BEFORE":       "Value must be before {{ .reference }}.",
     "NOT_CIDR":         "Not a valid CIDR notation.",
     "NOT_CREDIT_CARD":  "Not a valid credit card number.",
     "NOT_DIGITS":       "Can only contain digits.",

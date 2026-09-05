@@ -28,8 +28,10 @@ var fieldMakers = map[string]MakeCheckFieldFunc{
 
 // makers provides a mapping of maker functions keyed by the check name.
 var makers = map[string]MakeCheckFunc{
+	nameAfter:        makeAfter,
 	nameAlphanumeric: makeAlphanumeric,
 	nameASCII:        makeASCII,
+	nameBefore:       makeBefore,
 	nameCIDR:         makeCIDR,
 	nameCreditCard:   makeCreditCard,
 	nameDigits:       makeDigits,
