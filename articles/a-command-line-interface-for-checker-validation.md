@@ -1,8 +1,9 @@
 ---
 title: A Command-Line Interface for Go's Checker Validation Library
-published: false
+published: true
 description: checker is a new, dependency-free standalone binary that runs any of Checker's Go validation checkers and normalizers from a shell script, CI pipeline, or Git hook -- no Go code required.
 tags: go, golang, cli, devops
+canonical_url: https://dev.to/onurcinar/a-command-line-interface-for-gos-checker-validation-library-klo
 ---
 
 Struct-tag validation is great when you're writing Go. It's useless the moment the thing you need to validate is a shell variable, a CI job input, or a Git tag about to get pushed. Until now, the answer for "is this a valid email/UUID/semver string" in a shell script has been a hand-rolled `grep -P` regex, copied between scripts and slowly drifting out of sync with whatever the real validation logic does elsewhere in the codebase.
@@ -62,7 +63,7 @@ $ checker check --locale=ja-JP email "not-an-email"
 
 ## No runtime to install
 
-This is the part that actually matters for the CI/shell-script use case: `checker` is a single static binary. No Node.js for `ajv-cli`, no Python for `check-jsonschema` — `go install` it once, or drop a prebuilt binary into a minimal container image, and it runs. For a validation step in a Docker build or an Alpine-based CI runner, that's the difference between "one binary" and "install a whole language runtime just to check a string."
+This is the part that actually matters for the CI/shell-script use case: `checker` is a single static binary. No Node.js, no Python, just `go install` it once, or drop a prebuilt binary into a minimal container image, and it runs. For a validation step in a Docker build or an Alpine-based CI runner, that's the difference between "one binary" and "install a whole language runtime just to check a string."
 
 ## A Git hook example
 
