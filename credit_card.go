@@ -36,12 +36,13 @@ var (
 	jcbExpression = "(?:^(?:(?:2131)|(?:1800)|(?:35[0-9]{3}))[0-9]{11}$)"
 	jcbPattern    = regexp.MustCompile(jcbExpression)
 
-	// masterCardExpression is the regexp for the MasterCard cards. They start with 51, 52, 53, 54, or 55, and has 15 digits.
-	masterCardExpression = "(?:^5[12345][0-9]{14}$)"
+	// masterCardExpression is the regexp for the MasterCard cards. They start with 51-55 or
+	// 2221-2720, and has 16 digits.
+	masterCardExpression = "(?:(?:^5[12345][0-9]{14}$)|(?:^2(?:22[1-9]|2[3-9][0-9]|[3-6][0-9]{2}|7(?:[01][0-9]|20))[0-9]{12}$))"
 	masterCardPattern    = regexp.MustCompile(masterCardExpression)
 
 	// unionPayExpression is the regexp for the UnionPay cards. They start either with 62 or 67, and has 16 digits, or they start with 81 and has 16 to 19 digits.
-	unionPayExpression = "(?:(?:6[27][0-9]{14})|(?:81[0-9]{14,17})^$)"
+	unionPayExpression = "(?:(?:^6[27][0-9]{14}$)|(?:^81[0-9]{14,17}$))"
 	unionPayPattern    = regexp.MustCompile(unionPayExpression)
 
 	// visaExpression is the regexp for the Visa cards. They start with 4 and has 13 or 16 digits.

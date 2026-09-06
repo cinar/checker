@@ -33,6 +33,13 @@ func TestIsLUHNInvalidDigits(t *testing.T) {
 	}
 }
 
+func TestIsLUHNEmpty(t *testing.T) {
+	_, err := v2.IsLUHN("")
+	if err == nil {
+		t.Fatal("expected error for empty value")
+	}
+}
+
 func TestIsLUHNValid(t *testing.T) {
 	_, err := v2.IsLUHN("4012888888881881")
 	if err != nil {
