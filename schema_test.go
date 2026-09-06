@@ -404,6 +404,19 @@ func TestJSONSchemaFiniteIgnored(t *testing.T) {
 	}
 }
 
+func TestJSONSchemaDefault(t *testing.T) {
+	type Person struct {
+		Role string `checkers:"default:guest"`
+	}
+
+	schema := v2.JSONSchema(&Person{})
+
+	role, ok := schema.Properties["Role"]
+	if !ok || role.Default == nil || *role.Default != "guest" {
+		t.Fatalf("unexpected role schema %+v", role)
+	}
+}
+
 func TestJSONSchemaIgnoresNormalizers(t *testing.T) {
 	type Person struct {
 		Name string `checkers:"trim lower upper title trim-left trim-right html-escape html-unescape url-escape url-unescape omitempty required"`

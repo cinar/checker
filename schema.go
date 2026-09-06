@@ -62,6 +62,10 @@ type Schema struct {
 	// Const is the exact value a value must equal. Set by the eq checker.
 	Const *string `json:"const,omitempty"`
 
+	// Default is the fallback value used when a value is missing. Set by the
+	// default normalizer.
+	Default *string `json:"default,omitempty"`
+
 	// MinLength is the minimum length of a string value.
 	MinLength *int `json:"minLength,omitempty"`
 
