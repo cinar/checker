@@ -7,6 +7,7 @@
 package v2
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 	"strings"
@@ -49,6 +50,12 @@ type checkStructJob struct {
 	// (see the Slice/Map cases below), and parsed into a name->message map at the
 	// point the checks actually run.
 	RawMessages string
+
+	// CtxConfig is the value's checkersCtx tag config, run against a
+	// context.Context by CheckStructWithContext only; CheckStruct and
+	// CheckWithConfig never look at it. Only populated for direct struct
+	// fields, not slice/map elements.
+	CtxConfig string
 
 	// SetFunc writes the checked value back to its place, which may not always be
 	// as simple as Value.Set, such as for values held in a map.
@@ -124,6 +131,27 @@ func extractOmitEmpty(config string) (string, bool) {
 // It returns CheckErrors, a map of field names to their corresponding errors, and a
 // boolean indicating if all checks passed.
 func CheckStruct(st any) (CheckErrors, bool) {
+	return checkStruct(context.Background(), st, false)
+}
+
+// CheckStructWithContext checks the given struct exactly like CheckStruct, and
+// additionally runs each field's checkersCtx tag, if present, against ctx: a
+// context-aware check (registered via RegisterCtxMaker) for cross-cutting concerns
+// a struct tag alone can't express, such as a database uniqueness lookup or a
+// tenant claim carried on ctx. A field's checkersCtx checks only run if its
+// checkers/validate tag didn't already fail, mirroring how a single field's own
+// checker chain stops at the first error. checkersCtx is silently ignored by
+// CheckStruct and CheckWithConfig, since neither has a context.Context to run it
+// with, so the two tags can be combined on the same field without conflict.
+func CheckStructWithContext(ctx context.Context, st any) (CheckErrors, bool) {
+	return checkStruct(ctx, st, true)
+}
+
+// checkStruct is the shared traversal behind CheckStruct and
+// CheckStructWithContext. useCtx gates whether a job's CtxConfig is ever
+// consulted, so CheckStruct's behavior is unchanged by the mere presence of a
+// checkersCtx tag on a field it walks.
+func checkStruct(ctx context.Context, st any, useCtx bool) (CheckErrors, bool) {
 	errs := make(CheckErrors)
 
 	jobs := []*checkStructJob{
@@ -151,6 +179,7 @@ func CheckStruct(st any) (CheckErrors, bool) {
 					Parent:      job.Value,
 					Config:      fm.rawConfig,
 					RawMessages: fm.rawMessages,
+					CtxConfig:   fm.rawCtxConfig,
 					SetFunc:     safeSetFunc(value),
 				})
 			}
@@ -216,6 +245,17 @@ func CheckStruct(st any) (CheckErrors, bool) {
 			}
 
 			job.SetFunc(newValue)
+		}
+
+		if useCtx && job.CtxConfig != "" {
+			if _, failed := errs[job.Name]; !failed {
+				newValue, err := runCtxChecks(ctx, job.Value, job.CtxConfig)
+				if err != nil {
+					errs[job.Name] = err
+				}
+
+				job.SetFunc(newValue)
+			}
 		}
 	}
 
@@ -306,10 +346,11 @@ func splitSliceConfig(config string) (string, string) {
 // single struct field: everything CheckStruct needs to queue that field
 // for checking, without re-walking its reflect.StructField on every call.
 type structFieldMeta struct {
-	index       []int
-	localName   string
-	rawConfig   string
-	rawMessages string
+	index        []int
+	localName    string
+	rawConfig    string
+	rawMessages  string
+	rawCtxConfig string
 }
 
 // structMetaCache caches []structFieldMeta by struct reflect.Type, so a
@@ -332,10 +373,11 @@ func getStructFieldMeta(t reflect.Type) []structFieldMeta {
 		field := t.Field(i)
 
 		meta[i] = structFieldMeta{
-			index:       field.Index,
-			localName:   localFieldName(field),
-			rawConfig:   fieldConfig(field),
-			rawMessages: field.Tag.Get(messageTag),
+			index:        field.Index,
+			localName:    localFieldName(field),
+			rawConfig:    fieldConfig(field),
+			rawMessages:  field.Tag.Get(messageTag),
+			rawCtxConfig: field.Tag.Get(ctxTag),
 		}
 	}
 

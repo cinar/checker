@@ -49,6 +49,7 @@
 - [Optional Fields with `omitempty`](#optional-fields-with-omitempty)
 - [Field-Relative and Conditional Checkers](#field-relative-and-conditional-checkers)
 - [Programmatic Pipelines (Context-Aware Validation)](#programmatic-pipelines-context-aware-validation)
+  - [Context-Aware Struct Tags with `CheckStructWithContext`](#context-aware-struct-tags-with-checkstructwithcontext)
 - [Localized Error Messages](#localized-error-messages)
 - [Custom Error Messages](#custom-error-messages)
 - [Structured Errors](#structured-errors)
@@ -473,6 +474,29 @@ errs, ok := pipeline.Validate(ctx, user)
 ```
 
 `Field` normalizes and validates one field in place, exactly like a `checkers` tag chain: checks run in order and stop at the first error, and any normalizer among them writes its result back before the next check runs. `Rule` runs against the whole value with `ctx`, for anything a single field's tag can't express. `Validate` runs every step regardless of earlier failures — matching `CheckStruct`'s field-independent error collection — and returns the same `CheckErrors` type, so both validation styles produce API-ready errors the same way.
+
+### Context-Aware Struct Tags with `CheckStructWithContext`
+
+`Pipeline[T]` is the right tool when validation is mostly programmatic. If a struct is otherwise validated entirely through `checkers` tags and only one or two fields need `ctx`, a `checkersCtx` tag avoids splitting that struct's rules across two places. `CheckStructWithContext` runs exactly like `CheckStruct`, and additionally runs each field's `checkersCtx` tag against a `context.Context`, using a checker registered with [RegisterCtxMaker](https://pkg.go.dev/github.com/cinar/checker/v2#RegisterCtxMaker):
+
+```golang
+checker.RegisterCtxMaker("unique-email", func(_ string) checker.CheckFuncCtx[reflect.Value] {
+	return func(ctx context.Context, value reflect.Value) (reflect.Value, error) {
+		if db.EmailTaken(ctx, value.String()) {
+			return value, checker.NewCheckError("EMAIL_TAKEN")
+		}
+		return value, nil
+	}
+})
+
+type SignupRequest struct {
+	Email string `checkers:"required email" checkersCtx:"unique-email"`
+}
+
+errs, ok := checker.CheckStructWithContext(ctx, req)
+```
+
+A field's `checkersCtx` checks only run if its `checkers`/`validate` tag didn't already fail, the same way a single checker chain stops at its first error. `checkersCtx` is silently ignored by `CheckStruct` and `CheckWithConfig`, since neither has a `context.Context` to run it with, so the two tags coexist on the same field without conflict. `CheckWithContext` is also available as the context-aware counterpart of `Check`, for running a sequence of `CheckFuncCtx[T]` against a single value directly.
 
 ## Localized Error Messages
 
