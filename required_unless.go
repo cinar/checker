@@ -16,10 +16,22 @@ const (
 	nameRequiredUnless = "required-unless"
 )
 
-// IsRequiredUnless checks if the value is required, unless the named field on the
-// parent struct is equal to the expected value. It returns an error if the value
-// is missing while the condition is not met.
-func IsRequiredUnless(parent, value reflect.Value, name, expected string) (reflect.Value, error) {
+// IsRequiredUnless checks if value is required, unless conditionValue
+// (typically another field's already-resolved value) stringifies to
+// expected. It returns an error if value is missing while the condition is
+// not met.
+func IsRequiredUnless[T any](value T, conditionValue any, expected string) (T, error) {
+	if fmt.Sprintf("%v", conditionValue) != expected {
+		return Required(value)
+	}
+
+	return value, nil
+}
+
+// checkRequiredUnless is the reflect.Value-based variant used internally
+// by required-unless's struct-tag checking, where the sibling field's type
+// isn't known until runtime.
+func checkRequiredUnless(parent, value reflect.Value, name, expected string) (reflect.Value, error) {
 	field := lookupParentField(nameRequiredUnless, parent, name)
 
 	if fmt.Sprintf("%v", field.Interface()) != expected {
@@ -38,6 +50,6 @@ func makeRequiredUnless(params string) CheckFieldFunc {
 	}
 
 	return func(parent, value reflect.Value) (reflect.Value, error) {
-		return IsRequiredUnless(parent, value, name, expected)
+		return checkRequiredUnless(parent, value, name, expected)
 	}
 }

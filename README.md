@@ -428,7 +428,7 @@ Pairing `omitempty` with `required` on the same field is a contradiction — "op
 
 ## Field-Relative and Conditional Checkers
 
-Some checkers compare a field's value against another field on the same struct. These are only available through `CheckStruct`, since they rely on the parent struct being known.
+Some checkers compare a field's value against another field on the same struct. As a `checkers:"..."` tag, these are only available through `CheckStruct`, since resolving the named sibling field relies on the parent struct being known at runtime. Each one also has a plain, non-reflection function — [`IsEqField`](https://pkg.go.dev/github.com/cinar/checker/v2#IsEqField), [`IsRequiredIf`](https://pkg.go.dev/github.com/cinar/checker/v2#IsRequiredIf), [`IsRequiredUnless`](https://pkg.go.dev/github.com/cinar/checker/v2#IsRequiredUnless), [`IsBeforeField`](https://pkg.go.dev/github.com/cinar/checker/v2#IsBeforeField), [`IsAfterField`](https://pkg.go.dev/github.com/cinar/checker/v2#IsAfterField) — that takes the sibling's already-resolved value directly, the same shape as every other `IsX` checker (`IsEmail`, `IsGte`, ...); it's for calling standalone or from generated code, not for use in a `checkers` tag.
 
 - `eq-field:FieldName` ensures the value is equal to the named sibling field's value. This is useful for a password confirmation field.
 - `required-if:FieldName:Value` ensures the value is provided when the named sibling field is equal to the given value.

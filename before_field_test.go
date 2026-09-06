@@ -7,11 +7,53 @@ package v2_test
 
 import (
 	"errors"
-	"reflect"
 	"testing"
 
 	v2 "github.com/cinar/checker/v2"
 )
+
+func TestIsBeforeFieldSuccess(t *testing.T) {
+	value, err := v2.IsBeforeField("DateOnly", "2024-06-01", "2024-01-01")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if value != "2024-01-01" {
+		t.Fatalf("actual %s expected %s", value, "2024-01-01")
+	}
+}
+
+func TestIsBeforeFieldNotBefore(t *testing.T) {
+	_, err := v2.IsBeforeField("DateOnly", "2024-01-01", "2024-06-01")
+
+	if !errors.Is(err, v2.ErrNotBefore) {
+		t.Fatalf("got unexpected error %v", err)
+	}
+}
+
+func TestIsBeforeFieldEqual(t *testing.T) {
+	_, err := v2.IsBeforeField("DateOnly", "2024-01-01", "2024-01-01")
+
+	if !errors.Is(err, v2.ErrNotBefore) {
+		t.Fatalf("got unexpected error %v", err)
+	}
+}
+
+func TestIsBeforeFieldInvalidValue(t *testing.T) {
+	_, err := v2.IsBeforeField("DateOnly", "2024-06-01", "not-a-date")
+
+	if !errors.Is(err, v2.ErrTime) {
+		t.Fatalf("got unexpected error %v", err)
+	}
+}
+
+func TestIsBeforeFieldInvalidReference(t *testing.T) {
+	_, err := v2.IsBeforeField("DateOnly", "not-a-date", "2024-01-01")
+
+	if !errors.Is(err, v2.ErrTime) {
+		t.Fatalf("got unexpected error %v", err)
+	}
+}
 
 func TestCheckStructBeforeFieldSuccess(t *testing.T) {
 	type Trip struct {
@@ -118,12 +160,14 @@ func TestBeforeFieldMissingField(t *testing.T) {
 	defer FailIfNoPanic(t, "expected panic")
 
 	type Trip struct {
-		DepartAt string
+		DepartAt string `checkers:"before-field:DateOnly:Unknown"`
 	}
 
-	trip := Trip{DepartAt: "2024-01-01"}
+	trip := &Trip{
+		DepartAt: "2024-01-01",
+	}
 
-	v2.IsBeforeField(reflect.ValueOf(trip), reflect.ValueOf("2024-01-01"), "DateOnly", "Unknown")
+	v2.CheckStruct(trip)
 }
 
 func TestMakeBeforeFieldMissingFieldName(t *testing.T) {

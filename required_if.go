@@ -16,10 +16,22 @@ const (
 	nameRequiredIf = "required-if"
 )
 
-// IsRequiredIf checks if the value is required, given that the named field on the
-// parent struct is equal to the expected value. It returns an error if the value
-// is missing while the condition is met.
-func IsRequiredIf(parent, value reflect.Value, name, expected string) (reflect.Value, error) {
+// IsRequiredIf checks if value is required, given that conditionValue
+// (typically another field's already-resolved value) stringifies to
+// expected. It returns an error if value is missing while the condition is
+// met.
+func IsRequiredIf[T any](value T, conditionValue any, expected string) (T, error) {
+	if fmt.Sprintf("%v", conditionValue) == expected {
+		return Required(value)
+	}
+
+	return value, nil
+}
+
+// checkRequiredIf is the reflect.Value-based variant used internally by
+// required-if's struct-tag checking, where the sibling field's type isn't
+// known until runtime.
+func checkRequiredIf(parent, value reflect.Value, name, expected string) (reflect.Value, error) {
 	field := lookupParentField(nameRequiredIf, parent, name)
 
 	if fmt.Sprintf("%v", field.Interface()) == expected {
@@ -38,6 +50,6 @@ func makeRequiredIf(params string) CheckFieldFunc {
 	}
 
 	return func(parent, value reflect.Value) (reflect.Value, error) {
-		return IsRequiredIf(parent, value, name, expected)
+		return checkRequiredIf(parent, value, name, expected)
 	}
 }

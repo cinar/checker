@@ -16,23 +16,21 @@ const (
 	nameAfterField = "after-field"
 )
 
-// IsAfterField checks if the value, parsed using the given layout, is after
-// the value of the named field on the parent struct, also parsed using the
-// same layout. Unlike IsAfter, an unparsable reference does not panic: the
-// reference here is another field's data, not checker configuration, so
-// ErrTime is returned instead, same as an unparsable value.
-func IsAfterField(parent, value reflect.Value, layout, name string) (reflect.Value, error) {
-	field := lookupParentField(nameAfterField, parent, name)
-
+// IsAfterField checks if value, parsed using the given layout, is after
+// reference (typically another field's already-resolved value), also
+// parsed using the same layout. Unlike IsAfter, an unparsable reference
+// does not panic: the reference here is another field's data, not checker
+// configuration, so ErrTime is returned instead, same as an unparsable
+// value.
+func IsAfterField(layout, reference, value string) (string, error) {
 	resolvedLayout := resolveTimeLayout(layout)
-	reference := reflectString(field)
 
 	referenceTime, err := time.Parse(resolvedLayout, reference)
 	if err != nil {
 		return value, ErrTime
 	}
 
-	valueTime, err := time.Parse(resolvedLayout, reflectString(value))
+	valueTime, err := time.Parse(resolvedLayout, value)
 	if err != nil {
 		return value, ErrTime
 	}
@@ -42,6 +40,18 @@ func IsAfterField(parent, value reflect.Value, layout, name string) (reflect.Val
 	}
 
 	return value, nil
+}
+
+// checkAfterField is the reflect.Value-based variant used internally by
+// after-field's struct-tag checking: it resolves the named sibling field
+// via parent, then delegates the actual comparison to IsAfterField.
+func checkAfterField(parent, value reflect.Value, layout, name string) (reflect.Value, error) {
+	field := lookupParentField(nameAfterField, parent, name)
+	reference := reflectString(field)
+
+	newValue, err := IsAfterField(layout, reference, reflectString(value))
+
+	return reflect.ValueOf(newValue).Convert(value.Type()), err
 }
 
 // makeAfterField makes an after field check function from the
@@ -54,6 +64,6 @@ func makeAfterField(params string) CheckFieldFunc {
 	}
 
 	return func(parent, value reflect.Value) (reflect.Value, error) {
-		return IsAfterField(parent, value, layout, name)
+		return checkAfterField(parent, value, layout, name)
 	}
 }

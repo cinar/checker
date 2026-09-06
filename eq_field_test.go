@@ -7,11 +7,32 @@ package v2_test
 
 import (
 	"errors"
-	"reflect"
 	"testing"
 
 	v2 "github.com/cinar/checker/v2"
 )
+
+func TestIsEqFieldValid(t *testing.T) {
+	_, err := v2.IsEqField("secret", "secret", "Password")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestIsEqFieldInvalid(t *testing.T) {
+	_, err := v2.IsEqField("not-secret", "secret", "Password")
+
+	if !errors.Is(err, v2.ErrEqField) {
+		t.Fatalf("got unexpected error %v", err)
+	}
+}
+
+func TestIsEqFieldInt(t *testing.T) {
+	_, err := v2.IsEqField(5, 5, "Count")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
 
 func TestCheckStructEqFieldSuccess(t *testing.T) {
 	type Person struct {
@@ -54,17 +75,21 @@ func TestCheckStructEqFieldMismatch(t *testing.T) {
 func TestEqFieldMissingParent(t *testing.T) {
 	defer FailIfNoPanic(t, "expected panic")
 
-	v2.IsEqField(reflect.Value{}, reflect.ValueOf("secret"), "Password")
+	v2.CheckWithConfig("secret", "eq-field:Password")
 }
 
 func TestEqFieldMissingField(t *testing.T) {
 	defer FailIfNoPanic(t, "expected panic")
 
 	type Person struct {
-		Password string
+		Password        string
+		ConfirmPassword string `checkers:"eq-field:Unknown"`
 	}
 
-	person := Person{Password: "secret"}
+	person := &Person{
+		Password:        "secret",
+		ConfirmPassword: "secret",
+	}
 
-	v2.IsEqField(reflect.ValueOf(person), reflect.ValueOf("secret"), "Unknown")
+	v2.CheckStruct(person)
 }

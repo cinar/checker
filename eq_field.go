@@ -17,9 +17,27 @@ var (
 	ErrEqField = NewCheckError("NOT_EQ_FIELD")
 )
 
-// IsEqField checks if the value is equal to the value of the named field on the
-// parent struct. It returns an error if the two values are not equal.
-func IsEqField(parent, value reflect.Value, name string) (reflect.Value, error) {
+// IsEqField checks if value is equal to other, typically another field's
+// already-resolved value on the same struct. It returns an error, naming
+// name, if the two values are not equal. Unlike checkEqField's tag-driven
+// path (reflect.DeepEqual, so it can compare slice/map/struct field values
+// too), this compares with ==, so T must be comparable; that matches IsEq
+// and IsNe, and covers every real-world eq-field use (confirmation fields,
+// scalar cross-checks).
+func IsEqField[T comparable](value, other T, name string) (T, error) {
+	if value != other {
+		return value, newEqFieldError(name)
+	}
+
+	return value, nil
+}
+
+// checkEqField is the reflect.Value-based variant used internally by
+// eq-field's struct-tag checking, where the sibling field's type isn't
+// known until runtime. It keeps reflect.DeepEqual, unlike IsEqField's ==,
+// so a slice/map/struct field tagged eq-field keeps working exactly as
+// before.
+func checkEqField(parent, value reflect.Value, name string) (reflect.Value, error) {
 	field := lookupParentField(nameEqField, parent, name)
 
 	if !reflect.DeepEqual(value.Interface(), field.Interface()) {
@@ -32,7 +50,7 @@ func IsEqField(parent, value reflect.Value, name string) (reflect.Value, error) 
 // makeEqField creates an equal to field check function for the named field.
 func makeEqField(params string) CheckFieldFunc {
 	return func(parent, value reflect.Value) (reflect.Value, error) {
-		return IsEqField(parent, value, params)
+		return checkEqField(parent, value, params)
 	}
 }
 
