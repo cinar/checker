@@ -7,11 +7,40 @@ package v2_test
 
 import (
 	"errors"
-	"reflect"
 	"testing"
 
 	v2 "github.com/cinar/checker/v2"
 )
+
+func TestIsRequiredIfConditionMetMissing(t *testing.T) {
+	_, err := v2.IsRequiredIf("", "US", "US")
+
+	if !errors.Is(err, v2.ErrRequired) {
+		t.Fatalf("got unexpected error %v", err)
+	}
+}
+
+func TestIsRequiredIfConditionMetPresent(t *testing.T) {
+	value, err := v2.IsRequiredIf("CA", "US", "US")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if value != "CA" {
+		t.Fatalf("actual %s expected %s", value, "CA")
+	}
+}
+
+func TestIsRequiredIfConditionNotMet(t *testing.T) {
+	value, err := v2.IsRequiredIf("", "CA", "US")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if value != "" {
+		t.Fatalf("actual %q expected empty", value)
+	}
+}
 
 func TestCheckStructRequiredIfConditionMetSuccess(t *testing.T) {
 	type Address struct {
@@ -86,9 +115,12 @@ func TestRequiredIfMissingField(t *testing.T) {
 
 	type Address struct {
 		Country string
+		State   string `checkers:"required-if:Unknown:US"`
 	}
 
-	address := Address{Country: "US"}
+	address := &Address{
+		Country: "US",
+	}
 
-	v2.IsRequiredIf(reflect.ValueOf(address), reflect.ValueOf(""), "Unknown", "US")
+	v2.CheckStruct(address)
 }

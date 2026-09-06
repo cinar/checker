@@ -79,9 +79,16 @@ paired with a `_test.go`. A checker file typically defines:
 4. A `name<Name>` constant (the tag keyword) and any exported `Err*` sentinel `*CheckError` values.
 
 Field-relative checkers (compare against a sibling struct field, e.g. `eq-field`, `after-field`, `required-if`)
-instead implement `CheckFieldFunc func(parent, value reflect.Value) (reflect.Value, error)` (`check_field_func.go`)
-and a `makeCheckFieldFunc`; they panic if invoked outside `CheckStruct` (no parent struct context). All maker
-functions are registered by name in the `makers`/`fieldMakers` maps in `maker.go`; new ones can be added
+additionally implement `CheckFieldFunc func(parent, value reflect.Value) (reflect.Value, error)`
+(`check_field_func.go`) and a `makeCheckFieldFunc`; the `CheckFieldFunc` variant panics if invoked outside
+`CheckStruct` (no parent struct context), since it resolves the sibling by name via `parent`. Its own plain
+function (item 1 above, e.g. `IsEqField[T comparable](value, other T, name string) (T, error)`) instead takes
+the sibling's already-resolved value directly, so it's usable standalone; the `reflect.Value`-based variant
+(item 2, e.g. `checkEqField`) resolves the sibling via `parent` and, where the semantics match exactly
+(`after-field`/`before-field`), delegates to the plain function. `eq-field`'s `reflect.Value` variant keeps
+`reflect.DeepEqual` instead of the plain function's `==`, since a struct-tag field's type isn't known until
+runtime and might not satisfy `comparable`. All maker functions are registered by name in the
+`makers`/`fieldMakers` maps in `maker.go`; new ones can be added
 externally via `RegisterMaker`/`RegisterFieldMaker`.
 
 ### Struct-tag validation

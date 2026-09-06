@@ -7,11 +7,53 @@ package v2_test
 
 import (
 	"errors"
-	"reflect"
 	"testing"
 
 	v2 "github.com/cinar/checker/v2"
 )
+
+func TestIsAfterFieldSuccess(t *testing.T) {
+	value, err := v2.IsAfterField("DateOnly", "2000-01-01", "2022-06-01")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if value != "2022-06-01" {
+		t.Fatalf("actual %s expected %s", value, "2022-06-01")
+	}
+}
+
+func TestIsAfterFieldNotAfter(t *testing.T) {
+	_, err := v2.IsAfterField("DateOnly", "2022-06-01", "2000-01-01")
+
+	if !errors.Is(err, v2.ErrNotAfter) {
+		t.Fatalf("got unexpected error %v", err)
+	}
+}
+
+func TestIsAfterFieldEqual(t *testing.T) {
+	_, err := v2.IsAfterField("DateOnly", "2000-01-01", "2000-01-01")
+
+	if !errors.Is(err, v2.ErrNotAfter) {
+		t.Fatalf("got unexpected error %v", err)
+	}
+}
+
+func TestIsAfterFieldInvalidValue(t *testing.T) {
+	_, err := v2.IsAfterField("DateOnly", "2000-01-01", "not-a-date")
+
+	if !errors.Is(err, v2.ErrTime) {
+		t.Fatalf("got unexpected error %v", err)
+	}
+}
+
+func TestIsAfterFieldInvalidReference(t *testing.T) {
+	_, err := v2.IsAfterField("DateOnly", "not-a-date", "2022-06-01")
+
+	if !errors.Is(err, v2.ErrTime) {
+		t.Fatalf("got unexpected error %v", err)
+	}
+}
 
 func TestCheckStructAfterFieldSuccess(t *testing.T) {
 	type Person struct {
@@ -118,12 +160,14 @@ func TestAfterFieldMissingField(t *testing.T) {
 	defer FailIfNoPanic(t, "expected panic")
 
 	type Person struct {
-		GraduatedAt string
+		GraduatedAt string `checkers:"after-field:DateOnly:Unknown"`
 	}
 
-	person := Person{GraduatedAt: "2022-06-01"}
+	person := &Person{
+		GraduatedAt: "2022-06-01",
+	}
 
-	v2.IsAfterField(reflect.ValueOf(person), reflect.ValueOf("2022-06-01"), "DateOnly", "Unknown")
+	v2.CheckStruct(person)
 }
 
 func TestMakeAfterFieldMissingFieldName(t *testing.T) {
