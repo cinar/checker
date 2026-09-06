@@ -151,6 +151,7 @@ func RegisteredFieldMakerNames() []string {
 type compiledCheck struct {
 	fn      CheckFunc[reflect.Value]
 	fieldFn CheckFieldFunc
+	name    string
 }
 
 // run executes the compiled check against value, threading parent through
@@ -220,7 +221,7 @@ func compileChecksLocked(config string) []compiledCheck {
 		name, params, _ := strings.Cut(field, ":")
 
 		if fieldMaker, ok := fieldMakers[name]; ok {
-			checks[i] = compiledCheck{fieldFn: fieldMaker(params)}
+			checks[i] = compiledCheck{fieldFn: fieldMaker(params), name: name}
 			continue
 		}
 
@@ -229,7 +230,7 @@ func compileChecksLocked(config string) []compiledCheck {
 			panic(fmt.Sprintf("check %s not found", name))
 		}
 
-		checks[i] = compiledCheck{fn: maker(params)}
+		checks[i] = compiledCheck{fn: maker(params), name: name}
 	}
 
 	return checks
@@ -237,13 +238,22 @@ func compileChecksLocked(config string) []compiledCheck {
 
 // runCompiledChecks runs compiled checks against value in order, binding
 // parent for any field-relative check, and short-circuits on the first
-// error, mirroring Check's semantics.
-func runCompiledChecks(value, parent reflect.Value, checks []compiledCheck) (reflect.Value, error) {
+// error, mirroring Check's semantics. If the failing check's name has an
+// entry in messages, the *CheckError is replaced with a copy carrying that
+// message (see CheckError.WithMessage), so it overrides the locale-based
+// message for this specific field. messages may be nil.
+func runCompiledChecks(value, parent reflect.Value, checks []compiledCheck, messages map[string]string) (reflect.Value, error) {
 	var err error
 
 	for _, check := range checks {
 		value, err = check.run(parent, value)
 		if err != nil {
+			if message, ok := messages[check.name]; ok {
+				if checkErr, ok := err.(*CheckError); ok {
+					err = checkErr.WithMessage(message)
+				}
+			}
+
 			break
 		}
 	}
