@@ -25,22 +25,27 @@ This is a multi-module repo:
   any registered checker/normalizer via `CheckWithConfig` against a value from a shell script, CI pipeline, or Git
   hook. Same `replace ../` pattern as `gin`/`echo`/`checkerlint`; has no external dependencies at all (no `go.sum`),
   since it only depends on the core module.
+- `nethttp/` — `github.com/cinar/checker/v2/nethttp`, a `net/http` adapter (`Bind`/`Check`) built only on
+  `encoding/json` + `net/http`. Same `replace ../` pattern as `gin`/`echo`; no external dependencies at all (no
+  `go.sum`), same as `cli/`.
+- `fiber/` — `github.com/cinar/checker/v2/fiber`, a Fiber v3 adapter (`Bind`/`Check`). Same `replace ../` pattern
+  as `gin`/`echo`.
 - `locales/` — the `locales` package, one file per locale (e.g. `en_us.go`) plus `locales.go` and `locales_test.go`.
 
 Each module has its own `taskfile.yml` and is built/linted/tested independently (see `.github/workflows/ci.yml`,
-which runs parallel jobs per module: root, `gin/`, `echo/`, `checkerlint/`, `cli/`).
+which runs parallel jobs per module: root, `gin/`, `echo/`, `nethttp/`, `fiber/`, `checkerlint/`, `cli/`).
 
 ## Commands
 
 All commands use [Task](https://taskfile.dev) (`go run github.com/go-task/task/v3/cmd/task@v3.38.0`), run from
-the module's own directory (root, `gin/`, `echo/`, `checkerlint/`, or `cli/`):
+the module's own directory (root, `gin/`, `echo/`, `nethttp/`, `fiber/`, `checkerlint/`, or `cli/`):
 
 - `task` (default) — runs `fmt`, `lint`, then `test`, in that order.
 - `task fmt` — `go fix ./...`
-- `task lint` — `go vet`, `gosec` (excludes `gin`/`echo`/`examples`/`checkerlint`/`cli` dirs when run from root — `gosec` doesn't
-  respect Go module boundaries or the `testdata` convention the way `go build`/`go vet`/`go test` do, so any
-  subdirectory with its own `go.mod`, or a `testdata` tree with fixtures that don't type-check against the root
-  module, needs an explicit `-exclude-dir`), `staticcheck`, and `revive`
+- `task lint` — `go vet`, `gosec` (excludes `gin`/`echo`/`examples`/`checkerlint`/`cli`/`nethttp`/`fiber` dirs when
+  run from root — `gosec` doesn't respect Go module boundaries or the `testdata` convention the way
+  `go build`/`go vet`/`go test` do, so any subdirectory with its own `go.mod`, or a `testdata` tree with fixtures
+  that don't type-check against the root module, needs an explicit `-exclude-dir`), `staticcheck`, and `revive`
   (config in `revive.toml`).
 - `task test` — `go test -cover -coverprofile=coverage.out ./...` then prints per-func coverage.
 
