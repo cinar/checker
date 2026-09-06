@@ -6,8 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Checker is a zero-dependency Go library (`github.com/cinar/checker/v2`) for validating and normalizing user
 input, driven by struct tags (`checkers:"..."`) or plain function calls. It ships 23 translated locales, JSON
-Schema generation from checker tags, separately-versioned `gin`/`echo` framework adapter modules, a `checkerlint`
-static analyzer, and a standalone `cli` command-line interface.
+Schema generation from checker tags, separately-versioned `gin`/`echo`/`nethttp`/`fiber` framework adapter
+modules, an opt-in `nfkc` checker module, a `checkerlint` static analyzer, and a standalone `cli`
+command-line interface.
 
 ## Repository layout
 
@@ -30,20 +31,25 @@ This is a multi-module repo:
   `go.sum`), same as `cli/`.
 - `fiber/` — `github.com/cinar/checker/v2/fiber`, a Fiber v3 adapter (`Bind`/`Check`). Same `replace ../` pattern
   as `gin`/`echo`.
+- `nfkc/` — `github.com/cinar/checker/v2/nfkc`, registers an `nfkc` checkers-tag normalizer (Unicode
+  Normalization Form KC) via `checker.RegisterMaker` in its `init` function — a blank import is enough to use
+  it. Its own module, not part of the core, because NFKC needs `golang.org/x/text/unicode/norm`; keeping it
+  isolated keeps the core module's zero-dependency promise intact for callers who don't opt in. Same
+  `replace ../` pattern as the other adapters.
 - `locales/` — the `locales` package, one file per locale (e.g. `en_us.go`) plus `locales.go` and `locales_test.go`.
 
 Each module has its own `taskfile.yml` and is built/linted/tested independently (see `.github/workflows/ci.yml`,
-which runs parallel jobs per module: root, `gin/`, `echo/`, `nethttp/`, `fiber/`, `checkerlint/`, `cli/`).
+which runs parallel jobs per module: root, `gin/`, `echo/`, `nethttp/`, `fiber/`, `nfkc/`, `checkerlint/`, `cli/`).
 
 ## Commands
 
 All commands use [Task](https://taskfile.dev) (`go run github.com/go-task/task/v3/cmd/task@v3.38.0`), run from
-the module's own directory (root, `gin/`, `echo/`, `nethttp/`, `fiber/`, `checkerlint/`, or `cli/`):
+the module's own directory (root, `gin/`, `echo/`, `nethttp/`, `fiber/`, `nfkc/`, `checkerlint/`, or `cli/`):
 
 - `task` (default) — runs `fmt`, `lint`, then `test`, in that order.
 - `task fmt` — `go fix ./...`
-- `task lint` — `go vet`, `gosec` (excludes `gin`/`echo`/`examples`/`checkerlint`/`cli`/`nethttp`/`fiber` dirs when
-  run from root — `gosec` doesn't respect Go module boundaries or the `testdata` convention the way
+- `task lint` — `go vet`, `gosec` (excludes `gin`/`echo`/`examples`/`checkerlint`/`cli`/`nethttp`/`fiber`/`nfkc`
+  dirs when run from root — `gosec` doesn't respect Go module boundaries or the `testdata` convention the way
   `go build`/`go vet`/`go test` do, so any subdirectory with its own `go.mod`, or a `testdata` tree with fixtures
   that don't type-check against the root module, needs an explicit `-exclude-dir`), `staticcheck`, and `revive`
   (config in `revive.toml`).
@@ -110,12 +116,14 @@ that refine a field's `*Schema` (e.g. `min-len` → `MinLength`); checkers witho
 in `Schema.XChecker` instead of being silently dropped, and normalizers are ignored entirely (tracked in
 `ignoredForSchema`). New checkers that constrain shape should register a schema maker via `RegisterSchemaMaker`.
 
-### Framework adapters (`gin/`, `echo/`)
+### Framework adapters (`gin/`, `echo/`, `nethttp/`, `fiber/`)
 
 Each adapter is a thin, separately-versioned module exposing `Bind`/`Check` functions that bind a request body
 then call `checker.CheckStruct`, writing a JSON 400 response (via `CheckErrors.JSON()`) automatically on
 failure. Keep these modules dependency-isolated from the core — they `replace` the core module with `../` for
-local development/CI only; that replace has no effect on external consumers.
+local development/CI only; that replace has no effect on external consumers. `nethttp/` has no dependency
+beyond the core module (`encoding/json` + `net/http`, both stdlib); `gin/`, `echo/`, and `fiber/` each pull in
+their respective framework.
 
 ### Command-line interface (`cli/`)
 
