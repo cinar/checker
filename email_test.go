@@ -33,6 +33,27 @@ func TestIsEmailValid(t *testing.T) {
 	}
 }
 
+func TestIsEmailDisplayNameInvalid(t *testing.T) {
+	_, err := v2.IsEmail("John Doe <john@example.com>")
+	if err == nil {
+		t.Fatal("expected error for display-name form")
+	}
+}
+
+func TestIsEmailWhitespaceInvalid(t *testing.T) {
+	_, err := v2.IsEmail(" test@example.com ")
+	if err == nil {
+		t.Fatal("expected error for surrounding whitespace")
+	}
+}
+
+func TestIsEmailNoTLDInvalid(t *testing.T) {
+	_, err := v2.IsEmail("a@b")
+	if err == nil {
+		t.Fatal("expected error for domain without a dot")
+	}
+}
+
 func TestCheckEmailNonString(t *testing.T) {
 	defer FailIfNoPanic(t, "expected panic")
 

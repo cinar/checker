@@ -54,6 +54,48 @@ func TestIsNumericValidPlusSign(t *testing.T) {
 	}
 }
 
+func TestIsNumericValidLeadingDot(t *testing.T) {
+	_, err := v2.IsNumeric(".5")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestIsNumericNaNInvalid(t *testing.T) {
+	_, err := v2.IsNumeric("NaN")
+	if err == nil {
+		t.Fatal("expected error for NaN")
+	}
+}
+
+func TestIsNumericInfInvalid(t *testing.T) {
+	_, err := v2.IsNumeric("+Inf")
+	if err == nil {
+		t.Fatal("expected error for Inf")
+	}
+}
+
+func TestIsNumericHexInvalid(t *testing.T) {
+	_, err := v2.IsNumeric("0x1p-2")
+	if err == nil {
+		t.Fatal("expected error for hex float")
+	}
+}
+
+func TestIsNumericUnderscoreInvalid(t *testing.T) {
+	_, err := v2.IsNumeric("1_000")
+	if err == nil {
+		t.Fatal("expected error for underscore digit separator")
+	}
+}
+
+func TestIsNumericExponentInvalid(t *testing.T) {
+	_, err := v2.IsNumeric("1e5")
+	if err == nil {
+		t.Fatal("expected error for exponent form")
+	}
+}
+
 func TestCheckNumericNonString(t *testing.T) {
 	defer FailIfNoPanic(t, "expected panic")
 
