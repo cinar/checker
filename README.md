@@ -31,6 +31,7 @@
 - **Framework adapters** — thin, separately-versioned `gin` and `echo` modules bind a request and validate it in one call.
 - **Context-aware pipelines** — `Pipeline[T]` reuses the same checkers for domain rules that need a `context.Context` (a DB lookup, a tenant claim) struct tags can't carry.
 - **Static analysis** — the separate `checkerlint` module catches unknown checker names, type mismatches, and dangling cross-field targets at build time, not runtime.
+- **Command-line interface** — the separate `checker` binary runs any checker or normalizer from a shell script, CI pipeline, or Git hook, with no Go code and no runtime dependency of its own.
 
 ## Table of Contents
 
@@ -54,6 +55,7 @@
 - [JSON Schema Generation](#json-schema-generation)
 - [Framework Integration](#framework-integration)
 - [Static Analysis](#static-analysis)
+- [Command-Line Interface](#command-line-interface)
 - [Performance](#performance)
 - [Changelog](#changelog)
 - [Contributing to the Project](#contributing-to-the-project)
@@ -721,6 +723,29 @@ checkerlint ./...
 ```
 
 See [checkerlint/README.md](checkerlint/README.md) for `go vet -vettool` and `golangci-lint` module-plugin integration.
+
+## Command-Line Interface
+
+[`checker`](cli/), a separate module, is a standalone command-line interface to the library, for running any checker or normalizer from a shell script, CI pipeline, or Git hook without writing Go code. It ships as a single, dependency-free static binary.
+
+```bash
+go install github.com/cinar/checker/v2/cli/cmd/checker@latest
+```
+
+```bash
+$ checker check email "user@example.com"
+user@example.com
+$ echo $?
+0
+
+$ echo "  Test@Example.com  " | checker check "trim lower email"
+test@example.com
+
+$ checker check --json email "not-an-email"
+{"valid":false,"error":{"code":"NOT_EMAIL","message":"Not a valid email address."}}
+```
+
+`checker check <config> [value]` takes the exact same `checkers`/`validate` tag config string syntax used in a struct tag, so it never falls behind the checker vocabulary — it doesn't hardcode a checker list, it calls the same `CheckWithConfig`, `RegisteredMakerNames`, and `RegisteredFieldMakerNames` functions a Go caller would. `checker list` prints every registered name, and `--locale=<tag>` renders the error message in any of the 23 shipped locales. See [cli/README.md](cli/README.md) for the full command reference, flags, and a Git hook example.
 
 ## Performance
 

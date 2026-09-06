@@ -1,0 +1,32 @@
+version: '3'
+output: 'prefixed'
+
+tasks:
+  default:
+    cmds:
+      - task: fmt
+      - task: lint
+      - task: test
+
+  action:
+    deps: [lint, test]
+
+  fmt:
+    cmds:
+      - go fix ./...
+
+  lint:
+    cmds:
+      - go vet ./...
+      - go run github.com/securego/gosec/v2/cmd/gosec@v2.29.0 ./...
+      - go run honnef.co/go/tools/cmd/staticcheck@v0.8.1 ./...
+      - go run github.com/mgechev/revive@v1.3.4 -config=../revive.toml ./...
+
+  test:
+    cmds:
+      # Scoped to the cli package itself: cmd/checker is a trivial
+      # os.Exit(cli.Run(...)) wrapper with no logic of its own to cover,
+      # and including it in a whole-module -cover run trips a "no such
+      # tool covdata" error for the untested package.
+      - go test -cover -coverprofile=coverage.out .
+      - go tool cover -func=coverage.out

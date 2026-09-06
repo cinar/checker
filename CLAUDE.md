@@ -6,7 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Checker is a zero-dependency Go library (`github.com/cinar/checker/v2`) for validating and normalizing user
 input, driven by struct tags (`checkers:"..."`) or plain function calls. It ships 23 translated locales, JSON
-Schema generation from checker tags, and separately-versioned `gin`/`echo` framework adapter modules.
+Schema generation from checker tags, separately-versioned `gin`/`echo` framework adapter modules, a `checkerlint`
+static analyzer, and a standalone `cli` command-line interface.
 
 ## Repository layout
 
@@ -20,19 +21,23 @@ This is a multi-module repo:
   `go 1.23.2` for its `golang.org/x/tools` dependency). Its `testdata/src/...` tree stands in for the real
   `github.com/cinar/checker/v2` import path so `analysistest` fixtures can exercise custom-checker detection
   without pulling in the real module — don't confuse it with an actual dependency.
+- `cli/` — `github.com/cinar/checker/v2/cli`, a standalone command-line interface (`cmd/checker` binary) that runs
+  any registered checker/normalizer via `CheckWithConfig` against a value from a shell script, CI pipeline, or Git
+  hook. Same `replace ../` pattern as `gin`/`echo`/`checkerlint`; has no external dependencies at all (no `go.sum`),
+  since it only depends on the core module.
 - `locales/` — the `locales` package, one file per locale (e.g. `en_us.go`) plus `locales.go` and `locales_test.go`.
 
 Each module has its own `taskfile.yml` and is built/linted/tested independently (see `.github/workflows/ci.yml`,
-which runs parallel jobs per module: root, `gin/`, `echo/`, `checkerlint/`).
+which runs parallel jobs per module: root, `gin/`, `echo/`, `checkerlint/`, `cli/`).
 
 ## Commands
 
 All commands use [Task](https://taskfile.dev) (`go run github.com/go-task/task/v3/cmd/task@v3.38.0`), run from
-the module's own directory (root, `gin/`, `echo/`, or `checkerlint/`):
+the module's own directory (root, `gin/`, `echo/`, `checkerlint/`, or `cli/`):
 
 - `task` (default) — runs `fmt`, `lint`, then `test`, in that order.
 - `task fmt` — `go fix ./...`
-- `task lint` — `go vet`, `gosec` (excludes `gin`/`echo`/`examples`/`checkerlint` dirs when run from root — `gosec` doesn't
+- `task lint` — `go vet`, `gosec` (excludes `gin`/`echo`/`examples`/`checkerlint`/`cli` dirs when run from root — `gosec` doesn't
   respect Go module boundaries or the `testdata` convention the way `go build`/`go vet`/`go test` do, so any
   subdirectory with its own `go.mod`, or a `testdata` tree with fixtures that don't type-check against the root
   module, needs an explicit `-exclude-dir`), `staticcheck`, and `revive`
@@ -106,6 +111,19 @@ Each adapter is a thin, separately-versioned module exposing `Bind`/`Check` func
 then call `checker.CheckStruct`, writing a JSON 400 response (via `CheckErrors.JSON()`) automatically on
 failure. Keep these modules dependency-isolated from the core — they `replace` the core module with `../` for
 local development/CI only; that replace has no effect on external consumers.
+
+### Command-line interface (`cli/`)
+
+`cli/cli.go`'s `Run(args, stdin, stdout, stderr) int` is the whole CLI's entry point, exercised directly from
+tests (no `os.Exit` inside it) and wrapped by a two-line `cmd/checker/main.go`. It never hardcodes the checker
+vocabulary — `check` goes through `checker.CheckWithConfig`, `list` through `RegisteredMakerNames`/
+`RegisteredFieldMakerNames` — so it can't drift out of sync with the core module's registered checkers. It
+recovers panics from `CheckWithConfig` (an unknown checker name, or a field-relative checker used outside a
+struct) into a normal returned error instead of crashing, since a CLI's checker-config argument is closer to
+user input than the compile-time struct tag the core module assumes. `locales.go` eagerly registers all 23
+shipped locales at `init` so `--locale=<tag>` works out of the box, unlike the core module's opt-in
+`RegisterLocale` (importing the core module should never force-pull translations a caller doesn't use, but a
+standalone CLI process has no such caller to defer to).
 
 ## Conventions
 

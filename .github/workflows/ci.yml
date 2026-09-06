@@ -115,3 +115,29 @@ jobs:
 
     - name: Run task
       run: go run github.com/go-task/task/v3/cmd/task@v3.38.0
+
+  cli:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cli
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version-file: ./cli/go.mod
+
+    - name: Setup cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-cli-${{ hashFiles('cli/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-cli-
+
+    - name: Run task
+      run: go run github.com/go-task/task/v3/cmd/task@v3.38.0
