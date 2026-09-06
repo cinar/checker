@@ -15,6 +15,11 @@ import (
 // returned from JSONSchema.
 const jsonSchemaDialect = "https://json-schema.org/draft/2020-12/schema"
 
+// descriptionTag is the name of the field tag read for a Schema's
+// Description. It's independent of checkerTag/validateTag since it doesn't
+// carry checker rules, only documentation.
+const descriptionTag = "description"
+
 // Schema is a JSON Schema document, or subschema, generated from a struct's
 // checker tags. It covers the common validation keywords that map cleanly
 // from checker tags, not the full JSON Schema specification.
@@ -25,6 +30,10 @@ type Schema struct {
 
 	// Title is the name of the Go type the schema was generated from.
 	Title string `json:"title,omitempty"`
+
+	// Description is the human-readable description of the field, taken from
+	// its "description" struct tag.
+	Description string `json:"description,omitempty"`
 
 	// Type is the JSON Schema type: "object", "array", "string", "integer",
 	// "number", or "boolean".
@@ -191,6 +200,7 @@ func structSchema(t reflect.Type) *Schema {
 		}
 
 		property := typeSchema(field.Type, fieldConfig(field))
+		property.schema.Description = field.Tag.Get(descriptionTag)
 
 		schema.Properties[name] = property.schema
 
