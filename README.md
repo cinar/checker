@@ -243,9 +243,12 @@ Normalizers mutate string values in-place and pass them to the next checker in t
 | | [`HTMLUnescape`](https://pkg.go.dev/github.com/cinar/checker/v2#HTMLUnescape) | `html-unescape` | Unescapes special characters in the string for HTML |
 | | [`URLEscape`](https://pkg.go.dev/github.com/cinar/checker/v2#URLEscape) | `url-escape` | Escapes special characters in the string for URLs |
 | | [`URLUnescape`](https://pkg.go.dev/github.com/cinar/checker/v2#URLUnescape) | `url-unescape` | Unescapes special characters in the string for URLs |
+| **Security** | [`StripInvisible`](https://pkg.go.dev/github.com/cinar/checker/v2#StripInvisible) | `strip-invisible` | Removes zero-width and bidirectional control characters (the "Trojan Source" spoofing technique, CVE-2021-42574), which an attacker can use to split a keyword-filtered word invisibly or make displayed text diverge from its logical order |
 | **Fallback** | [`Default`](https://pkg.go.dev/github.com/cinar/checker/v2#Default) | `default:<value>` | Replaces the value with `<value>` if it's currently its zero value, otherwise leaves it untouched |
 
 Unlike the other normalizers, `default` isn't string-only: it also works on `bool`, the `int`/`uint`/`float` kinds, and a pointer to any of those (a nil pointer gets a freshly allocated default; a non-nil one is left alone). It's a poor fit alongside `omitempty` on the same field — `omitempty` skips every remaining check exactly when the value is zero, which is exactly the case `default` exists to handle, so combining the two on one field means `default` never runs.
+
+`strip-invisible` removes zero-width space, zero-width non-joiner, zero-width joiner, word joiner, the zero-width no-break space (BOM), and the bidirectional embedding/override/isolate control characters. Some of these have legitimate uses in ordinary text — zero-width joiner in emoji sequences, zero-width non-joiner in Persian and other scripts — so apply it only to fields where an invisible character is never expected, such as a handle, username, or search keyword, not general free-text content.
 
 ## Checkers Provided
 

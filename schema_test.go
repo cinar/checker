@@ -546,7 +546,7 @@ func TestJSONSchemaDefault(t *testing.T) {
 
 func TestJSONSchemaIgnoresNormalizers(t *testing.T) {
 	type Person struct {
-		Name string `checkers:"trim lower upper title trim-left trim-right html-escape html-unescape url-escape url-unescape omitempty required"`
+		Name string `checkers:"trim lower upper title trim-left trim-right html-escape html-unescape url-escape url-unescape strip-invisible omitempty required"`
 	}
 
 	schema := v2.JSONSchema(&Person{})

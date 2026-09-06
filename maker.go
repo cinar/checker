@@ -96,6 +96,7 @@ var makers = map[string]MakeCheckFunc{
 	nameSemver:         makeSemver,
 	nameSlug:           makeSlug,
 	nameStartsWith:     makeStartsWith,
+	nameStripInvisible: makeStripInvisible,
 	nameTime:           makeTime,
 	nameTitle:          makeTitle,
 	nameTrimLeft:       makeTrimLeft,
