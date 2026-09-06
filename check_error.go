@@ -20,6 +20,12 @@ type CheckError struct {
 
 	// data is the error data.
 	Data map[string]interface{}
+
+	// Message, when non-empty, overrides the locale-based lookup for this
+	// specific error occurrence. It is still rendered as a text/template
+	// against Data, the same way a locale message is. Set through
+	// WithMessage; it is never populated by NewCheckError/NewCheckErrorWithData.
+	Message string
 }
 
 const (
@@ -40,7 +46,10 @@ var errorMessages = map[string]map[string]string{
 // errorTemplateCache holds parsed *template.Template values keyed by their
 // source message string, so a given message is only ever parsed once. Like
 // regexpCache, the key space is bounded by the (locale, code) message pairs
-// baked into the code, not by request data.
+// baked into the code, not by request data. It also caches custom per-field
+// messages from a checkersMsg struct tag (see WithMessage); those are still
+// bounded by the distinct tag literals compiled into the binary, not by
+// runtime data.
 var errorTemplateCache sync.Map
 
 // compileErrorTemplate returns the parsed *template.Template for message,
@@ -90,9 +99,24 @@ func (c *CheckError) Is(target error) bool {
 	return false
 }
 
+// WithMessage returns a copy of c whose Message overrides the locale-based
+// message for this occurrence. c itself is left untouched, since several
+// sentinel *CheckError values (e.g. ErrRequired) are shared package-level
+// pointers reused on every failure, so mutating one in place would leak the
+// override across unrelated fields.
+func (c *CheckError) WithMessage(message string) *CheckError {
+	clone := *c
+	clone.Message = message
+
+	return &clone
+}
+
 // ErrorWithLocale returns the localized error message for the check with the given locale.
 func (c *CheckError) ErrorWithLocale(locale string) string {
-	message := getLocalizedErrorMessage(locale, c.Code)
+	message := c.Message
+	if message == "" {
+		message = getLocalizedErrorMessage(locale, c.Code)
+	}
 
 	// Fast path: most messages ("Required value is missing.", "Not a valid
 	// email address.", ...) have no {{ }} placeholders at all, so they need

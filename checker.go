@@ -44,6 +44,12 @@ type checkStructJob struct {
 	// Config is the checker config string for the value.
 	Config string
 
+	// RawMessages is the field's checkersMsg tag value, unsplit, mirroring Config:
+	// it's split into container/item halves once the value's reflect.Kind is known
+	// (see the Slice/Map cases below), and parsed into a name->message map at the
+	// point the checks actually run.
+	RawMessages string
+
 	// SetFunc writes the checked value back to its place, which may not always be
 	// as simple as Value.Set, such as for values held in a map.
 	SetFunc func(reflect.Value)
@@ -75,20 +81,21 @@ func CheckWithConfig[T any](value T, config string) (T, error) {
 // to the given reflect.Value. It returns the modified reflect.Value and the first
 // encountered error, if any.
 func ReflectCheckWithConfig(value reflect.Value, config string) (reflect.Value, error) {
-	return reflectCheckFieldWithConfig(value, reflect.Value{}, config)
+	return reflectCheckFieldWithConfig(value, reflect.Value{}, config, nil)
 }
 
 // reflectCheckFieldWithConfig applies the check functions specified by the config string
 // to the given reflect.Value, making the parent struct's reflect.Value available to any
-// field-relative checks, such as eq-field.
-func reflectCheckFieldWithConfig(value, parent reflect.Value, config string) (reflect.Value, error) {
+// field-relative checks, such as eq-field. messages, keyed by checker name, overrides the
+// message of any checker it names when it fails (see the checkersMsg tag); it may be nil.
+func reflectCheckFieldWithConfig(value, parent reflect.Value, config string, messages map[string]string) (reflect.Value, error) {
 	compiled := getCompiledConfig(config)
 
 	if compiled.omitEmpty && value.IsValid() && value.IsZero() {
 		return value, nil
 	}
 
-	return runCompiledChecks(value, parent, compiled.checks)
+	return runCompiledChecks(value, parent, compiled.checks, messages)
 }
 
 // extractOmitEmpty removes the "omitempty" token from config, if present, and
@@ -112,8 +119,10 @@ func extractOmitEmpty(config string) (string, bool) {
 }
 
 // CheckStruct checks the given struct based on the validation rules specified in the
-// "checker" tag of each struct field. It returns CheckErrors, a map of field names
-// to their corresponding errors, and a boolean indicating if all checks passed.
+// "checker" tag of each struct field. A field's checkersMsg tag, if present, overrides
+// the message of one or more of its checks by name (see the messageTag doc comment).
+// It returns CheckErrors, a map of field names to their corresponding errors, and a
+// boolean indicating if all checks passed.
 func CheckStruct(st any) (CheckErrors, bool) {
 	errs := make(CheckErrors)
 
@@ -137,11 +146,12 @@ func CheckStruct(st any) (CheckErrors, bool) {
 				value := indirectOrNilPointer(job.Value.FieldByIndex(fm.index))
 
 				jobs = append(jobs, &checkStructJob{
-					Name:    name,
-					Value:   value,
-					Parent:  job.Value,
-					Config:  fm.rawConfig,
-					SetFunc: safeSetFunc(value),
+					Name:        name,
+					Value:       value,
+					Parent:      job.Value,
+					Config:      fm.rawConfig,
+					RawMessages: fm.rawMessages,
+					SetFunc:     safeSetFunc(value),
 				})
 			}
 
@@ -149,15 +159,19 @@ func CheckStruct(st any) (CheckErrors, bool) {
 			split := getSliceSplit(job.Config)
 			job.Config = split.sliceConfig
 
+			msgSplit := getSliceMessageSplit(job.RawMessages)
+			job.RawMessages = msgSplit.sliceMessages
+
 			for i := 0; i < job.Value.Len(); i++ {
 				name := fmt.Sprintf("%s[%d]", job.Name, i)
 				value := indirectOrNilPointer(job.Value.Index(i))
 
 				jobs = append(jobs, &checkStructJob{
-					Name:    name,
-					Value:   value,
-					Config:  split.itemConfig,
-					SetFunc: safeSetFunc(value),
+					Name:        name,
+					Value:       value,
+					Config:      split.itemConfig,
+					RawMessages: msgSplit.itemMessages,
+					SetFunc:     safeSetFunc(value),
 				})
 			}
 
@@ -166,6 +180,10 @@ func CheckStruct(st any) (CheckErrors, bool) {
 			job.Config = split.sliceConfig
 			itemConfig := split.itemConfig
 
+			msgSplit := getSliceMessageSplit(job.RawMessages)
+			job.RawMessages = msgSplit.sliceMessages
+			itemMessages := msgSplit.itemMessages
+
 			mapValue := job.Value
 
 			for _, key := range mapValue.MapKeys() {
@@ -173,9 +191,10 @@ func CheckStruct(st any) (CheckErrors, bool) {
 				value := indirectOrNilPointer(mapValue.MapIndex(key))
 
 				jobs = append(jobs, &checkStructJob{
-					Name:   name,
-					Value:  value,
-					Config: itemConfig,
+					Name:        name,
+					Value:       value,
+					Config:      itemConfig,
+					RawMessages: itemMessages,
 					SetFunc: func(newValue reflect.Value) {
 						// A pointer map value is addressable through its indirected
 						// value, so it can be mutated in place. A non-pointer map
@@ -191,7 +210,7 @@ func CheckStruct(st any) (CheckErrors, bool) {
 		}
 
 		if job.Config != "" {
-			newValue, err := reflectCheckFieldWithConfig(job.Value, job.Parent, job.Config)
+			newValue, err := reflectCheckFieldWithConfig(job.Value, job.Parent, job.Config, getMessages(job.RawMessages))
 			if err != nil {
 				errs[job.Name] = err
 			}
@@ -287,9 +306,10 @@ func splitSliceConfig(config string) (string, string) {
 // single struct field: everything CheckStruct needs to queue that field
 // for checking, without re-walking its reflect.StructField on every call.
 type structFieldMeta struct {
-	index     []int
-	localName string
-	rawConfig string
+	index       []int
+	localName   string
+	rawConfig   string
+	rawMessages string
 }
 
 // structMetaCache caches []structFieldMeta by struct reflect.Type, so a
@@ -312,9 +332,10 @@ func getStructFieldMeta(t reflect.Type) []structFieldMeta {
 		field := t.Field(i)
 
 		meta[i] = structFieldMeta{
-			index:     field.Index,
-			localName: localFieldName(field),
-			rawConfig: fieldConfig(field),
+			index:       field.Index,
+			localName:   localFieldName(field),
+			rawConfig:   fieldConfig(field),
+			rawMessages: field.Tag.Get(messageTag),
 		}
 	}
 

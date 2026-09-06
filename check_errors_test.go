@@ -97,6 +97,53 @@ func TestCheckErrorsJSON(t *testing.T) {
 	}
 }
 
+func TestCheckErrorsJSONWithCustomMessage(t *testing.T) {
+	type Person struct {
+		Name string `checkers:"required" checkersMsg:"required=Name is required"`
+	}
+
+	person := &Person{}
+
+	errs, ok := v2.CheckStruct(person)
+	if ok {
+		t.Fatal("expected errors")
+	}
+
+	data, err := errs.JSON()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var fields map[string]v2.FieldError
+
+	if err := json.Unmarshal(data, &fields); err != nil {
+		t.Fatal(err)
+	}
+
+	if fields["Name"].Code != "REQUIRED" || fields["Name"].Message != "Name is required" {
+		t.Fatalf("unexpected field error for Name: %+v", fields["Name"])
+	}
+}
+
+func TestCheckErrorsProblemDetailsWithCustomMessage(t *testing.T) {
+	type Person struct {
+		Name string `checkers:"required" checkersMsg:"required=Name is required"`
+	}
+
+	person := &Person{}
+
+	errs, ok := v2.CheckStruct(person)
+	if ok {
+		t.Fatal("expected errors")
+	}
+
+	pd := errs.ProblemDetails()
+
+	if len(pd.InvalidParams) != 1 || pd.InvalidParams[0].Code != "REQUIRED" || pd.InvalidParams[0].Reason != "Name is required" {
+		t.Fatalf("expected custom reason, got %+v", pd.InvalidParams)
+	}
+}
+
 func TestCheckErrorsJSONWithLocale(t *testing.T) {
 	locale := "de-DE"
 	code := "REQUIRED"

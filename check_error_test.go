@@ -192,6 +192,53 @@ func TestCheckErrorIsFailureWithDifferentType(t *testing.T) {
 	}
 }
 
+func TestCheckErrorWithMessageOverridesLocale(t *testing.T) {
+	code := "TEST"
+	locales.EnUSMessages[code] = "Locale message"
+
+	err := v2.NewCheckError(code).WithMessage("Custom message")
+
+	if err.Error() != "Custom message" {
+		t.Fatalf("actual %s expected %s", err.Error(), "Custom message")
+	}
+}
+
+func TestCheckErrorWithMessageDoesNotMutateOriginal(t *testing.T) {
+	code := "TEST"
+	locales.EnUSMessages[code] = "Locale message"
+
+	original := v2.NewCheckError(code)
+	_ = original.WithMessage("Custom message")
+
+	if original.Error() != "Locale message" {
+		t.Fatalf("actual %s expected %s", original.Error(), "Locale message")
+	}
+}
+
+func TestCheckErrorWithMessageTemplatePlaceholder(t *testing.T) {
+	code := "TEST"
+
+	err := v2.NewCheckErrorWithData(code, map[string]interface{}{
+		"min": 8,
+	}).WithMessage("Need at least {{ .min }}")
+
+	expected := "Need at least 8"
+
+	if err.Error() != expected {
+		t.Fatalf("actual %s expected %s", err.Error(), expected)
+	}
+}
+
+func TestCheckErrorWithMessageInvalidTemplateFallsBackToCode(t *testing.T) {
+	code := "TEST"
+
+	err := v2.NewCheckError(code).WithMessage("Bad template {{}")
+
+	if err.Error() != code {
+		t.Fatalf("actual %s expected %s", err.Error(), code)
+	}
+}
+
 func TestRegisterLocale(t *testing.T) {
 	locale := "de-DE"
 	code := "TEST"

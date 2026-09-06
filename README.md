@@ -49,6 +49,7 @@
 - [Field-Relative and Conditional Checkers](#field-relative-and-conditional-checkers)
 - [Programmatic Pipelines (Context-Aware Validation)](#programmatic-pipelines-context-aware-validation)
 - [Localized Error Messages](#localized-error-messages)
+- [Custom Error Messages](#custom-error-messages)
 - [Structured Errors](#structured-errors)
 - [JSON Schema Generation](#json-schema-generation)
 - [Framework Integration](#framework-integration)
@@ -513,6 +514,34 @@ if !valid {
 	// Output: map[Name:Name abcd is not a fruit name.]
 }
 ```
+
+## Custom Error Messages
+
+Locale messages are shared by every field that uses a given checker. To override the wording for one field's checks without touching a locale or registering a whole new checker, add a `checkersMsg` tag alongside `checkers`: a semicolon-separated list of `name=message` pairs, keyed by the bare checker name (no `:params`).
+
+```golang
+type Signup struct {
+	Email string `checkers:"required email" checkersMsg:"required=Email is required;email=Enter a valid email address"`
+}
+```
+
+A custom message is rendered as a Go template against the failing check's own data, the same way a locale message is, so placeholders still work:
+
+```golang
+type Signup struct {
+	Password string `checkers:"min-len:8" checkersMsg:"min-len=Must be at least {{ .min }} characters"`
+}
+```
+
+For a slice or map field, prefix a container-level override with `@`, matching the `checkers` tag's own container-vs-item convention:
+
+```golang
+type Signup struct {
+	Roles []string `checkers:"@min-len:1 required" checkersMsg:"@min-len=Pick at least one role;required=Role cannot be blank"`
+}
+```
+
+A name with no matching check in `checkers`/`validate` is simply unused. A custom message bypasses locale lookup entirely for that occurrence — it's a literal string you wrote, not a translation key, so `ErrorWithLocale()`/`JSONWithLocale()` return it unchanged regardless of locale. It also can't contain a literal `;` (the pair separator). This is struct-tag-only for now; `Check`/`CheckWithConfig` for standalone values are unaffected.
 
 ## Structured Errors
 
