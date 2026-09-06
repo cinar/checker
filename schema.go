@@ -94,6 +94,9 @@ type Schema struct {
 	// exclusive: the value itself doesn't satisfy the bound.
 	ExclusiveMaximum *float64 `json:"exclusiveMaximum,omitempty"`
 
+	// MultipleOf is the number a numeric value must be an integer multiple of.
+	MultipleOf *float64 `json:"multipleOf,omitempty"`
+
 	// XChecker lists the raw checker tag tokens that have no JSON Schema
 	// equivalent, such as "eq-field:Password" or "luhn", so the constraint
 	// isn't silently lost even though it isn't translated.

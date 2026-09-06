@@ -275,6 +275,12 @@ Checkers validate that a value conforms to expected criteria, returning an error
 | [`IsOneOf`](https://pkg.go.dev/github.com/cinar/checker/v2#IsOneOf) | `oneof:<v1>,<v2>,...` | Ensures the value equals one of a comma-separated list of allowed values |
 | [`IsEq`](https://pkg.go.dev/github.com/cinar/checker/v2#IsEq) | `eq:<value>` | Ensures the value equals the given literal value |
 | [`IsNe`](https://pkg.go.dev/github.com/cinar/checker/v2#IsNe) | `ne:<value>` | Ensures the value does not equal the given literal value |
+| [`IsInt`](https://pkg.go.dev/github.com/cinar/checker/v2#IsInt) | `int` | Ensures the value is a whole number, with no fractional part |
+| [`IsPositive`](https://pkg.go.dev/github.com/cinar/checker/v2#IsPositive) | `positive` | Ensures the value is strictly greater than zero |
+| [`IsNegative`](https://pkg.go.dev/github.com/cinar/checker/v2#IsNegative) | `negative` | Ensures the value is strictly less than zero |
+| [`IsNonnegative`](https://pkg.go.dev/github.com/cinar/checker/v2#IsNonnegative) | `nonnegative` | Ensures the value is greater than or equal to zero |
+| [`IsMultipleOf`](https://pkg.go.dev/github.com/cinar/checker/v2#IsMultipleOf) | `multiple-of:<n>` | Ensures the value is a multiple of n, within a small floating-point tolerance |
+| [`IsFinite`](https://pkg.go.dev/github.com/cinar/checker/v2#IsFinite) | `finite` | Ensures the value is neither `NaN` nor an infinity |
 
 ### Field-Relative & Conditional (Structs)
 

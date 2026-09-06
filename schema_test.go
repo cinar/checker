@@ -349,6 +349,61 @@ func TestJSONSchemaOneOfEnum(t *testing.T) {
 	}
 }
 
+func TestJSONSchemaIntPositiveNegativeNonnegativeMultipleOf(t *testing.T) {
+	type Order struct {
+		Quantity float64 `checkers:"int positive"`
+		Delta    float64 `checkers:"negative"`
+		Balance  float64 `checkers:"nonnegative"`
+		Amount   int     `checkers:"multiple-of:5"`
+	}
+
+	schema := v2.JSONSchema(&Order{})
+
+	quantity, ok := schema.Properties["Quantity"]
+	if !ok || quantity.Type != "integer" || quantity.ExclusiveMinimum == nil || *quantity.ExclusiveMinimum != 0 {
+		t.Fatalf("unexpected quantity schema %+v", quantity)
+	}
+
+	delta, ok := schema.Properties["Delta"]
+	if !ok || delta.ExclusiveMaximum == nil || *delta.ExclusiveMaximum != 0 {
+		t.Fatalf("unexpected delta schema %+v", delta)
+	}
+
+	balance, ok := schema.Properties["Balance"]
+	if !ok || balance.Minimum == nil || *balance.Minimum != 0 {
+		t.Fatalf("unexpected balance schema %+v", balance)
+	}
+
+	amount, ok := schema.Properties["Amount"]
+	if !ok || amount.MultipleOf == nil || *amount.MultipleOf != 5 {
+		t.Fatalf("unexpected amount schema %+v", amount)
+	}
+}
+
+func TestJSONSchemaBadMultipleOf(t *testing.T) {
+	defer FailIfNoPanic(t, "expected panic")
+
+	type Order struct {
+		Amount int `checkers:"multiple-of:abcd"`
+	}
+
+	v2.JSONSchema(&Order{})
+}
+
+func TestJSONSchemaFiniteIgnored(t *testing.T) {
+	type Order struct {
+		Amount float64 `checkers:"finite"`
+	}
+
+	schema := v2.JSONSchema(&Order{})
+
+	amount := schema.Properties["Amount"]
+
+	if len(amount.XChecker) != 0 {
+		t.Fatalf("expected finite to be ignored, got %v", amount.XChecker)
+	}
+}
+
 func TestJSONSchemaIgnoresNormalizers(t *testing.T) {
 	type Person struct {
 		Name string `checkers:"trim lower upper title trim-left trim-right html-escape html-unescape url-escape url-unescape omitempty required"`
