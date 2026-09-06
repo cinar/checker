@@ -109,6 +109,25 @@ func TestJSONSchemaStructFields(t *testing.T) {
 	}
 }
 
+func TestJSONSchemaDescription(t *testing.T) {
+	type Person struct {
+		Email string `json:"email" checkers:"required email" description:"User's primary email address"`
+		Name  string `checkers:"required"`
+	}
+
+	schema := v2.JSONSchema(&Person{})
+
+	email, ok := schema.Properties["email"]
+	if !ok || email.Description != "User's primary email address" {
+		t.Fatalf("unexpected email schema %+v", email)
+	}
+
+	name, ok := schema.Properties["Name"]
+	if !ok || name.Description != "" {
+		t.Fatalf("expected no description, got %+v", name)
+	}
+}
+
 func TestJSONSchemaBoolAndFloat(t *testing.T) {
 	type Settings struct {
 		Enabled bool

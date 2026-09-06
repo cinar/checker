@@ -655,6 +655,18 @@ type Registration struct {
 }
 ```
 
+A `description` struct tag, independent of `checkers`, becomes the field's `description` keyword:
+
+```golang
+type Person struct {
+	Email string `json:"email" checkers:"required email" description:"User's primary email address"`
+}
+```
+
+```json
+{ "email": { "type": "string", "format": "email", "description": "User's primary email address" } }
+```
+
 Register a [SchemaMakeFunc](https://pkg.go.dev/github.com/cinar/checker/v2#SchemaMakeFunc) with [RegisterSchemaMaker](https://pkg.go.dev/github.com/cinar/checker/v2#RegisterSchemaMaker) to teach `JSONSchema` how to translate a custom checker instead:
 
 ```golang
