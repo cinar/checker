@@ -28,7 +28,7 @@
 - **Cross-field and conditional rules** — compare fields against each other, or require a field only when another has a given value.
 - **23 built-in locales** — opt-in, translated error messages, matching the set go-playground/validator ships.
 - **JSON Schema generation** — turn a struct's checker tags into a JSON Schema document, for API docs or frontend validation, without hand-maintaining a second copy of your rules.
-- **Framework adapters** — thin, separately-versioned `gin` and `echo` modules bind a request and validate it in one call.
+- **Framework adapters** — thin, separately-versioned `gin`, `echo`, and `nethttp` modules bind a request and validate it in one call.
 - **Context-aware pipelines** — `Pipeline[T]` reuses the same checkers for domain rules that need a `context.Context` (a DB lookup, a tenant claim) struct tags can't carry.
 - **Static analysis** — the separate `checkerlint` module catches unknown checker names, type mismatches, and dangling cross-field targets at build time, not runtime.
 - **Command-line interface** — the separate `checker` binary runs any checker or normalizer from a shell script, CI pipeline, or Git hook, with no Go code and no runtime dependency of its own.
@@ -759,6 +759,34 @@ e.POST("/register", func(c echo.Context) error {
 ```
 
 See [echo/README.md](echo/README.md) for the full example, including how to call `checkerecho.Check` directly when the struct is assembled from more than just the request body.
+
+### net/http
+
+```bash
+go get github.com/cinar/checker/v2/nethttp
+```
+
+```golang
+import checkernethttp "github.com/cinar/checker/v2/nethttp"
+
+type Registration struct {
+	Name  string `json:"name" checkers:"trim required"`
+	Email string `json:"email" checkers:"required email"`
+}
+
+http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
+	var registration Registration
+
+	if !checkernethttp.Bind(w, r, &registration) {
+		// The 400 response has already been written by Bind.
+		return
+	}
+
+	json.NewEncoder(w).Encode(registration)
+})
+```
+
+Unlike `gin`/`echo`, this adapter has no external dependency at all beyond the core `checker` module — only `encoding/json` and `net/http`, both standard library. See [nethttp/README.md](nethttp/README.md) for the full example, including how to call `checkernethttp.Check` directly when the struct is assembled from more than just the request body.
 
 ## Static Analysis
 
