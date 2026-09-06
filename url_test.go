@@ -33,6 +33,27 @@ func TestIsURLValid(t *testing.T) {
 	}
 }
 
+func TestIsURLRelativePathInvalid(t *testing.T) {
+	_, err := v2.IsURL("/foo")
+	if err == nil {
+		t.Fatal("expected error for relative path")
+	}
+}
+
+func TestIsURLOpaqueSchemeInvalid(t *testing.T) {
+	_, err := v2.IsURL("mailto:a@b.com")
+	if err == nil {
+		t.Fatal("expected error for opaque-scheme URI")
+	}
+}
+
+func TestIsURLEmptyHostInvalid(t *testing.T) {
+	_, err := v2.IsURL("http://")
+	if err == nil {
+		t.Fatal("expected error for empty host")
+	}
+}
+
 func TestCheckURLNonString(t *testing.T) {
 	defer FailIfNoPanic(t, "expected panic")
 

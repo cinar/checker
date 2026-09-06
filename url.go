@@ -20,10 +20,12 @@ var (
 	ErrNotURL = NewCheckError("NOT_URL")
 )
 
-// IsURL checks if the value is a valid URL.
+// IsURL checks if the value is a valid absolute HTTP or HTTPS URL with a
+// host, e.g. "https://example.com". Relative paths, opaque URIs (e.g.
+// "mailto:a@b.com"), and other schemes are rejected.
 func IsURL(value string) (string, error) {
-	_, err := url.ParseRequestURI(value)
-	if err != nil {
+	u, err := url.ParseRequestURI(value)
+	if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
 		return value, ErrNotURL
 	}
 	return value, nil

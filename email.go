@@ -8,6 +8,7 @@ package v2
 import (
 	"net/mail"
 	"reflect"
+	"strings"
 )
 
 const (
@@ -20,12 +21,20 @@ var (
 	ErrNotEmail = NewCheckError("NOT_EMAIL")
 )
 
-// IsEmail checks if the value is a valid email address.
+// IsEmail checks if the value is a valid email address. Unlike a bare
+// mail.ParseAddress, it rejects display-name form (e.g. "A <a@b.com>"),
+// surrounding whitespace, and addresses whose domain has no dot.
 func IsEmail(value string) (string, error) {
-	_, err := mail.ParseAddress(value)
-	if err != nil {
+	addr, err := mail.ParseAddress(value)
+	if err != nil || addr.Address != value {
 		return value, ErrNotEmail
 	}
+
+	at := strings.LastIndex(addr.Address, "@")
+	if at < 0 || !strings.Contains(addr.Address[at+1:], ".") {
+		return value, ErrNotEmail
+	}
+
 	return value, nil
 }
 

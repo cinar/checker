@@ -33,6 +33,41 @@ func TestIsISBNValid(t *testing.T) {
 	}
 }
 
+func TestIsISBN10BadChecksumInvalid(t *testing.T) {
+	_, err := v2.IsISBN("0306406153")
+	if err == nil {
+		t.Fatal("expected error for bad ISBN-10 checksum")
+	}
+}
+
+func TestIsISBN13BadChecksumInvalid(t *testing.T) {
+	_, err := v2.IsISBN("9780306406158")
+	if err == nil {
+		t.Fatal("expected error for bad ISBN-13 checksum")
+	}
+}
+
+func TestIsISBN10XCheckDigitValid(t *testing.T) {
+	_, err := v2.IsISBN("080442957X")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestIsISBN10HyphenatedValid(t *testing.T) {
+	_, err := v2.IsISBN("0-306-40615-2")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestIsISBN13HyphenatedValid(t *testing.T) {
+	_, err := v2.IsISBN("978-0-306-40615-7")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckISBNNonString(t *testing.T) {
 	defer FailIfNoPanic(t, "expected panic")
 

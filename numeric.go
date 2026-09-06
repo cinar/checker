@@ -7,7 +7,7 @@ package v2
 
 import (
 	"reflect"
-	"strconv"
+	"regexp"
 )
 
 const (
@@ -18,13 +18,18 @@ const (
 var (
 	// ErrNotNumeric indicates that the given string is not a valid numeric string.
 	ErrNotNumeric = NewCheckError("NOT_NUMERIC")
+
+	// numericExpression matches an optional leading sign and a decimal point,
+	// e.g. "-3.14", "+7", "42", ".5". It deliberately excludes "NaN", "Inf",
+	// hex floats, underscore digit separators, and exponents.
+	numericExpression = regexp.MustCompile(`^[+-]?(\d+(\.\d+)?|\.\d+)$`)
 )
 
 // IsNumeric checks if the given string is a valid numeric string, unlike
 // IsDigits, this accepts an optional leading sign and a decimal point, e.g.
 // "-3.14", "+7", "42".
 func IsNumeric(value string) (string, error) {
-	if _, err := strconv.ParseFloat(value, 64); err != nil {
+	if !numericExpression.MatchString(value) {
 		return value, ErrNotNumeric
 	}
 
