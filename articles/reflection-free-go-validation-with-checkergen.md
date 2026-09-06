@@ -1,13 +1,13 @@
 ---
-title: I Built a Code Generator for My Go Validation Library — It Found 3 Real Bugs
+title: 3x Faster Struct Validation in Go — Same Rules, No Reflection
 published: false
-description: checkergen turns Checker's struct tags into reflection-free Go validation code, ~3x faster with 4-8x fewer allocations. Building it — and differential-testing it against the reflection path it replaces — surfaced two bugs in the generator and one pre-existing gap in the core library itself.
-tags: go, golang, codegen, performance
+description: checkergen turns Checker's struct tags into plain Go validation code — same rules, ~3x faster and 4-8x fewer allocations than the reflection-based path, with a one-line swap into your existing Gin, Echo, Fiber, or net/http handlers.
+tags: go, golang, performance, webdev
 canonical_url:
 cover_image:
 ---
 
-[Checker](https://github.com/cinar/checker) validates Go structs from tags:
+[Checker](https://github.com/cinar/checker) validates a Go struct from its tags:
 
 ```go
 type SignupRequest struct {
@@ -18,13 +18,13 @@ type SignupRequest struct {
 errs, ok := checker.CheckStruct(&req)
 ```
 
-`CheckStruct` does this with `reflect`: walk the struct's fields, look up each tag token in a registry, run the resolved checker function through a `reflect.Value`. It's cached per struct type after the first call, so it's fast — but it's still reflection on every call after that, and reflection has a floor on how fast it can go.
+`CheckStruct` does this with `reflect`: walk the struct's fields, look up each tag token, run the resolved checker through a `reflect.Value`. It caches the resolved execution plan per struct type after the first call, so it's not doing that lookup work on every request — but every field access, every checker invocation, still goes through `reflect.Value`. On a hot API path validating thousands of requests a second, that adds up: extra allocations for boxing values, indirect calls the compiler can't inline, and CPU time spent in `reflect` internals that a plain function call doesn't pay.
 
-Almost every checker already has a plain, non-reflection Go function sitting right next to the reflect-based one `CheckStruct` uses — `IsEmail(value string)`, `MinLen[T](n int) CheckFunc[T]`, and so on. So the question was: can a generator just read the tags once, at build time, and emit a function that calls those directly?
+[`checkergen`](https://github.com/cinar/checker/tree/main/checkergen) removes that cost entirely, without changing a single validation rule.
 
 ## What it generates
 
-[`checkergen`](https://github.com/cinar/checker/tree/main/checkergen), a new module in the same repo, does exactly that:
+Every checker already has a plain, non-reflection Go function sitting next to the reflect-based one `CheckStruct` uses — `IsEmail(value string)`, `MinLen[T](n int) CheckFunc[T]`, and so on. `checkergen` reads a struct's tags once, at build time, and emits a function that calls those directly:
 
 ```go
 //go:generate go run github.com/cinar/checker/v2/checkergen/cmd/checkergen
@@ -56,45 +56,65 @@ func CheckSignupRequest(v *SignupRequest) (checker.CheckErrors, bool) {
 }
 ```
 
-No `reflect` anywhere. Every call is a real, statically-typed Go function call, checked by the compiler like any other code in your package. `checkergen` and `CheckStruct` are meant to coexist — generate code for the structs on a hot path, leave everything else on `CheckStruct`.
+`CheckSignupRequest` returns the exact same `checker.CheckErrors` type as `CheckStruct` — same error codes, same `{{ .field }}`-templated locale messages, same `.JSON()` method for an API response. Nothing about the shape of your rules or your error handling changes. Only how validation runs changes: real function calls the compiler can see and inline, not a struct walked with `reflect` at runtime.
 
-Benchmarked against the `CheckStruct` call it replaces, on the same struct and input:
+## The numbers
+
+Benchmarked against the `CheckStruct` call it replaces, on the same struct and the same input:
 
 | Struct | `CheckStruct` | Generated | Speedup |
 | :--- | ---: | ---: | :---: |
 | 5-field signup form | 1830 ns/op, 1304 B/op, 24 allocs/op | 562 ns/op, 168 B/op, 7 allocs/op | **~3.3x faster, ~8x less memory** |
 | 25-field mixed checker coverage | 8200 ns/op, 4928 B/op, 59 allocs/op | 2730 ns/op, 760 B/op, 9 allocs/op | **~3.0x faster, ~6.5x less memory** |
 
-## The interesting part: what building it found
+That's not just lower latency — it's roughly a quarter of the garbage collector pressure per validated request, which matters more the higher your request rate climbs.
 
-The core of `checkergen` is a table mapping each checker's tag name to a Go call expression — templating, mostly. That part came together fast. What actually surfaced real bugs was writing a *differential test*: for a batch of struct values, run both `CheckStruct` and the generated function against separate copies, and assert they report errors under the same keys and normalize the value identically. Once that harness existed, it started finding things.
+## Using it with your framework
 
-**1. A wrong field name in every non-English error message.** `eq-field:Password` compares a field against a sibling and reports which sibling failed:
+Checker already ships thin adapter modules for [Gin](https://github.com/cinar/checker/tree/main/gin), [Echo](https://github.com/cinar/checker/tree/main/echo), [Fiber](https://github.com/cinar/checker/tree/main/fiber), and plain [`net/http`](https://github.com/cinar/checker/tree/main/nethttp). Each one's `Bind` does two things: decode the request body with the framework's own binder, then run `checker.CheckStruct` and write a `400` JSON response on failure. Swapping in generated code means keeping the framework's binder and swapping only that second step.
 
-```go
-type Registration struct {
-	Password        string `checkers:"required"`
-	ConfirmPassword string `json:"confirm_password" checkers:"required eq-field:Password"`
-}
-```
-
-The first draft of the generated closure used the sibling's *json* tag name for that report — `field: "password"` — instead of the field name exactly as written in the tag, `field: "Password"`, which is what `CheckStruct` actually puts there. Nothing about this would fail a naive test that only checks *whether* an error occurred. It only shows up once you check *what the error says* — and a `{{ .field }}` placeholder in a translated locale message would have silently rendered the wrong name, forever, in every language but English. The differential test caught it because it compares generated output against `CheckStruct`'s field-for-field, not just pass/fail.
-
-**2. One bad tag could take down generation for an entire package.** `after-field:DateOnly` — missing the `:field` half of its parameter — panics at generate time, on purpose, the same way the equivalent *runtime* checker panics on the same malformed tag (a struct tag is closer to a typo than to untrusted input; failing loudly is the right call). The bug was that the panic wasn't recovered anywhere in `checkergen` itself, so it took the whole run down — every other, perfectly valid struct in the package failed to generate too, because of one unrelated typo. The fix mirrors a pattern this repo already uses in its CLI module: recover the panic per-struct, turn it into a skip with a diagnostic, and keep going.
-
-**3. The generator turned out to be more correct than the library it wraps.** While building fixtures to differential-test `eq`, `ne`, and `oneof`, I tried them on an `int` field:
+**Gin**, before:
 
 ```go
-type Coverage struct {
-	Priority int `checkers:"eq:1"`
-}
-
-checker.CheckStruct(&Coverage{Priority: 1}) // panic: string expected
+router.POST("/signup", func(c *gin.Context) {
+	var req SignupRequest
+	if !checkergin.Bind(c, &req) {
+		return // 400 already written
+	}
+	c.JSON(http.StatusOK, req)
+})
 ```
 
-That's not a `checkergen` bug — it's a bug the differential test *exposed* in the core library. The exported `IsEq[T comparable]`, `IsNe[T comparable]`, and `IsOneOf[T comparable]` are fully generic. But the reflect-based functions the `eq`/`ne`/`oneof` *struct tags* actually run through — `checkEq`, `checkNe`, `checkOneOf` — hardcode a string conversion, so they only ever worked on string fields, despite the underlying checkers supporting any comparable type. `checkergen`'s generated code calls the generic functions directly, so it doesn't inherit this limitation — it validates strictly more than the tag path it's supposed to be a faster version of. That's documented as a known divergence in the `checkergen` README until the core library's reflect path catches up.
+**Gin**, with generated validation:
 
-None of these three were found by writing more unit tests for the generator in isolation. They were found by making the generator's output *provably behave the same* as the thing it replaces, for real inputs — which is really just testing-in-depth applied to code that writes code.
+```go
+router.POST("/signup", func(c *gin.Context) {
+	var req SignupRequest
+	if err := c.ShouldBind(&req); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if errs, ok := CheckSignupRequest(&req); !ok {
+		data, _ := errs.JSON()
+		c.Abort()
+		c.Data(http.StatusBadRequest, "application/json; charset=utf-8", data)
+		return
+	}
+
+	c.JSON(http.StatusOK, req)
+})
+```
+
+Same status codes, same error body shape, same `gin.Context`. The only line that changed is `checker.CheckStruct(&req)` becoming `CheckSignupRequest(&req)`.
+
+The same substitution drops into the other three exactly as directly — decode with the framework's own binder, then call the generated function instead of `checker.CheckStruct`:
+
+- **Echo**: `c.Bind(&req)` for decoding, `CheckSignupRequest(&req)` in place of `checker.CheckStruct(&req)`, write the failure with `c.JSONBlob(http.StatusBadRequest, data)`.
+- **Fiber**: `c.Bind().Body(&req)` for decoding, same swap, write the failure with `c.Status(fiber.StatusBadRequest).Send(data)` after `c.Set("Content-Type", ...)`.
+- **net/http**: `json.NewDecoder(r.Body).Decode(&req)` for decoding, same swap, write the failure with `w.WriteHeader(http.StatusBadRequest)` and `w.Write(data)`.
+
+You don't have to convert a whole API at once, either. `checkergen` and `CheckStruct` are meant to coexist in the same codebase — generate code for the handful of structs on your busiest endpoints, and leave everything else exactly as it is on `CheckStruct`. A struct outside `checkergen`'s current scope (a nested struct, a slice/map field, or a named type like `type Email string`) is skipped at generate time with a clear reason, not silently mishandled, so mixing the two in one project is the expected way to use it, not a fallback.
 
 ## Try it
 
@@ -102,4 +122,8 @@ None of these three were found by writing more unit tests for the generator in i
 go get github.com/cinar/checker/v2/checkergen
 ```
 
-Full scope (which struct field types are eligible today, and the two other deliberate, documented divergences from `CheckStruct`) is in the [checkergen README](https://github.com/cinar/checker/tree/main/checkergen). It's a separate, independently versioned module — nothing about generating code for one struct adds a dependency to the core `checker` library the rest of your code imports.
+```bash
+go run github.com/cinar/checker/v2/checkergen/cmd/checkergen
+```
+
+Full scope and setup details are in the [checkergen README](https://github.com/cinar/checker/tree/main/checkergen). It's a separate, independently versioned module — generating code for one struct adds nothing to the dependency footprint of the core `checker` library the rest of your code already imports.
