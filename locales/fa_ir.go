@@ -45,7 +45,7 @@ var FaIRMessages = map[string]string{
 	"NOT_MIN_LEN":         "مقدار نمی\u200cتواند کمتر از {{ .min }} باشد.",
 	"NOT_MULTIPLE_OF":     "مقدار باید مضربی از {{ .n }} باشد.",
 	"NOT_NEGATIVE":        "مقدار باید منفی باشد.",
-	"NOT_NONNEGATIVE":     "مقدار نمی‌تواند منفی باشد.",
+	"NOT_NONNEGATIVE":     "مقدار نمی\u200cتواند منفی باشد.",
 	"NOT_NUMERIC":         "رشته عددی معتبر نیست.",
 	"NOT_ONE_OF":          "مقدار باید یکی از {{ .allowed }} باشد.",
 	"NOT_POSITIVE":        "مقدار باید مثبت باشد.",
