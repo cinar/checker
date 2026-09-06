@@ -278,6 +278,91 @@ func TestJSONSchemaUUIDFormat(t *testing.T) {
 	}
 }
 
+func TestJSONSchemaFormatMappings(t *testing.T) {
+	type Network struct {
+		Address string `checkers:"ip"`
+		Block   string `checkers:"cidr"`
+		Adapter string `checkers:"mac"`
+	}
+
+	schema := v2.JSONSchema(&Network{})
+
+	address, ok := schema.Properties["Address"]
+	if !ok || address.Format != "ip" {
+		t.Fatalf("unexpected address schema %+v", address)
+	}
+
+	block, ok := schema.Properties["Block"]
+	if !ok || block.Format != "cidr" {
+		t.Fatalf("unexpected block schema %+v", block)
+	}
+
+	adapter, ok := schema.Properties["Adapter"]
+	if !ok || adapter.Format != "mac" {
+		t.Fatalf("unexpected adapter schema %+v", adapter)
+	}
+}
+
+func TestJSONSchemaPatternMappings(t *testing.T) {
+	type Codes struct {
+		Hex          string `checkers:"hex"`
+		Alphanumeric string `checkers:"alphanumeric"`
+		ASCII        string `checkers:"ascii"`
+		Digits       string `checkers:"digits"`
+	}
+
+	schema := v2.JSONSchema(&Codes{})
+
+	hex, ok := schema.Properties["Hex"]
+	if !ok || hex.Pattern != "^[0-9a-fA-F]+$" {
+		t.Fatalf("unexpected hex schema %+v", hex)
+	}
+
+	alphanumeric, ok := schema.Properties["Alphanumeric"]
+	if !ok || alphanumeric.Pattern != "^[0-9A-Za-z]+$" {
+		t.Fatalf("unexpected alphanumeric schema %+v", alphanumeric)
+	}
+
+	ascii, ok := schema.Properties["ASCII"]
+	if !ok || ascii.Pattern != "^[\x00-\x7f]*$" {
+		t.Fatalf("unexpected ascii schema %+v", ascii)
+	}
+
+	digits, ok := schema.Properties["Digits"]
+	if !ok || digits.Pattern != "^[0-9]+$" {
+		t.Fatalf("unexpected digits schema %+v", digits)
+	}
+}
+
+func TestJSONSchemaHashPattern(t *testing.T) {
+	type Checksum struct {
+		MD5    string `checkers:"hash:md5"`
+		SHA256 string `checkers:"hash:sha256"`
+	}
+
+	schema := v2.JSONSchema(&Checksum{})
+
+	md5, ok := schema.Properties["MD5"]
+	if !ok || md5.Pattern != "^[0-9a-fA-F]{32}$" {
+		t.Fatalf("unexpected md5 schema %+v", md5)
+	}
+
+	sha256, ok := schema.Properties["SHA256"]
+	if !ok || sha256.Pattern != "^[0-9a-fA-F]{64}$" {
+		t.Fatalf("unexpected sha256 schema %+v", sha256)
+	}
+}
+
+func TestJSONSchemaHashBadAlgorithm(t *testing.T) {
+	defer FailIfNoPanic(t, "expected panic")
+
+	type Checksum struct {
+		Digest string `checkers:"hash:crc32"`
+	}
+
+	v2.JSONSchema(&Checksum{})
+}
+
 func TestJSONSchemaContainsStartsWithEndsWithPatterns(t *testing.T) {
 	type Link struct {
 		Handle string `checkers:"contains:@"`
