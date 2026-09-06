@@ -258,6 +258,10 @@ Checkers validate that a value conforms to expected criteria, returning an error
 | [`IsNumeric`](https://pkg.go.dev/github.com/cinar/checker/v2#IsNumeric) | `numeric` | Ensures the string is a valid numeric string, e.g. `"-3.14"` (unlike `digits`, allows a leading sign and a decimal point) |
 | [`IsDigits`](https://pkg.go.dev/github.com/cinar/checker/v2#IsDigits) | `digits` | Ensures the string contains only digits |
 | [`IsHex`](https://pkg.go.dev/github.com/cinar/checker/v2#IsHex) | `hex` | Ensures the string contains only hexadecimal digits |
+| [`IsHexColor`](https://pkg.go.dev/github.com/cinar/checker/v2#IsHexColor) | `hex-color` | Ensures the string is a valid `#`-prefixed hex color code (3, 4, 6, or 8 digits) |
+| [`IsBase64`](https://pkg.go.dev/github.com/cinar/checker/v2#IsBase64) | `base64` | Ensures the string is a valid standard (RFC 4648) base64-encoded string |
+| [`IsBase64URL`](https://pkg.go.dev/github.com/cinar/checker/v2#IsBase64URL) | `base64-url` | Ensures the string is a valid base64url-encoded string |
+| [`IsSlug`](https://pkg.go.dev/github.com/cinar/checker/v2#IsSlug) | `slug` | Ensures the string is a valid URL slug, e.g. `"hello-world"` |
 | [`IsContains`](https://pkg.go.dev/github.com/cinar/checker/v2#IsContains) | `contains:<substr>` | Ensures the string contains the given substring |
 | [`IsStartsWith`](https://pkg.go.dev/github.com/cinar/checker/v2#IsStartsWith) | `starts-with:<prefix>` | Ensures the string starts with the given prefix |
 | [`IsEndsWith`](https://pkg.go.dev/github.com/cinar/checker/v2#IsEndsWith) | `ends-with:<suffix>` | Ensures the string ends with the given suffix |
@@ -307,6 +311,7 @@ Checkers validate that a value conforms to expected criteria, returning an error
 | [`IsIPv6`](https://pkg.go.dev/github.com/cinar/checker/v2#IsIPv6) | `ipv6` | Ensures the string is a valid IPv6 address |
 | [`IsCIDR`](https://pkg.go.dev/github.com/cinar/checker/v2#IsCIDR) | `cidr` | Ensures the string is a valid CIDR notation |
 | [`IsMAC`](https://pkg.go.dev/github.com/cinar/checker/v2#IsMAC) | `mac` | Ensures the string is a valid MAC address |
+| [`IsE164`](https://pkg.go.dev/github.com/cinar/checker/v2#IsE164) | `e164` | Ensures the string is a valid E.164 phone number, e.g. `"+14155552671"` |
 
 ### Dates & Times
 
@@ -329,6 +334,11 @@ Checkers validate that a value conforms to expected criteria, returning an error
 | [`IsISO31661Alpha3`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO31661Alpha3) | `iso3166-1-alpha-3` | Ensures the string is a valid 3-letter ISO 3166-1 alpha-3 country code |
 | [`IsISO6391`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO6391) | `iso639-1` | Ensures the string is a valid 2-letter ISO 639-1 language code |
 | [`IsUUID`](https://pkg.go.dev/github.com/cinar/checker/v2#IsUUID) | `uuid` | Ensures the string is a valid RFC 4122 UUID (any version), case-insensitive |
+| [`IsULID`](https://pkg.go.dev/github.com/cinar/checker/v2#IsULID) | `ulid` | Ensures the string is a valid ULID |
+| [`IsIBAN`](https://pkg.go.dev/github.com/cinar/checker/v2#IsIBAN) | `iban` | Ensures the string is a valid IBAN, verifying the ISO 7064 mod 97-10 check digits |
+| [`IsMongoID`](https://pkg.go.dev/github.com/cinar/checker/v2#IsMongoID) | `mongo-id` | Ensures the string is a valid 24-character MongoDB ObjectID |
+| [`IsSemver`](https://pkg.go.dev/github.com/cinar/checker/v2#IsSemver) | `semver` | Ensures the string is a valid Semantic Versioning 2.0.0 version |
+| [`IsJWT`](https://pkg.go.dev/github.com/cinar/checker/v2#IsJWT) | `jwt` | Ensures the string has the structural shape of a JWT (does not verify the signature) |
 
 ## Custom Checkers and Normalizers
 

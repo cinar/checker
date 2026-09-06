@@ -68,15 +68,18 @@ var Analyzer = &analysis.Analyzer{
 // against the core module's checker files that call reflectString(value).
 var stringOnly = map[string]bool{
 	"after-field": true, "alpha": true, "alphanumeric": true, "ascii": true,
-	"before-field": true, "cidr": true, "contains": true, "credit-card": true,
-	"digits": true, "email": true, "ends-with": true, "eoa": true, "eq": true,
-	"fqdn": true, "hash": true, "hex": true, "html-escape": true,
-	"html-unescape": true, "ip": true, "ipv4": true, "ipv6": true, "isbn": true,
-	"iso3166-1-alpha-2": true, "iso3166-1-alpha-3": true, "iso639-1": true,
-	"lower": true, "luhn": true, "mac": true, "ne": true, "numeric": true,
-	"oneof": true, "regexp": true, "starts-with": true, "title": true,
-	"trim-left": true, "trim-right": true, "trim": true, "upper": true,
-	"url": true, "url-escape": true, "url-unescape": true, "uuid": true,
+	"base64": true, "base64-url": true, "before-field": true, "cidr": true,
+	"contains": true, "credit-card": true, "digits": true, "e164": true,
+	"email": true, "ends-with": true, "eoa": true, "eq": true, "fqdn": true,
+	"hash": true, "hex": true, "hex-color": true, "html-escape": true,
+	"html-unescape": true, "iban": true, "ip": true, "ipv4": true, "ipv6": true,
+	"isbn": true, "iso3166-1-alpha-2": true, "iso3166-1-alpha-3": true,
+	"iso639-1": true, "jwt": true, "lower": true, "luhn": true, "mac": true,
+	"mongo-id": true, "ne": true, "numeric": true, "oneof": true, "regexp": true,
+	"semver": true, "slug": true, "starts-with": true, "title": true,
+	"trim-left": true, "trim-right": true, "trim": true, "ulid": true,
+	"upper": true, "url": true, "url-escape": true, "url-unescape": true,
+	"uuid": true,
 }
 
 // numericOnly is the set of built-in checker names whose implementation
