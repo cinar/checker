@@ -49,6 +49,7 @@ var ThTHMessages = map[string]string{
 	"NOT_NUMERIC":         "ไม่ใช่สตริงตัวเลขที่ถูกต้อง",
 	"NOT_ONE_OF":          "ค่าต้องเป็นหนึ่งใน {{ .allowed }}",
 	"NOT_POSITIVE":        "ค่าต้องเป็นบวก",
+	"NOT_POSTAL_CODE":     "ไม่ใช่รหัสไปรษณีย์ {{ .country }} ที่ถูกต้อง",
 	"NOT_STARTS_WITH":     "ค่าต้องขึ้นต้นด้วย {{ .prefix }}",
 	"NOT_TIME":            "ไม่ใช่เวลาที่ถูกต้อง",
 	"REQUIRED":            "ค่าที่จำเป็นหายไป",

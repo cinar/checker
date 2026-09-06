@@ -49,6 +49,7 @@ var ZhTWMessages = map[string]string{
 	"NOT_NUMERIC":         "不是有效的數字字符串。",
 	"NOT_ONE_OF":          "值必須是{{ .allowed }}之一。",
 	"NOT_POSITIVE":        "值必須為正數。",
+	"NOT_POSTAL_CODE":     "不是有效的{{ .country }}郵遞區號。",
 	"NOT_STARTS_WITH":     "值必須以{{ .prefix }}開頭。",
 	"NOT_TIME":            "不是有效的時間。",
 	"REQUIRED":            "缺少必填值。",

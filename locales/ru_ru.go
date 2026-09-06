@@ -49,6 +49,7 @@ var RuRUMessages = map[string]string{
 	"NOT_NUMERIC":         "Недопустимая числовая строка.",
 	"NOT_ONE_OF":          "Значение должно быть одним из следующих: {{ .allowed }}.",
 	"NOT_POSITIVE":        "Значение должно быть положительным.",
+	"NOT_POSTAL_CODE":     "Неверный почтовый индекс {{ .country }}.",
 	"NOT_STARTS_WITH":     "Значение должно начинаться с {{ .prefix }}.",
 	"NOT_TIME":            "Неверное время.",
 	"REQUIRED":            "Отсутствует обязательное значение.",

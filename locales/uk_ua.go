@@ -49,6 +49,7 @@ var UkUAMessages = map[string]string{
 	"NOT_NUMERIC":         "Недійсний числовий рядок.",
 	"NOT_ONE_OF":          "Значення має бути одним із {{ .allowed }}.",
 	"NOT_POSITIVE":        "Значення має бути додатним.",
+	"NOT_POSTAL_CODE":     "Недійсний поштовий індекс {{ .country }}.",
 	"NOT_STARTS_WITH":     "Значення має починатися з {{ .prefix }}.",
 	"NOT_TIME":            "Недійсний час.",
 	"REQUIRED":            "Відсутнє обов'язкове значення.",

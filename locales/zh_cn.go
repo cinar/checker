@@ -49,6 +49,7 @@ var ZhCNMessages = map[string]string{
 	"NOT_NUMERIC":         "不是有效的数字字符串。",
 	"NOT_ONE_OF":          "值必须是{{ .allowed }}之一。",
 	"NOT_POSITIVE":        "值必须为正数。",
+	"NOT_POSTAL_CODE":     "不是有效的{{ .country }}邮政编码。",
 	"NOT_STARTS_WITH":     "值必须以{{ .prefix }}开头。",
 	"NOT_TIME":            "不是有效的时间。",
 	"REQUIRED":            "缺少必填值。",

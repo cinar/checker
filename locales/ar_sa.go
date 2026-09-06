@@ -49,6 +49,7 @@ var ArSAMessages = map[string]string{
 	"NOT_NUMERIC":         "ليست سلسلة رقمية صالحة.",
 	"NOT_ONE_OF":          "يجب أن تكون القيمة واحدة من {{ .allowed }}.",
 	"NOT_POSITIVE":        "يجب أن تكون القيمة موجبة.",
+	"NOT_POSTAL_CODE":     "ليس رمزًا بريديًا صالحًا لـ {{ .country }}.",
 	"NOT_STARTS_WITH":     "يجب أن تبدأ القيمة بـ {{ .prefix }}.",
 	"NOT_TIME":            "ليس وقتًا صالحًا.",
 	"REQUIRED":            "القيمة المطلوبة مفقودة.",

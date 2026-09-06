@@ -335,6 +335,7 @@ Checkers validate that a value conforms to expected criteria, returning an error
 | [`IsISO31661Alpha2`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO31661Alpha2) | `iso3166-1-alpha-2` | Ensures the string is a valid 2-letter ISO 3166-1 alpha-2 country code |
 | [`IsISO31661Alpha3`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO31661Alpha3) | `iso3166-1-alpha-3` | Ensures the string is a valid 3-letter ISO 3166-1 alpha-3 country code |
 | [`IsISO6391`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO6391) | `iso639-1` | Ensures the string is a valid 2-letter ISO 639-1 language code |
+| [`IsPostalCode`](https://pkg.go.dev/github.com/cinar/checker/v2#IsPostalCode) | `postal-code:<country>` | Ensures the string matches the postal code format for the given ISO 3166-1 alpha-2 country code (e.g. `postal-code:US`); covers a curated set of common countries, not every country's postal system |
 | [`IsUUID`](https://pkg.go.dev/github.com/cinar/checker/v2#IsUUID) | `uuid` | Ensures the string is a valid RFC 4122 UUID (any version), case-insensitive |
 | [`IsULID`](https://pkg.go.dev/github.com/cinar/checker/v2#IsULID) | `ulid` | Ensures the string is a valid ULID |
 | [`IsIBAN`](https://pkg.go.dev/github.com/cinar/checker/v2#IsIBAN) | `iban` | Ensures the string is a valid IBAN, verifying the ISO 7064 mod 97-10 check digits |
@@ -640,7 +641,7 @@ fmt.Println(string(data))
 }
 ```
 
-Most checkers map directly onto a JSON Schema keyword: `required` becomes an entry in `required`, `min-len`/`max-len` become `minLength`/`maxLength` (or `minItems`/`maxItems` for a slice, `minProperties`/`maxProperties` for a map), `gte`/`lte` become `minimum`/`maximum`, `email`/`url`/`ipv4`/`ipv6`/`ip`/`cidr`/`mac`/`fqdn` become a `format`, `regexp:pattern`/`hex`/`alphanumeric`/`ascii`/`digits`/`hash:algorithm` become `pattern`, and `oneof:a,b,c` becomes `enum`. Normalizers (`trim`, `lower`, `upper`, ...) are skipped, since they transform data rather than constrain its shape. A checker with no JSON Schema equivalent — a custom checker, or one like `eq-field` that compares against another field — is recorded in an `x-checker` vendor extension instead of being silently dropped:
+Most checkers map directly onto a JSON Schema keyword: `required` becomes an entry in `required`, `min-len`/`max-len` become `minLength`/`maxLength` (or `minItems`/`maxItems` for a slice, `minProperties`/`maxProperties` for a map), `gte`/`lte` become `minimum`/`maximum`, `email`/`url`/`ipv4`/`ipv6`/`ip`/`cidr`/`mac`/`fqdn` become a `format`, `regexp:pattern`/`hex`/`alphanumeric`/`ascii`/`digits`/`hash:algorithm`/`postal-code:country` become `pattern`, and `oneof:a,b,c` becomes `enum`. Normalizers (`trim`, `lower`, `upper`, ...) are skipped, since they transform data rather than constrain its shape. A checker with no JSON Schema equivalent — a custom checker, or one like `eq-field` that compares against another field — is recorded in an `x-checker` vendor extension instead of being silently dropped:
 
 ```golang
 type Registration struct {

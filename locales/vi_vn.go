@@ -49,6 +49,7 @@ var ViVNMessages = map[string]string{
 	"NOT_NUMERIC":         "Không phải là chuỗi số hợp lệ.",
 	"NOT_ONE_OF":          "Giá trị phải là một trong {{ .allowed }}.",
 	"NOT_POSITIVE":        "Giá trị phải là số dương.",
+	"NOT_POSTAL_CODE":     "Không phải là mã bưu chính {{ .country }} hợp lệ.",
 	"NOT_STARTS_WITH":     "Giá trị phải bắt đầu bằng {{ .prefix }}.",
 	"NOT_TIME":            "Không phải là thời gian hợp lệ.",
 	"REQUIRED":            "Thiếu giá trị bắt buộc.",
