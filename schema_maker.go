@@ -21,6 +21,10 @@ type SchemaMakeFunc func(schema *Schema, params string)
 // don't constrain a Schema, so they're silently skipped rather than
 // recorded in XChecker.
 var ignoredForSchema = map[string]bool{
+	// JSON numbers can't be NaN or an infinity by spec, so "finite" has no
+	// keyword to emit: it's a pure in-memory Go-value guard, not a shape
+	// constraint on data that ever arrives as JSON.
+	nameFinite:       true,
 	nameHTMLEscape:   true,
 	nameHTMLUnescape: true,
 	nameLower:        true,
@@ -43,25 +47,30 @@ var schemaMakersMu sync.RWMutex
 // for checkers with a direct JSON Schema equivalent. A checker with no entry
 // here is instead recorded in the Schema's XChecker list.
 var schemaMakers = map[string]SchemaMakeFunc{
-	nameContains:   schemaContains,
-	nameEmail:      schemaFormat("email"),
-	nameEndsWith:   schemaEndsWith,
-	nameEq:         schemaConst,
-	nameFQDN:       schemaFormat("hostname"),
-	nameGt:         schemaExclusiveMinimum,
-	nameGte:        schemaMinimum,
-	nameIPv4:       schemaFormat("ipv4"),
-	nameIPv6:       schemaFormat("ipv6"),
-	nameLen:        schemaLen,
-	nameLt:         schemaExclusiveMaximum,
-	nameLte:        schemaMaximum,
-	nameMaxLen:     schemaMaxLen,
-	nameMinLen:     schemaMinLen,
-	nameOneOf:      schemaOneOf,
-	nameRegexp:     schemaPattern,
-	nameStartsWith: schemaStartsWith,
-	nameURL:        schemaFormat("uri"),
-	nameUUID:       schemaFormat("uuid"),
+	nameContains:    schemaContains,
+	nameEmail:       schemaFormat("email"),
+	nameEndsWith:    schemaEndsWith,
+	nameEq:          schemaConst,
+	nameFQDN:        schemaFormat("hostname"),
+	nameGt:          schemaExclusiveMinimum,
+	nameGte:         schemaMinimum,
+	nameInt:         schemaInt,
+	nameIPv4:        schemaFormat("ipv4"),
+	nameIPv6:        schemaFormat("ipv6"),
+	nameLen:         schemaLen,
+	nameLt:          schemaExclusiveMaximum,
+	nameLte:         schemaMaximum,
+	nameMaxLen:      schemaMaxLen,
+	nameMinLen:      schemaMinLen,
+	nameMultipleOf:  schemaMultipleOf,
+	nameNegative:    schemaNegative,
+	nameNonnegative: schemaNonnegative,
+	nameOneOf:       schemaOneOf,
+	namePositive:    schemaPositive,
+	nameRegexp:      schemaPattern,
+	nameStartsWith:  schemaStartsWith,
+	nameURL:         schemaFormat("uri"),
+	nameUUID:        schemaFormat("uuid"),
 }
 
 // RegisterSchemaMaker registers a SchemaMakeFunc for the given checker or
@@ -159,6 +168,41 @@ func schemaExclusiveMaximum(schema *Schema, params string) {
 	}
 
 	schema.ExclusiveMaximum = &n
+}
+
+// schemaInt sets the Schema's Type to "integer", overriding the "number" a
+// float-kind field otherwise gets from jsonTypeForKind.
+func schemaInt(schema *Schema, _ string) {
+	schema.Type = "integer"
+}
+
+// schemaPositive sets the Schema's ExclusiveMinimum to 0.
+func schemaPositive(schema *Schema, _ string) {
+	zero := 0.0
+	schema.ExclusiveMinimum = &zero
+}
+
+// schemaNegative sets the Schema's ExclusiveMaximum to 0.
+func schemaNegative(schema *Schema, _ string) {
+	zero := 0.0
+	schema.ExclusiveMaximum = &zero
+}
+
+// schemaNonnegative sets the Schema's Minimum to 0.
+func schemaNonnegative(schema *Schema, _ string) {
+	zero := 0.0
+	schema.Minimum = &zero
+}
+
+// schemaMultipleOf sets the Schema's MultipleOf from the checker's numeric
+// parameter. Panics if the parameter cannot be parsed as a number.
+func schemaMultipleOf(schema *Schema, params string) {
+	n, err := strconv.ParseFloat(params, 64)
+	if err != nil {
+		panic("unable to parse params as float")
+	}
+
+	schema.MultipleOf = &n
 }
 
 // schemaMinLen sets the Schema's MinLength, MinItems, or MinProperties,
