@@ -1,9 +1,9 @@
 ---
 title: 3x Faster Struct Validation in Go — Same Rules, No Reflection
-published: false
+published: true
 description: checkergen turns Checker's struct tags into plain Go validation code — same rules, ~3x faster and 4-8x fewer allocations than the reflection-based path, with a one-line swap into your existing Gin, Echo, Fiber, or net/http handlers.
 tags: go, golang, performance, webdev
-canonical_url:
+canonical_url: https://dev.to/onurcinar/3x-faster-struct-validation-in-go-same-rules-no-reflection-43hf
 cover_image:
 ---
 
