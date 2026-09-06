@@ -32,6 +32,7 @@
 - **Trojan Source & Unicode normalization** — the built-in `strip-invisible` normalizer strips zero-width/bidi spoofing characters, and the opt-in `nfkc` module folds compatibility characters (fullwidth digits, ligatures, ...) into their canonical form.
 - **Context-aware pipelines** — `Pipeline[T]` reuses the same checkers for domain rules that need a `context.Context` (a DB lookup, a tenant claim) struct tags can't carry.
 - **Static analysis** — the separate `checkerlint` module catches unknown checker names, type mismatches, and dangling cross-field targets at build time, not runtime.
+- **Code generation** — the separate `checkergen` module turns `checkers` tags into reflection-free Go validation code, ~3x faster with far fewer allocations, for structs on a hot path.
 - **Command-line interface** — the separate `checker` binary runs any checker or normalizer from a shell script, CI pipeline, or Git hook, with no Go code and no runtime dependency of its own.
 
 ## Table of Contents
@@ -58,6 +59,7 @@
 - [Framework Integration](#framework-integration)
 - [Unicode Normalization (NFKC)](#unicode-normalization-nfkc)
 - [Static Analysis](#static-analysis)
+- [Code Generation](#code-generation)
 - [Command-Line Interface](#command-line-interface)
 - [Performance](#performance)
 - [Changelog](#changelog)
@@ -854,6 +856,36 @@ checkerlint ./...
 ```
 
 See [checkerlint/README.md](checkerlint/README.md) for `go vet -vettool` and `golangci-lint` module-plugin integration.
+
+## Code Generation
+
+`CheckStruct` walks a struct with `reflect` on every call (a cached execution plan keeps this fast — see [Performance](#performance) below — but it's still reflection). [`checkergen`](checkergen/), a separate module, instead generates a `Check<Type>` function that calls the same checkers directly, with no reflection at runtime at all:
+
+```bash
+go get github.com/cinar/checker/v2/checkergen
+```
+
+```golang
+//go:generate go run github.com/cinar/checker/v2/checkergen/cmd/checkergen
+
+type SignupRequest struct {
+	Email    string `json:"email" checkers:"trim lower required email"`
+	Password string `json:"password" checkers:"required min-len:8"`
+}
+```
+
+```bash
+go generate ./...
+```
+
+Benchmarked against the equivalent `CheckStruct` call, on the same struct and input:
+
+| Struct | `CheckStruct` | Generated | Speedup |
+| :--- | ---: | ---: | :---: |
+| 5-field signup form | 1830 ns/op, 1304 B/op, 24 allocs/op | 562 ns/op, 168 B/op, 7 allocs/op | **~3.3x faster, ~8x less memory** |
+| 25-field mixed checker coverage | 8200 ns/op, 4928 B/op, 59 allocs/op | 2730 ns/op, 760 B/op, 9 allocs/op | **~3.0x faster, ~6.5x less memory** |
+
+`checkergen` and `CheckStruct` are meant to coexist — generate code for the structs on your hot paths, leave everything else on `CheckStruct`. A struct with a field outside `checkergen`'s scope (a nested struct, a slice/map field, or a named type like `type Email string`, for now) is skipped with a clear reason instead of generated incorrectly. See [checkergen/README.md](checkergen/README.md) for the full scope, the exact benchmark setup, and how to reproduce the numbers above.
 
 ## Command-Line Interface
 
