@@ -22,6 +22,10 @@ var (
 
 // IsLUHN checks if the value is a valid LUHN number.
 func IsLUHN(value string) (string, error) {
+	if len(value) == 0 {
+		return value, ErrNotLUHN
+	}
+
 	var sum int
 	var alt bool
 

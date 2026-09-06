@@ -19,7 +19,9 @@ var dinersCard = "36227206271667"
 var discoverCard = "6011111111111117"
 var jcbCard = "3530111333300000"
 var masterCard = "5555555555554444"
+var masterCard2SeriesCard = "2221000000000009"
 var unionPayCard = "6200000000000005"
+var unionPay81Card = "8100000000000000000"
 var visaCard = "4111111111111111"
 
 // changeToInvalidLuhn increments the luhn digit to make the number invalid. It assumes that the given number is valid.
@@ -189,6 +191,18 @@ func TestIsMasterCardCreditCardInvalidLuhn(t *testing.T) {
 	}
 }
 
+func TestIsMasterCardCreditCard2SeriesValid(t *testing.T) {
+	if _, err := v2.IsMasterCardCreditCard(masterCard2SeriesCard); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestIsMasterCardCreditCard2SeriesOutOfRange(t *testing.T) {
+	if _, err := v2.IsMasterCardCreditCard("2721000000000000"); err == nil {
+		t.Error("expected error for out-of-range 2-series prefix")
+	}
+}
+
 func ExampleIsUnionPayCreditCard() {
 	_, err := v2.IsUnionPayCreditCard("6200000000000005")
 
@@ -212,6 +226,18 @@ func TestIsUnionPayCreditCardInvalidPattern(t *testing.T) {
 func TestIsUnionPayCreditCardInvalidLuhn(t *testing.T) {
 	if _, err := v2.IsUnionPayCreditCard(changeToInvalidLuhn(unionPayCard)); err == nil {
 		t.Error("expected error for invalid Luhn")
+	}
+}
+
+func TestIsUnionPayCreditCard81PrefixValid(t *testing.T) {
+	if _, err := v2.IsUnionPayCreditCard(unionPay81Card); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestIsUnionPayCreditCardUnanchoredJunk(t *testing.T) {
+	if _, err := v2.IsUnionPayCreditCard("xx" + unionPayCard + "yy"); err == nil {
+		t.Error("expected error for junk-wrapped number")
 	}
 }
 
