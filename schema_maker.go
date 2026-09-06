@@ -6,6 +6,7 @@
 package v2
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -47,31 +48,39 @@ var schemaMakersMu sync.RWMutex
 // for checkers with a direct JSON Schema equivalent. A checker with no entry
 // here is instead recorded in the Schema's XChecker list.
 var schemaMakers = map[string]SchemaMakeFunc{
-	nameContains:    schemaContains,
-	nameDefault:     schemaDefault,
-	nameEmail:       schemaFormat("email"),
-	nameEndsWith:    schemaEndsWith,
-	nameEq:          schemaConst,
-	nameFQDN:        schemaFormat("hostname"),
-	nameGt:          schemaExclusiveMinimum,
-	nameGte:         schemaMinimum,
-	nameInt:         schemaInt,
-	nameIPv4:        schemaFormat("ipv4"),
-	nameIPv6:        schemaFormat("ipv6"),
-	nameLen:         schemaLen,
-	nameLt:          schemaExclusiveMaximum,
-	nameLte:         schemaMaximum,
-	nameMaxLen:      schemaMaxLen,
-	nameMinLen:      schemaMinLen,
-	nameMultipleOf:  schemaMultipleOf,
-	nameNegative:    schemaNegative,
-	nameNonnegative: schemaNonnegative,
-	nameOneOf:       schemaOneOf,
-	namePositive:    schemaPositive,
-	nameRegexp:      schemaPattern,
-	nameStartsWith:  schemaStartsWith,
-	nameURL:         schemaFormat("uri"),
-	nameUUID:        schemaFormat("uuid"),
+	nameAlphanumeric: schemaPatternConst("^[0-9A-Za-z]+$"),
+	nameASCII:        schemaPatternConst("^[\x00-\x7f]*$"),
+	nameCIDR:         schemaFormat("cidr"),
+	nameContains:     schemaContains,
+	nameDefault:      schemaDefault,
+	nameDigits:       schemaPatternConst("^[0-9]+$"),
+	nameEmail:        schemaFormat("email"),
+	nameEndsWith:     schemaEndsWith,
+	nameEq:           schemaConst,
+	nameFQDN:         schemaFormat("hostname"),
+	nameGt:           schemaExclusiveMinimum,
+	nameGte:          schemaMinimum,
+	nameHash:         schemaHash,
+	nameHex:          schemaPatternConst("^[0-9a-fA-F]+$"),
+	nameInt:          schemaInt,
+	nameIP:           schemaFormat("ip"),
+	nameIPv4:         schemaFormat("ipv4"),
+	nameIPv6:         schemaFormat("ipv6"),
+	nameLen:          schemaLen,
+	nameLt:           schemaExclusiveMaximum,
+	nameLte:          schemaMaximum,
+	nameMAC:          schemaFormat("mac"),
+	nameMaxLen:       schemaMaxLen,
+	nameMinLen:       schemaMinLen,
+	nameMultipleOf:   schemaMultipleOf,
+	nameNegative:     schemaNegative,
+	nameNonnegative:  schemaNonnegative,
+	nameOneOf:        schemaOneOf,
+	namePositive:     schemaPositive,
+	nameRegexp:       schemaPattern,
+	nameStartsWith:   schemaStartsWith,
+	nameURL:          schemaFormat("uri"),
+	nameUUID:         schemaFormat("uuid"),
 }
 
 // RegisterSchemaMaker registers a SchemaMakeFunc for the given checker or
@@ -128,6 +137,28 @@ func schemaFormat(format string) SchemaMakeFunc {
 // schemaPattern sets the Schema's Pattern to the checker's regular expression parameter.
 func schemaPattern(schema *Schema, params string) {
 	schema.Pattern = params
+}
+
+// schemaPatternConst returns a SchemaMakeFunc that sets the Schema's Pattern
+// to a fixed regular expression, for checkers whose shape doesn't depend on
+// any parameter.
+func schemaPatternConst(pattern string) SchemaMakeFunc {
+	return func(schema *Schema, _ string) {
+		schema.Pattern = pattern
+	}
+}
+
+// schemaHash sets the Schema's Pattern to match a hex-encoded digest of the
+// exact length expected for the hash checker's algorithm parameter. Panics
+// if the algorithm isn't one of the hash checker's supported algorithms,
+// same as IsHash.
+func schemaHash(schema *Schema, params string) {
+	length, ok := hashLengths[params]
+	if !ok {
+		panic(fmt.Sprintf("unknown hash algorithm %s", params))
+	}
+
+	schema.Pattern = fmt.Sprintf("^[0-9a-fA-F]{%d}$", length)
 }
 
 // schemaMinimum sets the Schema's Minimum from the checker's numeric parameter.
