@@ -49,6 +49,7 @@ var ItITMessages = map[string]string{
 	"NOT_NUMERIC":         "Non è una stringa numerica valida.",
 	"NOT_ONE_OF":          "Il valore deve essere uno tra {{ .allowed }}.",
 	"NOT_POSITIVE":        "Il valore deve essere positivo.",
+	"NOT_POSTAL_CODE":     "Non è un codice postale {{ .country }} valido.",
 	"NOT_STARTS_WITH":     "Il valore deve iniziare con {{ .prefix }}.",
 	"NOT_TIME":            "Non è un orario valido.",
 	"REQUIRED":            "Manca un valore obbligatorio.",

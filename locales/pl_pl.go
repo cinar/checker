@@ -49,6 +49,7 @@ var PlPLMessages = map[string]string{
 	"NOT_NUMERIC":         "Nieprawidłowy ciąg liczbowy.",
 	"NOT_ONE_OF":          "Wartość musi być jedną z {{ .allowed }}.",
 	"NOT_POSITIVE":        "Wartość musi być dodatnia.",
+	"NOT_POSTAL_CODE":     "Nieprawidłowy kod pocztowy {{ .country }}.",
 	"NOT_STARTS_WITH":     "Wartość musi zaczynać się od {{ .prefix }}.",
 	"NOT_TIME":            "Nieprawidłowy czas.",
 	"REQUIRED":            "Brak wymaganej wartości.",

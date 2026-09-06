@@ -49,6 +49,7 @@ var NlNLMessages = map[string]string{
 	"NOT_NUMERIC":         "Geen geldige numerieke tekenreeks.",
 	"NOT_ONE_OF":          "De waarde moet een van {{ .allowed }} zijn.",
 	"NOT_POSITIVE":        "De waarde moet positief zijn.",
+	"NOT_POSTAL_CODE":     "Geen geldige {{ .country }} postcode.",
 	"NOT_STARTS_WITH":     "De waarde moet beginnen met {{ .prefix }}.",
 	"NOT_TIME":            "Geen geldige tijd.",
 	"REQUIRED":            "Verplichte waarde ontbreekt.",

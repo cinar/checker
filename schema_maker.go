@@ -77,6 +77,7 @@ var schemaMakers = map[string]SchemaMakeFunc{
 	nameNonnegative:  schemaNonnegative,
 	nameOneOf:        schemaOneOf,
 	namePositive:     schemaPositive,
+	namePostalCode:   schemaPostalCode,
 	nameRegexp:       schemaPattern,
 	nameStartsWith:   schemaStartsWith,
 	nameURL:          schemaFormat("uri"),
@@ -240,6 +241,18 @@ func schemaMultipleOf(schema *Schema, params string) {
 	}
 
 	schema.MultipleOf = &n
+}
+
+// schemaPostalCode sets the Schema's Pattern to the postal code regular
+// expression for the checker's country parameter. Panics if the country
+// isn't one of the supported codes, same as IsPostalCode.
+func schemaPostalCode(schema *Schema, params string) {
+	pattern, ok := postalCodePatterns[strings.ToUpper(params)]
+	if !ok {
+		panic(fmt.Sprintf("unsupported postal code country %s", params))
+	}
+
+	schema.Pattern = pattern.String()
 }
 
 // schemaMinLen sets the Schema's MinLength, MinItems, or MinProperties,

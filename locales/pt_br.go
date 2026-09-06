@@ -49,6 +49,7 @@ var PtBRMessages = map[string]string{
 	"NOT_NUMERIC":         "Não é uma string numérica válida.",
 	"NOT_ONE_OF":          "O valor deve ser um dos seguintes: {{ .allowed }}.",
 	"NOT_POSITIVE":        "O valor deve ser positivo.",
+	"NOT_POSTAL_CODE":     "Não é um código postal {{ .country }} válido.",
 	"NOT_STARTS_WITH":     "O valor deve começar com {{ .prefix }}.",
 	"NOT_TIME":            "Não é um horário válido.",
 	"REQUIRED":            "Falta um valor obrigatório.",

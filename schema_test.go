@@ -278,6 +278,29 @@ func TestJSONSchemaUUIDFormat(t *testing.T) {
 	}
 }
 
+func TestJSONSchemaPostalCodePattern(t *testing.T) {
+	type Address struct {
+		Zip string `checkers:"postal-code:US"`
+	}
+
+	schema := v2.JSONSchema(&Address{})
+
+	zip, ok := schema.Properties["Zip"]
+	if !ok || zip.Pattern != `^\d{5}(-\d{4})?$` {
+		t.Fatalf("unexpected zip schema %+v", zip)
+	}
+}
+
+func TestJSONSchemaPostalCodeUnsupportedCountry(t *testing.T) {
+	defer FailIfNoPanic(t, "expected panic")
+
+	type Address struct {
+		Zip string `checkers:"postal-code:XX"`
+	}
+
+	v2.JSONSchema(&Address{})
+}
+
 func TestJSONSchemaFormatMappings(t *testing.T) {
 	type Network struct {
 		Address string `checkers:"ip"`

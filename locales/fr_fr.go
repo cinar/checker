@@ -49,6 +49,7 @@ var FrFRMessages = map[string]string{
 	"NOT_NUMERIC":         "N'est pas une chaîne numérique valide.",
 	"NOT_ONE_OF":          "La valeur doit être l'une des suivantes : {{ .allowed }}.",
 	"NOT_POSITIVE":        "La valeur doit être positive.",
+	"NOT_POSTAL_CODE":     "N'est pas un code postal {{ .country }} valide.",
 	"NOT_STARTS_WITH":     "La valeur doit commencer par {{ .prefix }}.",
 	"NOT_TIME":            "N'est pas une heure valide.",
 	"REQUIRED":            "Valeur obligatoire manquante.",

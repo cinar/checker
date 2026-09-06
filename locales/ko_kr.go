@@ -49,6 +49,7 @@ var KoKRMessages = map[string]string{
 	"NOT_NUMERIC":         "유효한 숫자 문자열이 아닙니다.",
 	"NOT_ONE_OF":          "값은 {{ .allowed }} 중 하나여야 합니다.",
 	"NOT_POSITIVE":        "값은 양수여야 합니다.",
+	"NOT_POSTAL_CODE":     "유효한 {{ .country }} 우편번호가 아닙니다.",
 	"NOT_STARTS_WITH":     "값은 {{ .prefix }}(으)로 시작해야 합니다.",
 	"NOT_TIME":            "유효한 시간이 아닙니다.",
 	"REQUIRED":            "필수 값이 없습니다.",

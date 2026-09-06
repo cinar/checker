@@ -49,6 +49,7 @@ var HyAMMessages = map[string]string{
 	"NOT_NUMERIC":         "Վավեր թվային տող չէ:",
 	"NOT_ONE_OF":          "Արժեքը պետք է լինի հետևյալներից մեկը՝ {{ .allowed }}:",
 	"NOT_POSITIVE":        "Արժեքը պետք է դրական լինի:",
+	"NOT_POSTAL_CODE":     "Վավեր {{ .country }} փոստային ինդեքս չէ:",
 	"NOT_STARTS_WITH":     "Արժեքը պետք է սկսվի {{ .prefix }}-ով:",
 	"NOT_TIME":            "Վավեր ժամանակ չէ:",
 	"REQUIRED":            "Պարտադիր արժեքը բացակայում է:",

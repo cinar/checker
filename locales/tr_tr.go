@@ -49,6 +49,7 @@ var TrTRMessages = map[string]string{
 	"NOT_NUMERIC":         "Geçerli bir sayısal dize değil.",
 	"NOT_ONE_OF":          "Değer şunlardan biri olmalı: {{ .allowed }}.",
 	"NOT_POSITIVE":        "Değer pozitif olmalı.",
+	"NOT_POSTAL_CODE":     "Geçerli bir {{ .country }} posta kodu değil.",
 	"NOT_STARTS_WITH":     "Değer {{ .prefix }} ile başlamalı.",
 	"NOT_TIME":            "Geçerli bir saat değil.",
 	"REQUIRED":            "Gerekli değer eksik.",

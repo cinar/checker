@@ -28,7 +28,7 @@
 - **Cross-field and conditional rules** — compare fields against each other, or require a field only when another has a given value.
 - **23 built-in locales** — opt-in, translated error messages, matching the set go-playground/validator ships.
 - **JSON Schema generation** — turn a struct's checker tags into a JSON Schema document, for API docs or frontend validation, without hand-maintaining a second copy of your rules.
-- **Framework adapters** — thin, separately-versioned `gin` and `echo` modules bind a request and validate it in one call.
+- **Framework adapters** — thin, separately-versioned `gin`, `echo`, and `nethttp` modules bind a request and validate it in one call.
 - **Context-aware pipelines** — `Pipeline[T]` reuses the same checkers for domain rules that need a `context.Context` (a DB lookup, a tenant claim) struct tags can't carry.
 - **Static analysis** — the separate `checkerlint` module catches unknown checker names, type mismatches, and dangling cross-field targets at build time, not runtime.
 - **Command-line interface** — the separate `checker` binary runs any checker or normalizer from a shell script, CI pipeline, or Git hook, with no Go code and no runtime dependency of its own.
@@ -49,6 +49,7 @@
 - [Optional Fields with `omitempty`](#optional-fields-with-omitempty)
 - [Field-Relative and Conditional Checkers](#field-relative-and-conditional-checkers)
 - [Programmatic Pipelines (Context-Aware Validation)](#programmatic-pipelines-context-aware-validation)
+  - [Context-Aware Struct Tags with `CheckStructWithContext`](#context-aware-struct-tags-with-checkstructwithcontext)
 - [Localized Error Messages](#localized-error-messages)
 - [Custom Error Messages](#custom-error-messages)
 - [Structured Errors](#structured-errors)
@@ -335,6 +336,7 @@ Checkers validate that a value conforms to expected criteria, returning an error
 | [`IsISO31661Alpha2`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO31661Alpha2) | `iso3166-1-alpha-2` | Ensures the string is a valid 2-letter ISO 3166-1 alpha-2 country code |
 | [`IsISO31661Alpha3`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO31661Alpha3) | `iso3166-1-alpha-3` | Ensures the string is a valid 3-letter ISO 3166-1 alpha-3 country code |
 | [`IsISO6391`](https://pkg.go.dev/github.com/cinar/checker/v2#IsISO6391) | `iso639-1` | Ensures the string is a valid 2-letter ISO 639-1 language code |
+| [`IsPostalCode`](https://pkg.go.dev/github.com/cinar/checker/v2#IsPostalCode) | `postal-code:<country>` | Ensures the string matches the postal code format for the given ISO 3166-1 alpha-2 country code (e.g. `postal-code:US`); covers a curated set of common countries, not every country's postal system |
 | [`IsUUID`](https://pkg.go.dev/github.com/cinar/checker/v2#IsUUID) | `uuid` | Ensures the string is a valid RFC 4122 UUID (any version), case-insensitive |
 | [`IsULID`](https://pkg.go.dev/github.com/cinar/checker/v2#IsULID) | `ulid` | Ensures the string is a valid ULID |
 | [`IsIBAN`](https://pkg.go.dev/github.com/cinar/checker/v2#IsIBAN) | `iban` | Ensures the string is a valid IBAN, verifying the ISO 7064 mod 97-10 check digits |
@@ -472,6 +474,29 @@ errs, ok := pipeline.Validate(ctx, user)
 ```
 
 `Field` normalizes and validates one field in place, exactly like a `checkers` tag chain: checks run in order and stop at the first error, and any normalizer among them writes its result back before the next check runs. `Rule` runs against the whole value with `ctx`, for anything a single field's tag can't express. `Validate` runs every step regardless of earlier failures — matching `CheckStruct`'s field-independent error collection — and returns the same `CheckErrors` type, so both validation styles produce API-ready errors the same way.
+
+### Context-Aware Struct Tags with `CheckStructWithContext`
+
+`Pipeline[T]` is the right tool when validation is mostly programmatic. If a struct is otherwise validated entirely through `checkers` tags and only one or two fields need `ctx`, a `checkersCtx` tag avoids splitting that struct's rules across two places. `CheckStructWithContext` runs exactly like `CheckStruct`, and additionally runs each field's `checkersCtx` tag against a `context.Context`, using a checker registered with [RegisterCtxMaker](https://pkg.go.dev/github.com/cinar/checker/v2#RegisterCtxMaker):
+
+```golang
+checker.RegisterCtxMaker("unique-email", func(_ string) checker.CheckFuncCtx[reflect.Value] {
+	return func(ctx context.Context, value reflect.Value) (reflect.Value, error) {
+		if db.EmailTaken(ctx, value.String()) {
+			return value, checker.NewCheckError("EMAIL_TAKEN")
+		}
+		return value, nil
+	}
+})
+
+type SignupRequest struct {
+	Email string `checkers:"required email" checkersCtx:"unique-email"`
+}
+
+errs, ok := checker.CheckStructWithContext(ctx, req)
+```
+
+A field's `checkersCtx` checks only run if its `checkers`/`validate` tag didn't already fail, the same way a single checker chain stops at its first error. `checkersCtx` is silently ignored by `CheckStruct` and `CheckWithConfig`, since neither has a `context.Context` to run it with, so the two tags coexist on the same field without conflict. `CheckWithContext` is also available as the context-aware counterpart of `Check`, for running a sequence of `CheckFuncCtx[T]` against a single value directly.
 
 ## Localized Error Messages
 
@@ -640,7 +665,7 @@ fmt.Println(string(data))
 }
 ```
 
-Most checkers map directly onto a JSON Schema keyword: `required` becomes an entry in `required`, `min-len`/`max-len` become `minLength`/`maxLength` (or `minItems`/`maxItems` for a slice, `minProperties`/`maxProperties` for a map), `gte`/`lte` become `minimum`/`maximum`, `email`/`url`/`ipv4`/`ipv6`/`ip`/`cidr`/`mac`/`fqdn` become a `format`, `regexp:pattern`/`hex`/`alphanumeric`/`ascii`/`digits`/`hash:algorithm` become `pattern`, and `oneof:a,b,c` becomes `enum`. Normalizers (`trim`, `lower`, `upper`, ...) are skipped, since they transform data rather than constrain its shape. A checker with no JSON Schema equivalent — a custom checker, or one like `eq-field` that compares against another field — is recorded in an `x-checker` vendor extension instead of being silently dropped:
+Most checkers map directly onto a JSON Schema keyword: `required` becomes an entry in `required`, `min-len`/`max-len` become `minLength`/`maxLength` (or `minItems`/`maxItems` for a slice, `minProperties`/`maxProperties` for a map), `gte`/`lte` become `minimum`/`maximum`, `email`/`url`/`ipv4`/`ipv6`/`ip`/`cidr`/`mac`/`fqdn` become a `format`, `regexp:pattern`/`hex`/`alphanumeric`/`ascii`/`digits`/`hash:algorithm`/`postal-code:country` become `pattern`, and `oneof:a,b,c` becomes `enum`. Normalizers (`trim`, `lower`, `upper`, ...) are skipped, since they transform data rather than constrain its shape. A checker with no JSON Schema equivalent — a custom checker, or one like `eq-field` that compares against another field — is recorded in an `x-checker` vendor extension instead of being silently dropped:
 
 ```golang
 type Registration struct {
@@ -734,6 +759,34 @@ e.POST("/register", func(c echo.Context) error {
 ```
 
 See [echo/README.md](echo/README.md) for the full example, including how to call `checkerecho.Check` directly when the struct is assembled from more than just the request body.
+
+### net/http
+
+```bash
+go get github.com/cinar/checker/v2/nethttp
+```
+
+```golang
+import checkernethttp "github.com/cinar/checker/v2/nethttp"
+
+type Registration struct {
+	Name  string `json:"name" checkers:"trim required"`
+	Email string `json:"email" checkers:"required email"`
+}
+
+http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
+	var registration Registration
+
+	if !checkernethttp.Bind(w, r, &registration) {
+		// The 400 response has already been written by Bind.
+		return
+	}
+
+	json.NewEncoder(w).Encode(registration)
+})
+```
+
+Unlike `gin`/`echo`, this adapter has no external dependency at all beyond the core `checker` module — only `encoding/json` and `net/http`, both standard library. See [nethttp/README.md](nethttp/README.md) for the full example, including how to call `checkernethttp.Check` directly when the struct is assembled from more than just the request body.
 
 ## Static Analysis
 

@@ -49,6 +49,7 @@ var DeDEMessages = map[string]string{
 	"NOT_NUMERIC":         "Keine gültige numerische Zeichenfolge.",
 	"NOT_ONE_OF":          "Der Wert muss einer der folgenden sein: {{ .allowed }}.",
 	"NOT_POSITIVE":        "Der Wert muss positiv sein.",
+	"NOT_POSTAL_CODE":     "Keine gültige {{ .country }}-Postleitzahl.",
 	"NOT_STARTS_WITH":     "Der Wert muss mit {{ .prefix }} beginnen.",
 	"NOT_TIME":            "Keine gültige Uhrzeit.",
 	"REQUIRED":            "Erforderlicher Wert fehlt.",

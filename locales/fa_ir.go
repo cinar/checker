@@ -49,6 +49,7 @@ var FaIRMessages = map[string]string{
 	"NOT_NUMERIC":         "رشته عددی معتبر نیست.",
 	"NOT_ONE_OF":          "مقدار باید یکی از {{ .allowed }} باشد.",
 	"NOT_POSITIVE":        "مقدار باید مثبت باشد.",
+	"NOT_POSTAL_CODE":     "کد پستی {{ .country }} معتبر نیست.",
 	"NOT_STARTS_WITH":     "مقدار باید با {{ .prefix }} شروع شود.",
 	"NOT_TIME":            "زمان معتبر نیست.",
 	"REQUIRED":            "مقدار الزامی وجود ندارد.",

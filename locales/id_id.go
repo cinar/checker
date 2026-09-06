@@ -49,6 +49,7 @@ var IDIDMessages = map[string]string{
 	"NOT_NUMERIC":         "Bukan string numerik yang valid.",
 	"NOT_ONE_OF":          "Nilai harus salah satu dari {{ .allowed }}.",
 	"NOT_POSITIVE":        "Nilai harus positif.",
+	"NOT_POSTAL_CODE":     "Bukan kode pos {{ .country }} yang valid.",
 	"NOT_STARTS_WITH":     "Nilai harus dimulai dengan {{ .prefix }}.",
 	"NOT_TIME":            "Bukan waktu yang valid.",
 	"REQUIRED":            "Nilai yang wajib diisi tidak ada.",

@@ -49,6 +49,7 @@ var LvLVMessages = map[string]string{
 	"NOT_NUMERIC":         "Nav derīga skaitliska virkne.",
 	"NOT_ONE_OF":          "Vērtībai jābūt vienai no {{ .allowed }}.",
 	"NOT_POSITIVE":        "Vērtībai jābūt pozitīvai.",
+	"NOT_POSTAL_CODE":     "Nav derīgs {{ .country }} pasta indekss.",
 	"NOT_STARTS_WITH":     "Vērtībai jāsākas ar {{ .prefix }}.",
 	"NOT_TIME":            "Nav derīga laika.",
 	"REQUIRED":            "Trūkst obligātās vērtības.",

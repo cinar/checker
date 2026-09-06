@@ -90,6 +90,7 @@ var makers = map[string]MakeCheckFunc{
 	nameNumeric:        makeNumeric,
 	nameOneOf:          makeOneOf,
 	namePositive:       makePositive,
+	namePostalCode:     makePostalCode,
 	nameRegexp:         makeRegexp,
 	nameRequired:       makeRequired,
 	nameSemver:         makeSemver,

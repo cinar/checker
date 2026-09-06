@@ -49,6 +49,7 @@ var JaJPMessages = map[string]string{
 	"NOT_NUMERIC":         "有効な数値文字列ではありません。",
 	"NOT_ONE_OF":          "値は次のいずれかである必要があります: {{ .allowed }}。",
 	"NOT_POSITIVE":        "値は正の数である必要があります。",
+	"NOT_POSTAL_CODE":     "有効な{{ .country }}の郵便番号ではありません。",
 	"NOT_STARTS_WITH":     "値は{{ .prefix }}で始まる必要があります。",
 	"NOT_TIME":            "有効な時刻ではありません。",
 	"REQUIRED":            "必須の値がありません。",

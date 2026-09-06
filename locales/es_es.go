@@ -49,6 +49,7 @@ var EsESMessages = map[string]string{
 	"NOT_NUMERIC":         "No es una cadena numérica válida.",
 	"NOT_ONE_OF":          "El valor debe ser uno de {{ .allowed }}.",
 	"NOT_POSITIVE":        "El valor debe ser positivo.",
+	"NOT_POSTAL_CODE":     "No es un código postal {{ .country }} válido.",
 	"NOT_STARTS_WITH":     "El valor debe comenzar con {{ .prefix }}.",
 	"NOT_TIME":            "No es una hora válida.",
 	"REQUIRED":            "Falta un valor obligatorio.",

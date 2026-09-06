@@ -49,6 +49,7 @@ var EnUSMessages = map[string]string{
 	"NOT_NUMERIC":         "Not a valid numeric string.",
 	"NOT_ONE_OF":          "Value must be one of {{ .allowed }}.",
 	"NOT_POSITIVE":        "Value must be positive.",
+	"NOT_POSTAL_CODE":     "Not a valid {{ .country }} postal code.",
 	"NOT_STARTS_WITH":     "Value must start with {{ .prefix }}.",
 	"NOT_TIME":            "Not a valid time.",
 	"REQUIRED":            "Required value is missing.",
