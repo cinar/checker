@@ -25,18 +25,19 @@ var ignoredForSchema = map[string]bool{
 	// JSON numbers can't be NaN or an infinity by spec, so "finite" has no
 	// keyword to emit: it's a pure in-memory Go-value guard, not a shape
 	// constraint on data that ever arrives as JSON.
-	nameFinite:       true,
-	nameHTMLEscape:   true,
-	nameHTMLUnescape: true,
-	nameLower:        true,
-	nameOmitEmpty:    true,
-	nameTitle:        true,
-	nameTrimLeft:     true,
-	nameTrimRight:    true,
-	nameTrimSpace:    true,
-	nameUpper:        true,
-	nameURLEscape:    true,
-	nameURLUnescape:  true,
+	nameFinite:         true,
+	nameHTMLEscape:     true,
+	nameHTMLUnescape:   true,
+	nameLower:          true,
+	nameOmitEmpty:      true,
+	nameStripInvisible: true,
+	nameTitle:          true,
+	nameTrimLeft:       true,
+	nameTrimRight:      true,
+	nameTrimSpace:      true,
+	nameUpper:          true,
+	nameURLEscape:      true,
+	nameURLUnescape:    true,
 }
 
 // schemaMakersMu guards schemaMakers, which can be written concurrently with
