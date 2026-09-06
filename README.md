@@ -240,6 +240,9 @@ Normalizers mutate string values in-place and pass them to the next checker in t
 | | [`HTMLUnescape`](https://pkg.go.dev/github.com/cinar/checker/v2#HTMLUnescape) | `html-unescape` | Unescapes special characters in the string for HTML |
 | | [`URLEscape`](https://pkg.go.dev/github.com/cinar/checker/v2#URLEscape) | `url-escape` | Escapes special characters in the string for URLs |
 | | [`URLUnescape`](https://pkg.go.dev/github.com/cinar/checker/v2#URLUnescape) | `url-unescape` | Unescapes special characters in the string for URLs |
+| **Fallback** | [`Default`](https://pkg.go.dev/github.com/cinar/checker/v2#Default) | `default:<value>` | Replaces the value with `<value>` if it's currently its zero value, otherwise leaves it untouched |
+
+Unlike the other normalizers, `default` isn't string-only: it also works on `bool`, the `int`/`uint`/`float` kinds, and a pointer to any of those (a nil pointer gets a freshly allocated default; a non-nil one is left alone). It's a poor fit alongside `omitempty` on the same field — `omitempty` skips every remaining check exactly when the value is zero, which is exactly the case `default` exists to handle, so combining the two on one field means `default` never runs.
 
 ## Checkers Provided
 

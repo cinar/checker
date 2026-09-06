@@ -48,6 +48,7 @@ var schemaMakersMu sync.RWMutex
 // here is instead recorded in the Schema's XChecker list.
 var schemaMakers = map[string]SchemaMakeFunc{
 	nameContains:    schemaContains,
+	nameDefault:     schemaDefault,
 	nameEmail:       schemaFormat("email"),
 	nameEndsWith:    schemaEndsWith,
 	nameEq:          schemaConst,
@@ -92,6 +93,11 @@ func schemaOneOf(schema *Schema, params string) {
 // schemaConst sets the Schema's Const to the checker's expected value.
 func schemaConst(schema *Schema, params string) {
 	schema.Const = &params
+}
+
+// schemaDefault sets the Schema's Default to the normalizer's fallback value.
+func schemaDefault(schema *Schema, params string) {
+	schema.Default = &params
 }
 
 // schemaContains sets the Schema's Pattern so the value must contain the

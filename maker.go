@@ -46,6 +46,7 @@ var makers = map[string]MakeCheckFunc{
 	nameCIDR:           makeCIDR,
 	nameContains:       makeContains,
 	nameCreditCard:     makeCreditCard,
+	nameDefault:        makeDefault,
 	nameDigits:         makeDigits,
 	nameEmail:          makeEmail,
 	nameEndsWith:       makeEndsWith,
