@@ -29,6 +29,7 @@
 - **23 built-in locales** — opt-in, translated error messages, matching the set go-playground/validator ships.
 - **JSON Schema generation** — turn a struct's checker tags into a JSON Schema document, for API docs or frontend validation, without hand-maintaining a second copy of your rules.
 - **Framework adapters** — thin, separately-versioned `gin`, `echo`, `nethttp`, and `fiber` modules bind a request and validate it in one call.
+- **Trojan Source & Unicode normalization** — the built-in `strip-invisible` normalizer strips zero-width/bidi spoofing characters, and the opt-in `nfkc` module folds compatibility characters (fullwidth digits, ligatures, ...) into their canonical form.
 - **Context-aware pipelines** — `Pipeline[T]` reuses the same checkers for domain rules that need a `context.Context` (a DB lookup, a tenant claim) struct tags can't carry.
 - **Static analysis** — the separate `checkerlint` module catches unknown checker names, type mismatches, and dangling cross-field targets at build time, not runtime.
 - **Command-line interface** — the separate `checker` binary runs any checker or normalizer from a shell script, CI pipeline, or Git hook, with no Go code and no runtime dependency of its own.
@@ -55,6 +56,7 @@
 - [Structured Errors](#structured-errors)
 - [JSON Schema Generation](#json-schema-generation)
 - [Framework Integration](#framework-integration)
+- [Unicode Normalization (NFKC)](#unicode-normalization-nfkc)
 - [Static Analysis](#static-analysis)
 - [Command-Line Interface](#command-line-interface)
 - [Performance](#performance)
@@ -249,6 +251,8 @@ Normalizers mutate string values in-place and pass them to the next checker in t
 Unlike the other normalizers, `default` isn't string-only: it also works on `bool`, the `int`/`uint`/`float` kinds, and a pointer to any of those (a nil pointer gets a freshly allocated default; a non-nil one is left alone). It's a poor fit alongside `omitempty` on the same field — `omitempty` skips every remaining check exactly when the value is zero, which is exactly the case `default` exists to handle, so combining the two on one field means `default` never runs.
 
 `strip-invisible` removes zero-width space, zero-width non-joiner, zero-width joiner, word joiner, the zero-width no-break space (BOM), and the bidirectional embedding/override/isolate control characters. Some of these have legitimate uses in ordinary text — zero-width joiner in emoji sequences, zero-width non-joiner in Persian and other scripts — so apply it only to fields where an invisible character is never expected, such as a handle, username, or search keyword, not general free-text content.
+
+`strip-invisible` handles invisible spoofing characters without pulling in a dependency. For *visible* lookalikes — fullwidth digits, ligatures, and other compatibility characters a naive keyword filter or uniqueness check would treat as distinct from their canonical form — see the opt-in [`nfkc`](#unicode-normalization-nfkc) module instead.
 
 ## Checkers Provided
 
@@ -818,6 +822,27 @@ app.Post("/register", func(c fiber.Ctx) error {
 ```
 
 See [fiber/README.md](fiber/README.md) for the full example, including how to call `checkerfiber.Check` directly when the struct is assembled from more than just the request body.
+
+## Unicode Normalization (NFKC)
+
+[`nfkc`](nfkc/), a separate module, registers an `nfkc` normalizer applying [Unicode Normalization Form KC](https://unicode.org/reports/tr15/): it composes combining character sequences and replaces compatibility characters — fullwidth digits, ligatures, and other stylistic variants — with their canonical equivalents, so `"ＡＬＩＣＥ"` and `"ALICE"` compare equal after normalization. It's kept out of the core module because it needs `golang.org/x/text/unicode/norm`; a blank import is enough to opt in.
+
+```bash
+go get github.com/cinar/checker/v2/nfkc
+```
+
+```golang
+import (
+	checker "github.com/cinar/checker/v2"
+	_ "github.com/cinar/checker/v2/nfkc"
+)
+
+type Handle struct {
+	Name string `checkers:"trim nfkc required min-len:3"`
+}
+```
+
+See [nfkc/README.md](nfkc/README.md) for the full example, including calling `nfkc.Normalize` directly on a one-off value.
 
 ## Static Analysis
 
