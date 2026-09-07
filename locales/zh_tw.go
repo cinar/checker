@@ -38,7 +38,7 @@ var ZhTWMessages = map[string]string{
 	"NOT_ISO6391":         "不是有效的ISO 639-1語言代碼。",
 	"NOT_LT":              "值必須小於{{ .n }}。",
 	"NOT_LEN":             "值的長度必須為{{ .len }}。",
-	"NOT_LTE":             "值不能小於{{ .n }}。",
+	"NOT_LTE":             "值不能大於{{ .n }}。",
 	"NOT_LUHN":            "不是有效的LUHN號碼。",
 	"NOT_MAC":             "不是有效的MAC位址。",
 	"NOT_MAX_LEN":         "值不能大於{{ .max }}。",

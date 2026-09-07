@@ -38,7 +38,7 @@ var PtPTMessages = map[string]string{
 	"NOT_ISO6391":         "Não é um código de idioma ISO 639-1 válido.",
 	"NOT_LT":              "O valor deve ser inferior a {{ .n }}.",
 	"NOT_LEN":             "O valor deve ter comprimento {{ .len }}.",
-	"NOT_LTE":             "O valor não pode ser inferior a {{ .n }}.",
+	"NOT_LTE":             "O valor não pode ser superior a {{ .n }}.",
 	"NOT_LUHN":            "Não é um número LUHN válido.",
 	"NOT_MAC":             "Não é um endereço MAC válido.",
 	"NOT_MAX_LEN":         "O valor não pode ser superior a {{ .max }}.",

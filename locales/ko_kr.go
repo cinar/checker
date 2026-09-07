@@ -38,7 +38,7 @@ var KoKRMessages = map[string]string{
 	"NOT_ISO6391":         "유효한 ISO 639-1 언어 코드가 아닙니다.",
 	"NOT_LT":              "값은 {{ .n }}보다 작아야 합니다.",
 	"NOT_LEN":             "값의 길이는 {{ .len }}이어야 합니다.",
-	"NOT_LTE":             "값은 {{ .n }}보다 작을 수 없습니다.",
+	"NOT_LTE":             "값은 {{ .n }}보다 클 수 없습니다.",
 	"NOT_LUHN":            "유효한 LUHN 번호가 아닙니다.",
 	"NOT_MAC":             "유효한 MAC 주소가 아닙니다.",
 	"NOT_MAX_LEN":         "값은 {{ .max }}보다 클 수 없습니다.",

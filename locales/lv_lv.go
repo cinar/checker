@@ -38,7 +38,7 @@ var LvLVMessages = map[string]string{
 	"NOT_ISO6391":         "Nav derīga ISO 639-1 valodas koda.",
 	"NOT_LT":              "Vērtībai jābūt mazākai par {{ .n }}.",
 	"NOT_LEN":             "Vērtības garumam jābūt {{ .len }}.",
-	"NOT_LTE":             "Vērtība nedrīkst būt mazāka par {{ .n }}.",
+	"NOT_LTE":             "Vērtība nedrīkst būt lielāka par {{ .n }}.",
 	"NOT_LUHN":            "Nav derīga LUHN numura.",
 	"NOT_MAC":             "Nav derīgas MAC adreses.",
 	"NOT_MAX_LEN":         "Vērtība nedrīkst būt lielāka par {{ .max }}.",

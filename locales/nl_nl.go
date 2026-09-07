@@ -38,7 +38,7 @@ var NlNLMessages = map[string]string{
 	"NOT_ISO6391":         "Geen geldige ISO 639-1-taalcode.",
 	"NOT_LT":              "De waarde moet kleiner zijn dan {{ .n }}.",
 	"NOT_LEN":             "De waarde moet een lengte van {{ .len }} hebben.",
-	"NOT_LTE":             "De waarde mag niet kleiner zijn dan {{ .n }}.",
+	"NOT_LTE":             "De waarde mag niet groter zijn dan {{ .n }}.",
 	"NOT_LUHN":            "Geen geldig LUHN-nummer.",
 	"NOT_MAC":             "Geen geldig MAC-adres.",
 	"NOT_MAX_LEN":         "De waarde mag niet groter zijn dan {{ .max }}.",
