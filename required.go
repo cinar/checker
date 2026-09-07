@@ -24,13 +24,21 @@ func Required[T any](value T) (T, error) {
 	return value, err
 }
 
-// reflectRequired checks if the given value is its zero value. It
-// returns an error if the value is zero.
+// reflectRequired checks if the given value is its zero value, or an
+// empty array, map, or slice. It returns an error if so.
 func reflectRequired(value reflect.Value) (reflect.Value, error) {
 	var err error
 
-	if value.IsZero() {
-		err = ErrRequired
+	switch value.Kind() {
+	case reflect.Array, reflect.Map, reflect.Slice:
+		if value.Len() == 0 {
+			err = ErrRequired
+		}
+
+	default:
+		if value.IsZero() {
+			err = ErrRequired
+		}
 	}
 
 	return value, err

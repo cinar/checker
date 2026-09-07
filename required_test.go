@@ -39,3 +39,43 @@ func TestRequiredMissing(t *testing.T) {
 		t.Fatalf("got unexpected error %v", err)
 	}
 }
+
+func TestRequiredEmptySlice(t *testing.T) {
+	value := []string{}
+
+	_, err := v2.Required(value)
+
+	if !errors.Is(err, v2.ErrRequired) {
+		t.Fatalf("got unexpected error %v", err)
+	}
+}
+
+func TestRequiredNonEmptySlice(t *testing.T) {
+	value := []string{"test"}
+
+	_, err := v2.Required(value)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestRequiredEmptyMap(t *testing.T) {
+	value := map[string]string{}
+
+	_, err := v2.Required(value)
+
+	if !errors.Is(err, v2.ErrRequired) {
+		t.Fatalf("got unexpected error %v", err)
+	}
+}
+
+func TestRequiredNonEmptyMap(t *testing.T) {
+	value := map[string]string{"key": "value"}
+
+	_, err := v2.Required(value)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+}
