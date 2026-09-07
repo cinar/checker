@@ -38,7 +38,7 @@ var ZhCNMessages = map[string]string{
 	"NOT_ISO6391":         "不是有效的ISO 639-1语言代码。",
 	"NOT_LT":              "值必须小于{{ .n }}。",
 	"NOT_LEN":             "值的长度必须为{{ .len }}。",
-	"NOT_LTE":             "值不能小于{{ .n }}。",
+	"NOT_LTE":             "值不能大于{{ .n }}。",
 	"NOT_LUHN":            "不是有效的LUHN号。",
 	"NOT_MAC":             "不是有效的MAC地址。",
 	"NOT_MAX_LEN":         "值不能大于{{ .max }}。",

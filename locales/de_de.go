@@ -38,7 +38,7 @@ var DeDEMessages = map[string]string{
 	"NOT_ISO6391":         "Kein gültiger ISO-639-1-Sprachcode.",
 	"NOT_LT":              "Der Wert muss kleiner als {{ .n }} sein.",
 	"NOT_LEN":             "Der Wert muss eine Länge von {{ .len }} haben.",
-	"NOT_LTE":             "Der Wert darf nicht kleiner als {{ .n }} sein.",
+	"NOT_LTE":             "Der Wert darf nicht größer als {{ .n }} sein.",
 	"NOT_LUHN":            "Keine gültige LUHN-Nummer.",
 	"NOT_MAC":             "Keine gültige MAC-Adresse.",
 	"NOT_MAX_LEN":         "Der Wert darf nicht größer als {{ .max }} sein.",

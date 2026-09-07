@@ -38,7 +38,7 @@ var ItITMessages = map[string]string{
 	"NOT_ISO6391":         "Non è un codice lingua ISO 639-1 valido.",
 	"NOT_LT":              "Il valore deve essere inferiore a {{ .n }}.",
 	"NOT_LEN":             "Il valore deve avere una lunghezza di {{ .len }}.",
-	"NOT_LTE":             "Il valore non può essere inferiore a {{ .n }}.",
+	"NOT_LTE":             "Il valore non può essere superiore a {{ .n }}.",
 	"NOT_LUHN":            "Non è un numero LUHN valido.",
 	"NOT_MAC":             "Non è un indirizzo MAC valido.",
 	"NOT_MAX_LEN":         "Il valore non può essere superiore a {{ .max }}.",

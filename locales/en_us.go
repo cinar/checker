@@ -38,7 +38,7 @@ var EnUSMessages = map[string]string{
 	"NOT_ISO6391":         "Not a valid ISO 639-1 language code.",
 	"NOT_LT":              "Value must be less than {{ .n }}.",
 	"NOT_LEN":             "Value must have a length of {{ .len }}.",
-	"NOT_LTE":             "Value cannot be less than {{ .n }}.",
+	"NOT_LTE":             "Value cannot be greater than {{ .n }}.",
 	"NOT_LUHN":            "Not a valid LUHN number.",
 	"NOT_MAC":             "Not a valid MAC address.",
 	"NOT_MAX_LEN":         "Value cannot be greater than {{ .max }}.",

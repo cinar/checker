@@ -38,7 +38,7 @@ var PlPLMessages = map[string]string{
 	"NOT_ISO6391":         "Nieprawidłowy kod języka ISO 639-1.",
 	"NOT_LT":              "Wartość musi być mniejsza niż {{ .n }}.",
 	"NOT_LEN":             "Wartość musi mieć długość {{ .len }}.",
-	"NOT_LTE":             "Wartość nie może być mniejsza niż {{ .n }}.",
+	"NOT_LTE":             "Wartość nie może być większa niż {{ .n }}.",
 	"NOT_LUHN":            "Nieprawidłowy numer LUHN.",
 	"NOT_MAC":             "Nieprawidłowy adres MAC.",
 	"NOT_MAX_LEN":         "Wartość nie może być większa niż {{ .max }}.",
