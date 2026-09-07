@@ -37,7 +37,7 @@ func TestLteIntError(t *testing.T) {
 		t.Fatal("expected error")
 	}
 
-	message := "Value cannot be less than 5."
+	message := "Value cannot be greater than 5."
 
 	if err.Error() != message {
 		t.Fatalf("expected %s actual %s", message, err.Error())

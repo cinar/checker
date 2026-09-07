@@ -38,7 +38,7 @@ var ViVNMessages = map[string]string{
 	"NOT_ISO6391":         "Không phải là mã ngôn ngữ ISO 639-1 hợp lệ.",
 	"NOT_LT":              "Giá trị phải nhỏ hơn {{ .n }}.",
 	"NOT_LEN":             "Giá trị phải có độ dài {{ .len }}.",
-	"NOT_LTE":             "Giá trị không được nhỏ hơn {{ .n }}.",
+	"NOT_LTE":             "Giá trị không được lớn hơn {{ .n }}.",
 	"NOT_LUHN":            "Không phải là số LUHN hợp lệ.",
 	"NOT_MAC":             "Không phải là địa chỉ MAC hợp lệ.",
 	"NOT_MAX_LEN":         "Giá trị không được lớn hơn {{ .max }}.",
